@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Support Bot</title>
+  <link rel="stylesheet" href="style.css" />
+  <!-- Markdown renderer -->
+  <script src="https://cdn.jsdelivr.net/npm/marked@12/marked.min.js"></script>
+</head>
+<body>
+
+  <div class="app">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <span class="logo">🤖</span>
+        <span class="brand">AI Support Bot</span>
+      </div>
+      <p class="sidebar-sub">Coding Challenges helper</p>
+      <hr class="divider" />
+      <button id="btn-clear" class="btn-clear">🗑 Clear chat</button>
+      <div class="sidebar-footer">
+        <span id="session-label" class="session-label">session: default</span>
+      </div>
+    </aside>
+
+    <!-- Main chat area -->
+    <main class="chat-area">
+
+      <div id="messages" class="messages">
+        <!-- Seed welcome message -->
+        <div class="msg bot">
+          <div class="avatar">🤖</div>
+          <div class="bubble">
+            Hey! I'm your Coding Challenges support bot.<br />
+            Ask me anything about the challenges, solutions, or programming concepts.
+          </div>
+        </div>
+      </div>
+
+      <!-- Typing indicator (hidden by default) -->
+      <div id="typing" class="typing-indicator hidden">
+        <span></span><span></span><span></span>
+      </div>
+
+      <!-- Input bar -->
+      <form id="chat-form" class="input-bar" autocomplete="off">
+        <textarea
+          id="user-input"
+          class="input-field"
+          placeholder="Ask a question…"
+          rows="1"
+        ></textarea>
+        <button type="submit" id="send-btn" class="send-btn" title="Send">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+               stroke-linecap="round" stroke-linejoin="round">
+            <line x1="22" y1="2" x2="11" y2="13"></line>
+            <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+          </svg>
+        </button>
+      </form>
+
+    </main>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
