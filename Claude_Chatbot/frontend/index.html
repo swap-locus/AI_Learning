@@ -1,0 +1,587 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Claude Chatbot</title>
+  <style>
+    :root {
+      --bg: #f6f5f1;
+      --panel: #ffffff;
+      --border: #e5e2da;
+      --text: #1f1d1a;
+      --muted: #6b6760;
+      --user-bg: #d97757;
+      --user-fg: #ffffff;
+      --assistant-bg: #efece4;
+      --assistant-fg: #1f1d1a;
+      --accent: #d97757;
+      --error: #b3261e;
+    }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; margin: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+    }
+    header {
+      background: var(--panel);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    header h1 {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 600;
+    }
+    header .right { margin-left: auto; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+    label { font-size: 13px; color: var(--muted); }
+    select, button, input[type="number"] {
+      font-family: inherit;
+      font-size: 14px;
+      padding: 6px 10px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--panel);
+      color: var(--text);
+    }
+    select { min-width: 240px; }
+    input[type="number"] { width: 90px; }
+    .slider-wrap {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    input[type="range"] {
+      width: 100px;
+      accent-color: var(--accent);
+      cursor: pointer;
+    }
+    .temp-val {
+      font-size: 13px;
+      color: var(--muted);
+      min-width: 28px;
+      text-align: right;
+    }
+    .stream-label {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      cursor: pointer;
+      user-select: none;
+    }
+    input[type="checkbox"] {
+      width: 15px;
+      height: 15px;
+      accent-color: var(--accent);
+      cursor: pointer;
+    }
+    button {
+      background: var(--accent);
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-weight: 500;
+    }
+    button.secondary {
+      background: transparent;
+      color: var(--muted);
+      border: 1px solid var(--border);
+    }
+    button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    main {
+      flex: 1;
+      overflow-y: auto;
+      padding: 24px 0;
+    }
+    #chat {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 0 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .msg {
+      display: flex;
+      flex-direction: column;
+      max-width: 85%;
+    }
+    .msg.user { align-self: flex-end; align-items: flex-end; }
+    .msg.assistant { align-self: flex-start; align-items: flex-start; }
+    .role {
+      font-size: 11px;
+      color: var(--muted);
+      margin-bottom: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .bubble {
+      padding: 12px 16px;
+      border-radius: 14px;
+      line-height: 1.5;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+    .msg.user .bubble {
+      background: var(--user-bg);
+      color: var(--user-fg);
+      border-bottom-right-radius: 4px;
+    }
+    .msg.assistant .bubble {
+      background: var(--assistant-bg);
+      color: var(--assistant-fg);
+      border-bottom-left-radius: 4px;
+    }
+    .msg.error .bubble {
+      background: #fde8e6;
+      color: var(--error);
+      border: 1px solid #f5c6c2;
+    }
+    .typing { font-style: italic; color: var(--muted); }
+
+    footer {
+      background: var(--panel);
+      border-top: 1px solid var(--border);
+      padding: 12px 20px;
+    }
+    .composer {
+      max-width: 760px;
+      margin: 0 auto;
+      display: flex;
+      gap: 8px;
+    }
+    #input {
+      flex: 1;
+      resize: none;
+      font-family: inherit;
+      font-size: 15px;
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 44px;
+      max-height: 200px;
+    }
+    #status {
+      font-size: 12px;
+      color: var(--muted);
+      max-width: 760px;
+      margin: 6px auto 0;
+      padding: 0 20px;
+    }
+    #status.error { color: var(--error); }
+
+    /* System prompt panel */
+    #systemPanel {
+      max-width: 760px;
+      margin: 0 auto 16px;
+      padding: 0 20px;
+    }
+    #systemPanel details {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 8px 12px;
+    }
+    #systemPanel summary {
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text);
+      user-select: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    #systemPanel summary::after {
+      content: attr(data-preview);
+      font-weight: 400;
+      color: var(--muted);
+      font-size: 12px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      margin-left: auto;
+      max-width: 70%;
+    }
+    #systemPrompt {
+      width: 100%;
+      margin-top: 10px;
+      min-height: 80px;
+      max-height: 300px;
+      resize: vertical;
+      font-family: inherit;
+      font-size: 14px;
+      padding: 8px 10px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--bg);
+      color: var(--text);
+      box-sizing: border-box;
+    }
+    .system-hint {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 6px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Claude Chatbot</h1>
+    <div class="right">
+      <label for="model">Model</label>
+      <select id="model"><option>Loading models…</option></select>
+      <label for="maxTokens">Max tokens</label>
+      <input id="maxTokens" type="number" min="1" max="8192" value="1024" />
+      <label for="temperature">Temperature</label>
+      <div class="slider-wrap">
+        <input id="temperature" type="range" min="0" max="1" step="0.01" value="0.7" />
+        <span id="tempVal" class="temp-val">0.70</span>
+      </div>
+      <label class="stream-label" title="Stream response word-by-word">
+        <input id="stream" type="checkbox" checked />
+        Stream
+      </label>
+      <button id="reset" class="secondary" type="button" title="Clear conversation">Reset</button>
+    </div>
+  </header>
+
+  <main>
+    <div id="systemPanel">
+      <details id="systemDetails">
+        <summary id="systemSummary" data-preview="(none)">System prompt</summary>
+        <textarea id="systemPrompt"
+                  placeholder="Optional. e.g. 'You are a terse senior Java engineer. Respond in <= 3 sentences.'"></textarea>
+        <div class="system-hint">
+          Sent as the top-level <code>system</code> field with every request. Edits apply to the next turn.
+        </div>
+      </details>
+    </div>
+    <div id="chat"></div>
+  </main>
+
+  <footer>
+    <form class="composer" id="composer">
+      <textarea id="input" placeholder="Type a message and press Enter (Shift+Enter for newline)…" autofocus></textarea>
+      <button id="send" type="submit">Send</button>
+    </form>
+    <div id="status"></div>
+  </footer>
+
+  <script>
+    // -------------- state
+    /** @type {{role: "user"|"assistant", content: string}[]} */
+    const messages = [];
+
+    const els = {
+      chat: document.getElementById("chat"),
+      input: document.getElementById("input"),
+      send: document.getElementById("send"),
+      reset: document.getElementById("reset"),
+      composer: document.getElementById("composer"),
+      model: document.getElementById("model"),
+      maxTokens: document.getElementById("maxTokens"),
+      status: document.getElementById("status"),
+      systemPrompt: document.getElementById("systemPrompt"),
+      systemSummary: document.getElementById("systemSummary"),
+      systemDetails: document.getElementById("systemDetails"),
+      temperature: document.getElementById("temperature"),
+      tempVal: document.getElementById("tempVal"),
+      stream: document.getElementById("stream"),
+      main: document.querySelector("main"),
+    };
+
+    // -------------- helpers
+    function setStatus(text, isError = false) {
+      els.status.textContent = text;
+      els.status.classList.toggle("error", isError);
+    }
+
+    function renderMessage(role, content, { typing = false, error = false } = {}) {
+      const wrap = document.createElement("div");
+      wrap.className = `msg ${role}` + (error ? " error" : "");
+      const roleEl = document.createElement("div");
+      roleEl.className = "role";
+      roleEl.textContent = role === "user" ? "You" : (error ? "Error" : "Claude");
+      const bubble = document.createElement("div");
+      bubble.className = "bubble" + (typing ? " typing" : "");
+      bubble.textContent = content;
+      wrap.appendChild(roleEl);
+      wrap.appendChild(bubble);
+      els.chat.appendChild(wrap);
+      wrap.scrollIntoView({ behavior: "smooth", block: "end" });
+      return bubble;
+    }
+
+    function clearChat() {
+      messages.length = 0;
+      els.chat.innerHTML = "";
+      setStatus("");
+    }
+
+    // -------------- model dropdown
+    async function loadModels() {
+      try {
+        const res = await fetch("/api/models");
+        const data = await res.json();
+        if (!res.ok) {
+          throw new Error(data?.error?.message || `HTTP ${res.status}`);
+        }
+        // Anthropic /v1/models returns { data: [{id, display_name, ...}], ... }
+        const models = (data.data || []).slice().sort((a, b) => {
+          // newest first by created_at if present, else by id desc
+          if (a.created_at && b.created_at) return b.created_at.localeCompare(a.created_at);
+          return (b.id || "").localeCompare(a.id || "");
+        });
+        if (!models.length) throw new Error("No models returned");
+
+        els.model.innerHTML = "";
+        for (const m of models) {
+          const opt = document.createElement("option");
+          opt.value = m.id;
+          opt.textContent = m.display_name ? `${m.display_name}  (${m.id})` : m.id;
+          els.model.appendChild(opt);
+        }
+        setStatus(`Loaded ${models.length} models.`);
+      } catch (e) {
+        els.model.innerHTML = "";
+        const opt = document.createElement("option");
+        opt.value = "";
+        opt.textContent = "— failed to load models —";
+        els.model.appendChild(opt);
+        setStatus(`Could not load models: ${e.message}. Is ANTHROPIC_API_KEY set on the server?`, true);
+      }
+    }
+
+    // -------------- system prompt persistence + preview
+    const SYSTEM_STORAGE_KEY = "claude_chatbot_system_prompt";
+
+    function loadSystemPrompt() {
+      try {
+        const saved = localStorage.getItem(SYSTEM_STORAGE_KEY);
+        if (saved) els.systemPrompt.value = saved;
+      } catch (_) { /* localStorage may be unavailable */ }
+      updateSystemPreview();
+    }
+
+    function updateSystemPreview() {
+      const v = els.systemPrompt.value.trim();
+      const preview = v
+        ? (v.length > 80 ? v.slice(0, 77) + "…" : v)
+        : "(none)";
+      els.systemSummary.setAttribute("data-preview", preview);
+    }
+
+    els.systemPrompt.addEventListener("input", () => {
+      try { localStorage.setItem(SYSTEM_STORAGE_KEY, els.systemPrompt.value); } catch (_) {}
+      updateSystemPreview();
+    });
+
+    // -------------- temperature slider
+    els.temperature.addEventListener("input", () => {
+      els.tempVal.textContent = parseFloat(els.temperature.value).toFixed(2);
+    });
+
+    // -------------- chat call
+    async function sendMessage(text) {
+      const model = els.model.value;
+      if (!model) {
+        setStatus("Pick a model first (none loaded).", true);
+        return;
+      }
+      const maxTokens = Math.max(1, Math.min(8192, parseInt(els.maxTokens.value, 10) || 1024));
+      const temperature = Math.round(parseFloat(els.temperature.value) * 100) / 100;
+      const systemPrompt = els.systemPrompt.value.trim();
+      const useStream = els.stream.checked;
+
+      messages.push({ role: "user", content: text });
+      renderMessage("user", text);
+
+      const placeholder = renderMessage("assistant", "Thinking…", { typing: true });
+      els.send.disabled = true;
+      setStatus("Sending request…");
+
+      const body = { model, max_tokens: maxTokens, messages, temperature };
+      if (systemPrompt) body.system = systemPrompt;
+
+      try {
+        if (useStream) {
+          await _sendStreaming(body, model, placeholder);
+        } else {
+          await _sendOnce(body, model, placeholder);
+        }
+      } catch (e) {
+        messages.pop();
+        placeholder.parentElement.remove();
+        renderMessage("assistant", e.message, { error: true });
+        setStatus(`Request failed: ${e.message}`, true);
+      } finally {
+        els.send.disabled = false;
+        els.input.focus();
+      }
+    }
+
+    async function _sendStreaming(body, model, placeholder) {
+      const res = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...body, stream: true }),
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err?.error?.message || `HTTP ${res.status}`);
+      }
+
+      // If the server returned plain JSON instead of SSE, parse it directly.
+      // This happens when the backend falls back to non-streaming for any reason.
+      if (!(res.headers.get("Content-Type") || "").includes("text/event-stream")) {
+        const data = await res.json();
+        const reply = (data.content || [])
+          .filter(b => b.type === "text")
+          .map(b => b.text)
+          .join("\n")
+          .trim() || "(empty response)";
+        messages.push({ role: "assistant", content: reply });
+        placeholder.textContent = reply;
+        placeholder.classList.remove("typing");
+        const usage = data.usage
+          ? `tokens: in=${data.usage.input_tokens}, out=${data.usage.output_tokens}`
+          : "";
+        setStatus(`Model: ${data.model || model}. ${usage}`);
+        return;
+      }
+
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      let buf = "";
+      let reply = "";
+      let started = false;
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        buf += decoder.decode(value, { stream: true });
+
+        // SSE events are delimited by \n\n — only process complete events
+        let boundary;
+        while ((boundary = buf.indexOf("\n\n")) !== -1) {
+          const rawEvent = buf.slice(0, boundary);
+          buf = buf.slice(boundary + 2);
+
+          for (const line of rawEvent.split("\n")) {
+            if (!line.startsWith("data: ")) continue;
+            let evt;
+            try { evt = JSON.parse(line.slice(6)); } catch { continue; }
+
+            if (evt.type === "delta") {
+              if (!started) {
+                placeholder.textContent = "";
+                placeholder.classList.remove("typing");
+                started = true;
+              }
+              reply += evt.text;
+              placeholder.textContent = reply;
+              els.main.scrollTop = els.main.scrollHeight;
+            } else if (evt.type === "done") {
+              const m = evt.message;
+              // If no delta events arrived, fall back to the assembled text in the done event
+              if (!reply && Array.isArray(m.content)) {
+                const fallback = m.content
+                  .filter(b => b.type === "text")
+                  .map(b => b.text)
+                  .join("\n")
+                  .trim();
+                if (fallback) {
+                  if (!started) {
+                    placeholder.textContent = "";
+                    placeholder.classList.remove("typing");
+                    started = true;
+                  }
+                  reply = fallback;
+                  placeholder.textContent = reply;
+                }
+              }
+              const usage = m.usage
+                ? `tokens: in=${m.usage.input_tokens}, out=${m.usage.output_tokens}`
+                : "";
+              setStatus(`Model: ${m.model || model}. ${usage}`);
+            } else if (evt.type === "error") {
+              throw new Error(evt.error?.message || "Stream error");
+            }
+          }
+        }
+      }
+
+      const final = reply.trim() || "(empty response)";
+      if (!started) { placeholder.textContent = final; placeholder.classList.remove("typing"); }
+      messages.push({ role: "assistant", content: final });
+    }
+
+    async function _sendOnce(body, model, placeholder) {
+      const res = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data?.error?.message || `HTTP ${res.status}`);
+
+      const reply = (data.content || [])
+        .filter((b) => b.type === "text")
+        .map((b) => b.text)
+        .join("\n")
+        .trim() || "(empty response)";
+
+      messages.push({ role: "assistant", content: reply });
+      placeholder.textContent = reply;
+      placeholder.classList.remove("typing");
+
+      const usage = data.usage
+        ? `tokens: in=${data.usage.input_tokens}, out=${data.usage.output_tokens}`
+        : "";
+      setStatus(`Model: ${data.model || model}. ${usage}`);
+    }
+
+    // -------------- wiring
+    els.composer.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const text = els.input.value.trim();
+      if (!text) return;
+      els.input.value = "";
+      els.input.style.height = "auto";
+      sendMessage(text);
+    });
+
+    // Enter to send, Shift+Enter for newline
+    els.input.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" && !e.shiftKey) {
+        e.preventDefault();
+        els.composer.requestSubmit();
+      }
+    });
+
+    // Auto-grow textarea
+    els.input.addEventListener("input", () => {
+      els.input.style.height = "auto";
+      els.input.style.height = Math.min(200, els.input.scrollHeight) + "px";
+    });
+
+    els.reset.addEventListener("click", clearChat);
+
+    // Kick things off
+    loadSystemPrompt();
+    loadModels();
+  </script>
+</body>
+</html>

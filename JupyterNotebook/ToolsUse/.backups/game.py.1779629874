@@ -1,0 +1,10 @@
+# game.py
+# A simple Python game file
+
+def main():
+    """Main function to run the game"""
+    print("Welcome to the Game!")
+    print("This is a starter game file.")
+
+if __name__ == "__main__":
+    main()
