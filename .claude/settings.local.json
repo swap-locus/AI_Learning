@@ -1,0 +1,30 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(xargs -I{} sh -c 'echo \"=== {} ===\" && cat {}')",
+      "Bash(make install *)",
+      "Read(//usr/local/bin/**)",
+      "Read(//opt/homebrew/bin/**)",
+      "Bash(curl -sS https://bootstrap.pypa.io/get-pip.py)",
+      "Bash(.venv/bin/python)",
+      "Bash(/opt/homebrew/bin/python3.13 -c \"import ensurepip; print\\('ensurepip ok'\\)\")",
+      "Bash(/opt/homebrew/bin/python3.13 -m venv .venv --without-pip)",
+      "Bash(.venv/bin/python -m ensurepip)",
+      "Read(//opt/homebrew/lib/**)",
+      "Bash(DYLD_LIBRARY_PATH=/opt/homebrew/lib /opt/homebrew/bin/python3.13 -m venv .venv)",
+      "Bash(virtualenv --version)",
+      "Bash(brew list *)",
+      "Bash(sw_vers -productVersion)",
+      "Bash(/usr/bin/python3 --version)",
+      "Bash(DYLD_LIBRARY_PATH=/opt/homebrew/Cellar/expat/2.8.1/lib /opt/homebrew/bin/python3.13 -m venv .venv)",
+      "Bash(.venv/bin/pip install *)",
+      "Bash(DYLD_LIBRARY_PATH=/opt/homebrew/Cellar/expat/2.8.1/lib .venv/bin/pip install --upgrade pip -q)",
+      "Bash(DYLD_LIBRARY_PATH=/opt/homebrew/Cellar/expat/2.8.1/lib .venv/bin/pip install -r requirements.txt)",
+      "Bash(DYLD_LIBRARY_PATH=/opt/homebrew/Cellar/expat/2.8.1/lib .venv/bin/python -m ipykernel install --user --name ai-learning-venv --display-name \"Python \\(AI_Learning .venv\\)\")",
+      "Bash(.venv/bin/python --version)",
+      "Bash(.venv/bin/pip list *)",
+      "Bash(make chatbot *)",
+      "Bash(xargs kill -9)"
+    ]
+  }
+}

@@ -1,0 +1,4409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Building with the Claude API</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=JetBrains+Mono:wght@400;600&family=Outfit:wght@300;400;500;600;700&display=swap');
+
+  :root {
+    --bg: #0a0a0f;
+    --surface: #12121a;
+    --surface2: #1a1a26;
+    --border: #2a2a3a;
+    --accent: #e8935a;
+    --accent2: #7b6ef6;
+    --accent3: #4ecdc4;
+    --text: #e8e8f0;
+    --text-muted: #7a7a9a;
+    --text-dim: #4a4a6a;
+    --success: #52c97e;
+    --sidebar-w: 300px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Outfit', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  /* ── SIDEBAR ── */
+  #sidebar {
+    width: var(--sidebar-w);
+    min-width: var(--sidebar-w);
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transition: width 0.3s ease;
+  }
+
+  #sidebar.collapsed { width: 0; min-width: 0; }
+
+  .sidebar-header {
+    padding: 24px 20px 16px;
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+
+  .course-badge {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .sidebar-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 17px;
+    line-height: 1.3;
+    color: var(--text);
+  }
+
+  .progress-bar-wrap {
+    margin-top: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .progress-bar {
+    flex: 1;
+    height: 4px;
+    background: var(--border);
+    border-radius: 99px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    border-radius: 99px;
+    transition: width 0.5s ease;
+  }
+
+  .progress-label {
+    font-size: 11px;
+    color: var(--text-muted);
+    white-space: nowrap;
+  }
+
+  .nav-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 12px 0;
+  }
+
+  .nav-list::-webkit-scrollbar { width: 4px; }
+  .nav-list::-webkit-scrollbar-track { background: transparent; }
+  .nav-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+  .module-group { margin-bottom: 4px; }
+
+  .module-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 20px;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .module-header:hover { background: var(--surface2); }
+
+  .module-number {
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  .mod-1 .module-number { background: rgba(232,147,90,0.15); color: var(--accent); }
+  .mod-2 .module-number { background: rgba(123,110,246,0.15); color: var(--accent2); }
+  .mod-3 .module-number { background: rgba(78,205,196,0.15); color: var(--accent3); }
+  .mod-4 .module-number { background: rgba(82,201,126,0.15); color: var(--success); }
+  .mod-5 .module-number { background: rgba(240,100,120,0.15); color: #f06478; }
+  .mod-6 .module-number { background: rgba(100,180,255,0.15); color: #64b4ff; }
+
+  .module-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-muted);
+    flex: 1;
+    letter-spacing: 0.3px;
+  }
+
+  .module-chevron {
+    font-size: 10px;
+    color: var(--text-dim);
+    transition: transform 0.2s;
+  }
+
+  .module-group.open .module-chevron { transform: rotate(90deg); }
+
+  .lesson-list { display: none; }
+  .module-group.open .lesson-list { display: block; }
+
+  .lesson-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 20px 8px 52px;
+    cursor: pointer;
+    font-size: 13px;
+    color: var(--text-muted);
+    transition: all 0.15s;
+    border-left: 2px solid transparent;
+    margin-left: -1px;
+  }
+
+  .lesson-item:hover { background: var(--surface2); color: var(--text); }
+
+  .lesson-item.active {
+    color: var(--text);
+    background: var(--surface2);
+  }
+
+  .mod-1 .lesson-item.active { border-left-color: var(--accent); }
+  .mod-2 .lesson-item.active { border-left-color: var(--accent2); }
+  .mod-3 .lesson-item.active { border-left-color: var(--accent3); }
+  .mod-4 .lesson-item.active { border-left-color: var(--success); }
+  .mod-5 .lesson-item.active { border-left-color: #f06478; }
+  .mod-6 .lesson-item.active { border-left-color: #64b4ff; }
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--border);
+    flex-shrink: 0;
+    transition: background 0.2s;
+  }
+
+  .lesson-item.active .lesson-dot { background: currentColor; }
+  .lesson-item.completed .lesson-dot { background: var(--success); }
+
+  /* ── MAIN CONTENT ── */
+  #main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  #topbar {
+    height: 56px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    padding: 0 24px;
+    gap: 16px;
+    flex-shrink: 0;
+    background: var(--surface);
+  }
+
+  #toggle-btn {
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 6px 8px;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s;
+  }
+  #toggle-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+  .breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: var(--text-muted);
+    flex: 1;
+  }
+
+  .breadcrumb .sep { color: var(--text-dim); }
+  .breadcrumb .current { color: var(--text); font-weight: 500; }
+
+  .nav-arrows {
+    display: flex;
+    gap: 8px;
+  }
+
+  .nav-btn {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 6px 14px;
+    font-size: 12px;
+    font-family: 'Outfit', sans-serif;
+    font-weight: 500;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .nav-btn:hover:not(:disabled) { border-color: var(--accent2); color: var(--accent2); }
+  .nav-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+  #content-area {
+    flex: 1;
+    overflow-y: auto;
+    padding: 48px 64px;
+    max-width: 900px;
+    width: 100%;
+    margin: 0 auto;
+  }
+
+  #content-area::-webkit-scrollbar { width: 6px; }
+  #content-area::-webkit-scrollbar-track { background: transparent; }
+  #content-area::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+  /* ── LESSON CONTENT ── */
+  .lesson-hero {
+    margin-bottom: 40px;
+  }
+
+  .lesson-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 4px 12px;
+    border-radius: 99px;
+    margin-bottom: 16px;
+  }
+
+  .tag-m1 { background: rgba(232,147,90,0.1); color: var(--accent); border: 1px solid rgba(232,147,90,0.2); }
+  .tag-m2 { background: rgba(123,110,246,0.1); color: var(--accent2); border: 1px solid rgba(123,110,246,0.2); }
+  .tag-m3 { background: rgba(78,205,196,0.1); color: var(--accent3); border: 1px solid rgba(78,205,196,0.2); }
+  .tag-m4 { background: rgba(82,201,126,0.1); color: var(--success); border: 1px solid rgba(82,201,126,0.2); }
+  .tag-m5 { background: rgba(240,100,120,0.1); color: #f06478; border: 1px solid rgba(240,100,120,0.2); }
+  .tag-m6 { background: rgba(100,180,255,0.1); color: #64b4ff; border: 1px solid rgba(100,180,255,0.2); }
+    font-family: 'DM Serif Display', serif;
+    font-size: 38px;
+    line-height: 1.15;
+    color: var(--text);
+    margin-bottom: 12px;
+  }
+
+  .lesson-subtitle {
+    font-size: 16px;
+    color: var(--text-muted);
+    line-height: 1.6;
+    max-width: 640px;
+  }
+
+  .content-body h3 {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text);
+    margin: 32px 0 12px;
+  }
+
+  .content-body h3:first-child { margin-top: 0; }
+
+  .content-body p {
+    font-size: 15px;
+    line-height: 1.75;
+    color: #c8c8d8;
+    margin-bottom: 16px;
+  }
+
+  .content-body ul, .content-body ol {
+    margin: 0 0 16px 20px;
+  }
+
+  .content-body li {
+    font-size: 15px;
+    line-height: 1.7;
+    color: #c8c8d8;
+    margin-bottom: 6px;
+  }
+
+  .content-body strong { color: var(--text); font-weight: 600; }
+  .content-body em { color: var(--accent); font-style: normal; font-weight: 500; }
+
+  /* ── CODE BLOCKS ── */
+  .code-block {
+    background: #0d0d15;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    margin: 20px 0;
+    overflow: hidden;
+  }
+
+  .code-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--border);
+    background: rgba(255,255,255,0.02);
+  }
+
+  .code-lang {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+  }
+
+  .copy-btn {
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text-dim);
+    cursor: pointer;
+    padding: 3px 10px;
+    font-size: 11px;
+    font-family: 'Outfit', sans-serif;
+    transition: all 0.2s;
+  }
+  .copy-btn:hover { border-color: var(--accent3); color: var(--accent3); }
+  .copy-btn.copied { border-color: var(--success); color: var(--success); }
+
+  pre {
+    padding: 20px;
+    overflow-x: auto;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 1.65;
+    color: #c8d8f0;
+  }
+
+  pre::-webkit-scrollbar { height: 4px; }
+  pre::-webkit-scrollbar-track { background: transparent; }
+  pre::-webkit-scrollbar-thumb { background: var(--border); }
+
+  /* ── TABLES ── */
+  .table-wrap {
+    margin: 20px 0;
+    overflow-x: auto;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+  }
+
+  th {
+    background: var(--surface2);
+    padding: 12px 16px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 12px;
+    letter-spacing: 0.5px;
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--border);
+  }
+
+  td {
+    padding: 12px 16px;
+    border-bottom: 1px solid rgba(42,42,58,0.5);
+    color: #c8c8d8;
+    vertical-align: top;
+  }
+
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(255,255,255,0.02); }
+
+  td code, th code {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1px 6px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--accent3);
+  }
+
+  /* ── CALLOUT BOXES ── */
+  .callout {
+    border-radius: 12px;
+    padding: 18px 20px;
+    margin: 20px 0;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+  }
+
+  .callout-matters {
+    background: rgba(232,147,90,0.06);
+    border: 1px solid rgba(232,147,90,0.2);
+  }
+
+  .callout-icon {
+    font-size: 18px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .callout-content {
+    flex: 1;
+  }
+
+  .callout-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 6px;
+  }
+
+  .callout-text {
+    font-size: 14px;
+    line-height: 1.65;
+    color: #c8c8d8;
+  }
+
+  /* ── INLINE CODE ── */
+  .content-body code {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1px 6px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12.5px;
+    color: var(--accent3);
+  }
+
+  /* ── DIVIDER ── */
+  .section-divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 40px 0;
+  }
+
+  /* ── FLOW DIAGRAM ── */
+  .flow {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    margin: 20px 0;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  .flow-step {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 14px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text);
+    white-space: nowrap;
+  }
+
+  .flow-arrow {
+    color: var(--text-dim);
+    font-size: 14px;
+    padding: 0 6px;
+  }
+
+  /* ── KEY INSIGHT ── */
+  .insight {
+    background: linear-gradient(135deg, rgba(123,110,246,0.08), rgba(78,205,196,0.05));
+    border: 1px solid rgba(123,110,246,0.2);
+    border-radius: 12px;
+    padding: 18px 20px;
+    margin: 20px 0;
+  }
+
+  .insight-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--accent2);
+    margin-bottom: 8px;
+  }
+
+  .insight-text {
+    font-size: 14px;
+    line-height: 1.65;
+    color: #c8c8d8;
+  }
+
+  /* ── SCORE BADGE ── */
+  .score-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(82,201,126,0.1);
+    border: 1px solid rgba(82,201,126,0.25);
+    border-radius: 8px;
+    padding: 4px 12px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--success);
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* ── HOME SCREEN ── */
+  #home-screen {
+    padding: 48px 64px;
+    max-width: 900px;
+    margin: 0 auto;
+    overflow-y: auto;
+    height: 100%;
+  }
+
+  .home-hero {
+    margin-bottom: 48px;
+  }
+
+  .home-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(232,147,90,0.1);
+    border: 1px solid rgba(232,147,90,0.25);
+    border-radius: 99px;
+    padding: 6px 16px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 24px;
+  }
+
+  .home-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 52px;
+    line-height: 1.1;
+    margin-bottom: 16px;
+  }
+
+  .home-title span {
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .home-desc {
+    font-size: 17px;
+    line-height: 1.7;
+    color: var(--text-muted);
+    max-width: 600px;
+  }
+
+  .module-cards {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    margin-bottom: 40px;
+  }
+
+  .module-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: left;
+  }
+
+  .module-card:hover {
+    border-color: var(--accent2);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+  }
+
+  .card-num {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+
+  .c1 .card-num { color: var(--accent); }
+  .c2 .card-num { color: var(--accent2); }
+  .c3 .card-num { color: var(--accent3); }
+  .c4 .card-num { color: var(--success); }
+
+  .card-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 8px;
+  }
+
+  .card-count {
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+
+  .card-lessons {
+    margin-top: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .card-lesson-item {
+    font-size: 12px;
+    color: var(--text-dim);
+    padding: 4px 0;
+    border-top: 1px solid rgba(42,42,58,0.5);
+  }
+
+  .card-lesson-item:first-child { border-top: none; }
+
+  /* ── ANIMATION ── */
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .fade-in {
+    animation: fadeIn 0.3s ease forwards;
+  }
+
+  /* responsive */
+  @media (max-width: 768px) {
+    #sidebar { width: 260px; min-width: 260px; }
+    #content-area, #home-screen { padding: 32px 24px; }
+    .lesson-title, .home-title { font-size: 28px; }
+    .module-cards { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<nav id="sidebar">
+  <div class="sidebar-header">
+    <div class="course-badge">Course</div>
+    <div class="sidebar-title">Building with the Claude API</div>
+    <div class="progress-bar-wrap">
+      <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+      <span class="progress-label" id="progress-label">0 / 27</span>
+    </div>
+  </div>
+
+  <div class="nav-list" id="nav-list">
+    <!-- Module 1 -->
+    <div class="module-group mod-1 open" data-module="1">
+      <div class="module-header" onclick="toggleModule(this)">
+        <div class="module-number">1</div>
+        <div class="module-label">Anthropic Overview</div>
+        <div class="module-chevron">▶</div>
+      </div>
+      <div class="lesson-list">
+        <div class="lesson-item" onclick="showLesson('m1l1')" data-id="m1l1">
+          <div class="lesson-dot"></div>Overview of Claude Models
+        </div>
+      </div>
+    </div>
+
+    <!-- Module 2 -->
+    <div class="module-group mod-2 open" data-module="2">
+      <div class="module-header" onclick="toggleModule(this)">
+        <div class="module-number">2</div>
+        <div class="module-label">Accessing Claude with the API</div>
+        <div class="module-chevron">▶</div>
+      </div>
+      <div class="lesson-list">
+        <div class="lesson-item" onclick="showLesson('m2l1')" data-id="m2l1"><div class="lesson-dot"></div>Accessing the API</div>
+        <div class="lesson-item" onclick="showLesson('m2l2')" data-id="m2l2"><div class="lesson-dot"></div>Getting an API Key</div>
+        <div class="lesson-item" onclick="showLesson('m2l3')" data-id="m2l3"><div class="lesson-dot"></div>Making a Request</div>
+        <div class="lesson-item" onclick="showLesson('m2l4')" data-id="m2l4"><div class="lesson-dot"></div>Multi-Turn Conversations</div>
+        <div class="lesson-item" onclick="showLesson('m2l5')" data-id="m2l5"><div class="lesson-dot"></div>Chat Exercise</div>
+        <div class="lesson-item" onclick="showLesson('m2l6')" data-id="m2l6"><div class="lesson-dot"></div>System Prompts</div>
+        <div class="lesson-item" onclick="showLesson('m2l7')" data-id="m2l7"><div class="lesson-dot"></div>Temperature</div>
+        <div class="lesson-item" onclick="showLesson('m2l8')" data-id="m2l8"><div class="lesson-dot"></div>Response Streaming</div>
+        <div class="lesson-item" onclick="showLesson('m2l9')" data-id="m2l9"><div class="lesson-dot"></div>Structured Data</div>
+      </div>
+    </div>
+
+    <!-- Module 3 -->
+    <div class="module-group mod-3" data-module="3">
+      <div class="module-header" onclick="toggleModule(this)">
+        <div class="module-number">3</div>
+        <div class="module-label">Prompt Evaluation</div>
+        <div class="module-chevron">▶</div>
+      </div>
+      <div class="lesson-list">
+        <div class="lesson-item" onclick="showLesson('m3l1')" data-id="m3l1"><div class="lesson-dot"></div>Prompt Evaluation</div>
+        <div class="lesson-item" onclick="showLesson('m3l2')" data-id="m3l2"><div class="lesson-dot"></div>A Typical Eval Workflow</div>
+        <div class="lesson-item" onclick="showLesson('m3l3')" data-id="m3l3"><div class="lesson-dot"></div>Generating Test Datasets</div>
+        <div class="lesson-item" onclick="showLesson('m3l4')" data-id="m3l4"><div class="lesson-dot"></div>Running the Eval</div>
+        <div class="lesson-item" onclick="showLesson('m3l5')" data-id="m3l5"><div class="lesson-dot"></div>Model-Based Grading</div>
+        <div class="lesson-item" onclick="showLesson('m3l6')" data-id="m3l6"><div class="lesson-dot"></div>Code-Based Grading</div>
+      </div>
+    </div>
+
+    <!-- Module 4 -->
+    <div class="module-group mod-4" data-module="4">
+      <div class="module-header" onclick="toggleModule(this)">
+        <div class="module-number">4</div>
+        <div class="module-label">Prompt Engineering Techniques</div>
+        <div class="module-chevron">▶</div>
+      </div>
+      <div class="lesson-list">
+        <div class="lesson-item" onclick="showLesson('m4l1')" data-id="m4l1"><div class="lesson-dot"></div>Prompt Engineering</div>
+        <div class="lesson-item" onclick="showLesson('m4l2')" data-id="m4l2"><div class="lesson-dot"></div>Being Clear and Direct</div>
+        <div class="lesson-item" onclick="showLesson('m4l3')" data-id="m4l3"><div class="lesson-dot"></div>Being Specific</div>
+        <div class="lesson-item" onclick="showLesson('m4l4')" data-id="m4l4"><div class="lesson-dot"></div>Structure with XML Tags</div>
+        <div class="lesson-item" onclick="showLesson('m4l5')" data-id="m4l5"><div class="lesson-dot"></div>Providing Examples</div>
+        <div class="lesson-item" onclick="showLesson('m4l6')" data-id="m4l6"><div class="lesson-dot"></div>Prompting Exercise</div>
+      </div>
+    </div>
+    <!-- Module 5 -->
+    <div class="module-group mod-5" data-module="5">
+      <div class="module-header" onclick="toggleModule(this)">
+        <div class="module-number">5</div>
+        <div class="module-label">Tool Use with Claude</div>
+        <div class="module-chevron">▶</div>
+      </div>
+      <div class="lesson-list">
+        <div class="lesson-item" onclick="showLesson('m5l1')" data-id="m5l1"><div class="lesson-dot"></div>Introducing Tool Use</div>
+        <div class="lesson-item" onclick="showLesson('m5l2')" data-id="m5l2"><div class="lesson-dot"></div>Project Overview</div>
+        <div class="lesson-item" onclick="showLesson('m5l3')" data-id="m5l3"><div class="lesson-dot"></div>Tool Functions</div>
+        <div class="lesson-item" onclick="showLesson('m5l4')" data-id="m5l4"><div class="lesson-dot"></div>Tool Schemas</div>
+        <div class="lesson-item" onclick="showLesson('m5l5')" data-id="m5l5"><div class="lesson-dot"></div>Handling Message Blocks</div>
+        <div class="lesson-item" onclick="showLesson('m5l6')" data-id="m5l6"><div class="lesson-dot"></div>Sending Tool Results</div>
+        <div class="lesson-item" onclick="showLesson('m5l7')" data-id="m5l7"><div class="lesson-dot"></div>Multi-Turn Conversations with Tools</div>
+        <div class="lesson-item" onclick="showLesson('m5l8')" data-id="m5l8"><div class="lesson-dot"></div>Implementing Multiple Turns</div>
+        <div class="lesson-item" onclick="showLesson('m5l9')" data-id="m5l9"><div class="lesson-dot"></div>Using Multiple Tools</div>
+        <div class="lesson-item" onclick="showLesson('m5l10')" data-id="m5l10"><div class="lesson-dot"></div>Fine-Grained Tool Calling</div>
+        <div class="lesson-item" onclick="showLesson('m5l11')" data-id="m5l11"><div class="lesson-dot"></div>The Text Edit Tool</div>
+        <div class="lesson-item" onclick="showLesson('m5l12')" data-id="m5l12"><div class="lesson-dot"></div>The Web Search Tool</div>
+      </div>
+    </div>
+
+    <!-- Module 6 -->
+    <div class="module-group mod-6" data-module="6">
+      <div class="module-header" onclick="toggleModule(this)">
+        <div class="module-number">6</div>
+        <div class="module-label">RAG and Agentic Search</div>
+        <div class="module-chevron">&#x25B6;</div>
+      </div>
+      <div class="lesson-list">
+        <div class="lesson-item" onclick="showLesson('m6l1')" data-id="m6l1"><div class="lesson-dot"></div>Introducing RAG</div>
+        <div class="lesson-item" onclick="showLesson('m6l2')" data-id="m6l2"><div class="lesson-dot"></div>Text Chunking Strategies</div>
+        <div class="lesson-item" onclick="showLesson('m6l3')" data-id="m6l3"><div class="lesson-dot"></div>Text Embeddings</div>
+        <div class="lesson-item" onclick="showLesson('m6l4')" data-id="m6l4"><div class="lesson-dot"></div>The Full RAG Flow</div>
+        <div class="lesson-item" onclick="showLesson('m6l5')" data-id="m6l5"><div class="lesson-dot"></div>Implementing the RAG Flow</div>
+        <div class="lesson-item" onclick="showLesson('m6l6')" data-id="m6l6"><div class="lesson-dot"></div>BM25 Lexical Search</div>
+        <div class="lesson-item" onclick="showLesson('m6l7')" data-id="m6l7"><div class="lesson-dot"></div>Multi-Index RAG Pipeline</div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<div id="main">
+  <div id="topbar">
+    <button id="toggle-btn" onclick="toggleSidebar()">☰ Menu</button>
+    <div class="breadcrumb" id="breadcrumb">
+      <span>Building with the Claude API</span>
+    </div>
+    <div class="nav-arrows">
+      <button class="nav-btn" id="prev-btn" onclick="navigate(-1)" disabled>← Prev</button>
+      <button class="nav-btn" id="next-btn" onclick="navigate(1)">Next →</button>
+    </div>
+  </div>
+
+  <!-- HOME SCREEN -->
+  <div id="home-screen">
+    <div class="home-hero fade-in">
+      <div class="home-badge">📡 Anthropic Skilljar</div>
+      <h1 class="home-title">Building with the<br><span>Claude API</span></h1>
+      <p class="home-desc">A comprehensive course on building applications and workflows using the Claude API — from your first request to prompt evaluation and engineering techniques.</p>
+    </div>
+
+    <div class="module-cards fade-in">
+      <div class="module-card c1" onclick="showLesson('m1l1')">
+        <div class="card-num">Module 1</div>
+        <div class="card-title">Anthropic Overview</div>
+        <div class="card-count">1 lesson</div>
+        <div class="card-lessons">
+          <div class="card-lesson-item">Overview of Claude Models</div>
+        </div>
+      </div>
+      <div class="module-card c2" onclick="showLesson('m2l1')">
+        <div class="card-num">Module 2</div>
+        <div class="card-title">Accessing Claude with the API</div>
+        <div class="card-count">9 lessons</div>
+        <div class="card-lessons">
+          <div class="card-lesson-item">Accessing the API · Getting an API Key</div>
+          <div class="card-lesson-item">Making a Request · Multi-Turn Conversations</div>
+          <div class="card-lesson-item">System Prompts · Temperature · Streaming</div>
+        </div>
+      </div>
+      <div class="module-card c3" onclick="showLesson('m3l1')">
+        <div class="card-num">Module 3</div>
+        <div class="card-title">Prompt Evaluation</div>
+        <div class="card-count">6 lessons</div>
+        <div class="card-lessons">
+          <div class="card-lesson-item">Eval Workflow · Test Datasets</div>
+          <div class="card-lesson-item">Running Evals · Model Grading</div>
+          <div class="card-lesson-item">Code-Based Grading</div>
+        </div>
+      </div>
+      <div class="module-card c4" onclick="showLesson('m4l1')">
+        <div class="card-num">Module 4</div>
+        <div class="card-title">Prompt Engineering Techniques</div>
+        <div class="card-count">6 lessons</div>
+        <div class="card-lessons">
+          <div class="card-lesson-item">Prompt Engineering · Being Clear and Direct</div>
+          <div class="card-lesson-item">Being Specific · XML Tags</div>
+          <div class="card-lesson-item">Providing Examples · Prompting Exercise</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="module-cards fade-in" style="grid-template-columns: repeat(2, 1fr); margin-top:0">
+      <div class="module-card" style="border-color: rgba(100,180,255,0.25); cursor:pointer" onclick="showLesson('m6l1')">
+        <div class="card-num" style="color:#64b4ff">Module 6</div>
+        <div class="card-title">RAG and Agentic Search</div>
+        <div class="card-count">7 lessons (in progress)</div>
+        <div class="card-lessons">
+          <div class="card-lesson-item">Introducing RAG &#x00b7; Text Chunking Strategies</div>
+        </div>
+      </div>
+      <div class="module-card" style="border-color: rgba(240,100,120,0.25); cursor:pointer" onclick="showLesson('m5l1')">
+        <div class="card-num" style="color:#f06478">Module 5</div>
+        <div class="card-title">Tool Use with Claude</div>
+        <div class="card-count">12 lessons</div>
+        <div class="card-lessons">
+          <div class="card-lesson-item">Introducing Tool Use · Project Overview · Tool Functions</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LESSON CONTENT AREA (hidden initially) -->
+  <div id="content-area" style="display:none"></div>
+</div>
+
+<script>
+// ── LESSON DATA ──
+const lessons = {
+
+  m1l1: {
+    module: 1, title: 'Overview of Claude Models',
+    tag: 'Module 1 · Anthropic Overview', tagClass: 'tag-m1',
+    subtitle: 'Choosing the right model for the right task is a core architectural decision — not an afterthought.',
+    content: `
+<div class="content-body">
+<h3>The Three Model Families</h3>
+<p>Claude comes in three model families, each optimized for a different priority. Picking the right one reduces cost and latency without sacrificing quality.</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Model</th><th>Best For</th><th>Trade-off</th></tr></thead>
+<tbody>
+<tr><td><strong>Opus</strong></td><td>Complex, multi-step tasks requiring deep reasoning and planning</td><td>Higher cost and latency</td></tr>
+<tr><td><strong>Sonnet</strong></td><td>Most practical use cases — balanced intelligence, speed, and cost</td><td>Best all-rounder, strong coding</td></tr>
+<tr><td><strong>Haiku</strong></td><td>Real-time interactions and high-volume processing</td><td>No reasoning; fastest and cheapest</td></tr>
+</tbody>
+</table></div>
+
+<h3>Selection Framework</h3>
+<ul>
+<li>Intelligence is the priority → <strong>Opus</strong></li>
+<li>Speed is the priority → <strong>Haiku</strong></li>
+<li>Balanced requirements → <strong>Sonnet</strong></li>
+</ul>
+
+<h3>Key Insight — Mix Models in One App</h3>
+<p>You don't have to pick one model for your entire application. A common production pattern uses different models for different tasks:</p>
+<ul>
+<li>Use <strong>Haiku</strong> to classify user intent (fast, cheap, simple task)</li>
+<li>Use <strong>Sonnet</strong> to draft a response (moderate complexity)</li>
+<li>Use <strong>Opus</strong> for a final quality review step (high reasoning required)</li>
+</ul>
+
+<h3>Shared Capabilities</h3>
+<p>All three models support text generation, coding, and image analysis. The difference is in how well and how fast they do it — not what they can do.</p>
+
+<div class="callout callout-matters">
+<div class="callout-icon">💡</div>
+<div class="callout-content">
+<div class="callout-label">Why This Matters</div>
+<div class="callout-text">Defaulting to Opus for everything is wasteful. Defaulting to Haiku for everything misses accuracy. Treat model selection as an architectural decision made per task, not per application.</div>
+</div>
+</div>
+</div>`
+  },
+
+  m2l1: {
+    module: 2, title: 'Accessing the API',
+    tag: 'Module 2 · Lesson 1', tagClass: 'tag-m2',
+    subtitle: 'Every API call follows the same 5-step flow from user input to displayed response.',
+    content: `
+<div class="content-body">
+<h3>The 5-Step API Flow</h3>
+<div class="flow">
+  <div class="flow-step">Client</div><div class="flow-arrow">→</div>
+  <div class="flow-step">Your Server</div><div class="flow-arrow">→</div>
+  <div class="flow-step">Anthropic API</div><div class="flow-arrow">→</div>
+  <div class="flow-step">Text Generation</div><div class="flow-arrow">→</div>
+  <div class="flow-step">Response</div>
+</div>
+
+<ol>
+<li><strong>Client sends text to your server</strong> — Never call the Anthropic API directly from client-side code. Keep your API key on the server only.</li>
+<li><strong>Server calls the Anthropic API</strong> — Using an SDK (Python, TypeScript, JS, Go, Ruby) or plain HTTP with four required params: API key, model name, messages list, and <code>max_tokens</code>.</li>
+<li><strong>Text generation happens in 4 stages:</strong>
+  <ul>
+    <li><em>Tokenization</em> — Input is broken into tokens (words, word parts, symbols)</li>
+    <li><em>Embedding</em> — Each token becomes a number list representing its possible meanings</li>
+    <li><em>Contextualization</em> — Embeddings adjust based on neighboring tokens</li>
+    <li><em>Generation</em> — Model assigns probabilities to next tokens, selects one, repeats</li>
+  </ul>
+</li>
+<li><strong>Generation stops</strong> when <code>max_tokens</code> is reached or an end-of-sequence token appears.</li>
+<li><strong>API returns the response</strong> — Generated text, token usage counts, and a <code>stop_reason</code>.</li>
+</ol>
+
+<h3>Key Terms</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>Term</th><th>What It Means</th></tr></thead>
+<tbody>
+<tr><td><code>token</code></td><td>A chunk of text — a word, part of a word, or symbol</td></tr>
+<tr><td><code>embedding</code></td><td>A number list representing a token's meaning</td></tr>
+<tr><td><code>contextualization</code></td><td>Refining meaning based on surrounding tokens</td></tr>
+<tr><td><code>max_tokens</code></td><td>Upper limit on generation length — not a target</td></tr>
+<tr><td><code>stop_reason</code></td><td>Why the model stopped (hit limit, natural end, etc.)</td></tr>
+</tbody>
+</table></div>
+
+<div class="callout callout-matters">
+<div class="callout-icon">💡</div>
+<div class="callout-content">
+<div class="callout-label">Why This Matters</div>
+<div class="callout-text">Knowing this flow explains why <code>max_tokens</code> is a safety cap (not a length target), why API keys must stay server-side, and why the same prompt can produce slightly different outputs each time.</div>
+</div>
+</div>
+</div>`
+  },
+
+  m2l2: {
+    module: 2, title: 'Getting an API Key',
+    tag: 'Module 2 · Lesson 2', tagClass: 'tag-m2',
+    subtitle: 'The key is shown only once. Store it immediately.',
+    content: `
+<div class="content-body">
+<h3>Step-by-Step</h3>
+<ol>
+<li><strong>Create an account</strong> — Go to <code>console.anthropic.com</code> and sign up with email or Google SSO.</li>
+<li><strong>Set up billing</strong> — The API uses a prepaid credit system. Without credits, your key won't process requests.</li>
+<li><strong>Generate a key</strong> — Navigate to <strong>API Keys</strong> in the left sidebar → click <strong>Create Key</strong> → give it a descriptive name → click <strong>Create</strong>.</li>
+<li><strong>Copy and store it immediately</strong> — The key is shown only once. You cannot retrieve it again.</li>
+</ol>
+
+<h3>Storing Your Key Safely</h3>
+<p>Never hardcode the key in source code or commit it to version control. Use environment variables:</p>
+
+<div class="code-block">
+<div class="code-header"><span class="code-lang">bash</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+<pre># .env file — add this to .gitignore
+ANTHROPIC_API_KEY="sk-ant-..."</pre>
+</div>
+
+<div class="code-block">
+<div class="code-header"><span class="code-lang">python</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+<pre>from dotenv import load_dotenv
+import os
+
+load_dotenv()
+api_key = os.getenv("ANTHROPIC_API_KEY")</pre>
+</div>
+
+<div class="callout callout-matters">
+<div class="callout-icon">⚠️</div>
+<div class="callout-content">
+<div class="callout-label">Security Warning</div>
+<div class="callout-text">Your API key is tied to your billing account. If exposed publicly (e.g., committed to GitHub), anyone can use it and rack up charges. Treat it like a password — store in <code>.env</code>, add <code>.env</code> to <code>.gitignore</code>, never send from client-side code.</div>
+</div>
+</div>
+</div>`
+  },
+
+  m2l3: {
+    module: 2, title: 'Making a Request',
+    tag: 'Module 2 · Lesson 3', tagClass: 'tag-m2',
+    subtitle: 'Every API call needs exactly three required parameters: model, max_tokens, and messages.',
+    content: `
+<div class="content-body">
+<h3>Setup</h3>
+<div class="code-block">
+<div class="code-header"><span class="code-lang">python</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+<pre>pip install anthropic python-dotenv
+
+from dotenv import load_dotenv
+import anthropic, os
+
+load_dotenv()
+client = anthropic.Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
+model = "claude-sonnet-4-6"</pre>
+</div>
+
+<h3>Making the Request</h3>
+<div class="code-block">
+<div class="code-header"><span class="code-lang">python</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+<pre>message = client.messages.create(
+    model=model,
+    max_tokens=1000,
+    messages=[
+        {"role": "user", "content": "Explain Temperature"}
+    ]
+)
+
+print(message.content[0].text)  # just the text</pre>
+</div>
+
+<h3>Same Request via cURL</h3>
+<div class="code-block">
+<div class="code-header"><span class="code-lang">bash</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+<pre>curl --location 'https://api.anthropic.com/v1/messages' \
+--header 'x-api-key: &lt;API_KEY&gt;' \
+--header 'anthropic-version: 2023-06-01' \
+--header 'content-type: application/json' \
+--data '{
+    "model": "claude-sonnet-4-6",
+    "max_tokens": 1000,
+    "messages": [{"role": "user", "content": "Explain Temperature"}]
+}'</pre>
+</div>
+
+<h3>Required Parameters</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>Parameter</th><th>What It Is</th></tr></thead>
+<tbody>
+<tr><td><code>model</code></td><td>Which Claude model to use</td></tr>
+<tr><td><code>max_tokens</code></td><td>Upper safety limit for response length — not a target</td></tr>
+<tr><td><code>messages</code></td><td>List of conversation turns with <code>role</code> and <code>content</code></td></tr>
+</tbody>
+</table></div>
+
+<div class="callout callout-matters">
+<div class="callout-icon">💡</div>
+<div class="callout-content">
+<div class="callout-label">Why This Matters</div>
+<div class="callout-text">The three-parameter structure is the foundation of every API call you'll make. Everything else — tools, system prompts, temperature — builds on top of this core pattern.</div>
+</div>
+</div>
+</div>`
+  },
+
+  m2l4: {
+    module: 2, title: 'Multi-Turn Conversations',
+    tag: 'Module 2 · Lesson 4', tagClass: 'tag-m2',
+    subtitle: 'The API has no memory. You must send the full conversation history on every request.',
+    content: `
+<div class="content-body">
+<h3>The Core Problem</h3>
+<p>The Anthropic API stores nothing between requests. Each request is completely stateless.</p>
+<div class="code-block">
+<div class="code-header"><span class="code-lang">example</span></div>
+<pre>Request 1: "My name is Swapnil"  → Claude: "Nice to meet you!"
+Request 2: "What's my name?"     → Claude: "I don't know."  ❌</pre>
+</div>
+
+<h3>The Solution — Send Full History Every Time</h3>
+<div class="code-block">
+<div class="code-header"><span class="code-lang">python</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+<pre>messages = []
+
+# Turn 1
+messages.append({"role": "user", "content": "My name is Swapnil"})
+response = client.messages.create(model=model, max_tokens=1000, messages=messages)
+messages.append({"role": "assistant", "content": response.content[0].text})
+
+# Turn 2
+messages.append({"role": "user", "content": "What's my name?"})
+response = client.messages.create(model=model, max_tokens=1000, messages=messages)
+# → "Your name is Swapnil" ✓</pre>
+</div>
+
+<h3>Helper Functions Pattern</h3>
+<div class="code-block">
+<div class="code-header"><span class="code-lang">python</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+<pre>def add_user_message(messages, text):
+    messages.append({"role": "user", "content": text})
+
+def add_assistant_message(messages, text):
+    messages.append({"role": "assistant", "content": text})
+
+def chat(messages):
+    response = client.messages.create(
+        model=model, max_tokens=1000, messages=messages
+    )
+    return response.content[0].text</pre>
+</div>
+
+<div class="insight">
+<div class="insight-label">Key Rule</div>
+<div class="insight-text">Roles must strictly alternate: <code>user → assistant → user → assistant...</code>. Never two of the same role in a row.</div>
+</div>
+
+<div class="callout callout-matters">
+<div class="callout-icon">💡</div>
+<div class="callout-content">
+<div class="callout-label">Why This Matters</div>
+<div class="callout-text">Every chatbot or conversational app built on the API requires this pattern. Without it, each message is treated as a fresh conversation with no prior context.</div>
+</div>
+</div>
+</div>`
+  },
+
+  m2l5: {
+    module: 2, title: 'Chat Exercise (Practical)',
+    tag: 'Module 2 · Lesson 5', tagClass: 'tag-m2',
+    subtitle: 'A frontend chatbot that connects to the Claude API and maintains multi-turn conversations.',
+    content: `
+<div class="content-body">
+<h3>Project Location</h3>
+<p><code>/Users/swapnilla/Learning/Claude_chatbot</code></p>
+
+<h3>What It Does</h3>
+<ul>
+<li>User types a message in the browser</li>
+<li>Frontend sends it to a backend server</li>
+<li>Server appends it to conversation history and calls the Claude API</li>
+<li>Claude's response is appended to history and returned to the frontend</li>
+<li>User sees the reply — context is maintained across turns</li>
+</ul>
+
+<h3>Architecture — Key Steps</h3>
+<ol>
+<li><strong>Backend server</strong> (Flask/FastAPI/Node) — holds the <code>messages</code> list, exposes a <code>POST /chat</code> endpoint</li>
+<li><strong>Claude API call</strong> — appends user message → calls <code>client.messages.create()</code> → appends assistant reply → returns to frontend</li>
+<li><strong>Frontend</strong> (HTML/JS or React) — input box + send button, calls <code>POST /chat</code>, displays response</li>
+<li><strong>State management</strong> — backend tracks <code>messages</code> list across turns</li>
+</ol>
+
+<div class="code-block">
+<div class="code-header"><span class="code-lang">python</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+<pre># Backend endpoint pattern
+@app.post("/chat")
+def chat_endpoint():
+    user_message = request.json.get("message")
+    temperature = float(request.json.get("temperature", 0.7))
+    
+    messages.append({"role": "user", "content": user_message})
+    
+    response = client.messages.create(
+        model=model,
+        max_tokens=1000,
+        temperature=temperature,
+        messages=messages
+    )
+    
+    reply = response.content[0].text
+    messages.append({"role": "assistant", "content": reply})
+    return {"reply": reply}</pre>
+</div>
+
+<div class="callout callout-matters">
+<div class="callout-icon">💡</div>
+<div class="callout-content">
+<div class="callout-label">Why This Matters</div>
+<div class="callout-text">This exercise ties together API access, key management, request structure, and multi-turn history into a working application — the foundation pattern for any real-world chat product built on Claude.</div>
+</div>
+</div>
+</div>`
+  },
+
+  m2l6: {
+    module: 2, title: 'System Prompts',
+    tag: 'Module 2 · Lesson 6', tagClass: 'tag-m2',
+    subtitle: 'System prompts control how Claude responds — not what it responds to.',
+    content: `
+<div class="content-body">
+<h3>What It Is</h3>
+<p>A system prompt is a plain string passed separately from the <code>messages</code> list using the <code>system</code> keyword argument. It sets standing instructions Claude follows throughout the entire session.</p>
+
+<h3>Implementation</h3>
+<div class="code-block">
+<div class="code-header"><span class="code-lang">python</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+<pre>response = client.messages.create(
+    model=model,
+    max_tokens=1000,
+    system="You are a patient math tutor. When students ask for answers, \
+give hints and guide their thinking instead of solving directly.",
+    messages=[
+        {"role": "user", "content": "What is 12 × 8?"}
+    ]
+)</pre>
+</div>
+
+<h3>Before vs After</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>Without System Prompt</th><th>With System Prompt (Math Tutor)</th></tr></thead>
+<tbody>
+<tr><td>"12 × 8 = 96"</td><td>"What do you get when you break 12 into 10 + 2 and multiply each by 8?"</td></tr>
+</tbody>
+</table></div>
+
+<h3>System Prompt Structure</h3>
+<div class="code-block">
+<div class="code-header"><span class="code-lang">pattern</span></div>
+<pre>Line 1: Assign the role   → "You are a [role]."
+Line 2+: Behavioral rules → specific instructions on how to respond</pre>
+</div>
+
+<h3>Handling None Safely</h3>
+<div class="code-block">
+<div class="code-header"><span class="code-lang">python</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+<pre>def chat(messages, system_prompt=None):
+    params = {"model": model, "max_tokens": 1000, "messages": messages}
+    if system_prompt:
+        params["system"] = system_prompt
+    return client.messages.create(**params)</pre>
+</div>
+
+<div class="callout callout-matters">
+<div class="callout-icon">💡</div>
+<div class="callout-content">
+<div class="callout-label">Why This Matters</div>
+<div class="callout-text">Every production Claude app needs a system prompt. Without one, Claude defaults to a general-purpose assistant. With one, you get a tutor, a support agent, a code reviewer — consistently, across every turn of the conversation.</div>
+</div>
+</div>
+</div>`
+  },
+
+  m2l7: {
+    module: 2, title: 'Temperature',
+    tag: 'Module 2 · Lesson 7', tagClass: 'tag-m2',
+    subtitle: 'A dial from 0 to 1 that controls how random or creative Claude\'s responses are.',
+    content: `
+<div class="content-body">
+<h3>How It Works</h3>
+<p>Every time Claude generates the next word, it assigns probabilities to all possible options. Temperature adjusts those probabilities before Claude makes its choice.</p>
+<ul>
+<li><strong>Temperature 0</strong> → always picks the highest probability token → same output every time</li>
+<li><strong>Temperature 1</strong> → lower probability tokens get more of a chance → more varied, surprising outputs</li>
+</ul>
+
+<h3>When to Use What</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>Task</th><th>Temperature</th><th>Why</th></tr></thead>
+<tbody>
+<tr><td>Data extraction, JSON parsing</td><td>Near 0</td><td>Need consistency</td></tr>
+<tr><td>Factual Q&A, code generation</td><td>0.1–0.3</td><td>Accuracy over creativity</td></tr>
+<tr><td>General conversation</td><td>0.5–0.7</td><td>Balance of quality and variety</td></tr>
+<tr><td>Brainstorming, marketing copy</td><td>0.8–1.0</td><td>Want fresh, unexpected ideas</td></tr>
+<tr><td>Creative writing</td><td>Near 1</td><td>Maximum creativity</td></tr>
+</tbody>
+</table></div>
+
+<h3>Implementation</h3>
+<div class="code-block">
+<div class="code-header"><span class="code-lang">python</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+<pre># Low temperature — consistent, factual
+response = client.messages.create(
+    model=model, max_tokens=1000,
+    temperature=0.1,
+    messages=[{"role": "user", "content": "Extract the date from: ..."}]
+)
+
+# High temperature — creative, varied
+response = client.messages.create(
+    model=model, max_tokens=1000,
+    temperature=0.9,
+    messages=[{"role": "user", "content": "Give me 5 taglines for a coffee brand"}]
+)</pre>
+</div>
+
+<div class="insight">
+<div class="insight-label">Important</div>
+<div class="insight-text">Higher temperature increases the <em>chance</em> of variation — it doesn't guarantee a completely different output every time. It's probabilistic, not a toggle.</div>
+</div>
+
+<div class="callout callout-matters">
+<div class="callout-icon">💡</div>
+<div class="callout-content">
+<div class="callout-label">Why This Matters</div>
+<div class="callout-text">High temperature on factual tasks gives inconsistent answers. Low temperature on creative tasks gives boring, repetitive ones. Match the temperature to what you're actually asking Claude to do.</div>
+</div>
+</div>
+</div>`
+  },
+
+  m2l8: {
+    module: 2, title: 'Response Streaming',
+    tag: 'Module 2 · Lesson 8', tagClass: 'tag-m2',
+    subtitle: 'Display responses word-by-word as they\'re generated instead of waiting 10–30 seconds.',
+    content: `
+<div class="content-body">
+<h3>The Problem Solved</h3>
+<p>Without streaming, Claude generates the full response first and sends it all at once — which can take 10–30 seconds. Users just see a spinner and wait.</p>
+<div class="code-block">
+<div class="code-header"><span class="code-lang">comparison</span></div>
+<pre>Without streaming:  [user waits 15s] → full response appears at once
+With streaming:     [user sees text in &lt;1s] → words appear as generated</pre>
+</div>
+
+<h3>Event Types</h3>
+<ul>
+<li><code>message_start</code> — acknowledgment, no text yet</li>
+<li><code>content_block_start</code> — generation beginning</li>
+<li><strong><code>content_block_delta</code></strong> — <strong>actual text chunks</strong> (this is what you display)</li>
+<li><code>content_block_stop / message_stop</code> — done</li>
+</ul>
+
+<h3>Implementation</h3>
+<div class="code-block">
+<div class="code-header"><span class="code-lang">python</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+<pre>with client.messages.stream(
+    model=model, max_tokens=1000, messages=messages
+) as stream:
+    for text in stream.text_stream:
+        print(text, end="", flush=True)  # print each chunk as it arrives
+
+    # Get full assembled message for saving to DB
+    final_message = stream.get_final_message()</pre>
+</div>
+
+<div class="insight">
+<div class="insight-label">Why get_final_message()?</div>
+<div class="insight-text">Streaming gives you chunks — not a clean final response object. Call <code>get_final_message()</code> after the stream ends to get the same response format as a non-streaming call. Use this for saving conversation history.</div>
+</div>
+
+<div class="callout callout-matters">
+<div class="callout-icon">💡</div>
+<div class="callout-content">
+<div class="callout-label">Why This Matters</div>
+<div class="callout-text">Streaming is the difference between a chatbot that feels fast and one that feels broken. For any production app, streaming is essentially non-negotiable for good UX.</div>
+</div>
+</div>
+</div>`
+  },
+
+  m2l9: {
+    module: 2, title: 'Structured Data',
+    tag: 'Module 2 · Lesson 9', tagClass: 'tag-m2',
+    subtitle: 'Use prefill + stop sequences to get raw JSON, code, or regex without Claude\'s wrapping text.',
+    content: `
+<div class="content-body">
+<h3>The Problem</h3>
+<p>By default, Claude wraps everything in explanatory text. Great for conversation — terrible when you need raw parseable output.</p>
+<div class="code-block">
+<div class="code-header"><span class="code-lang">problem</span></div>
+<pre>You ask: "Give me a JSON list of 3 fruits"
+
+Claude gives:
+"Sure! Here's a JSON list:
+\`\`\`json
+["apple", "banana", "mango"]
+\`\`\`
+Let me know if you need more!"
+
+You want: ["apple", "banana", "mango"]</pre>
+</div>
+
+<h3>The Solution — Prefill + Stop Sequence</h3>
+<div class="code-block">
+<div class="code-header"><span class="code-lang">python</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+<pre>messages = [
+    {"role": "user", "content": "Give me a JSON list of 3 fruits"},
+    {"role": "assistant", "content": "\`\`\`json"}  # Claude continues from here
+]
+
+response = client.messages.create(
+    model=model, max_tokens=1000,
+    messages=messages,
+    stop_sequences=["\`\`\`"]  # stop when closing delimiter appears
+)
+
+raw_json = response.content[0].text
+# → \n["apple", "banana", "mango"]\n</pre>
+</div>
+
+<h3>Works for Any Structured Format</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>What you want</th><th>Prefill</th><th>Stop sequence</th></tr></thead>
+<tbody>
+<tr><td>JSON</td><td><code>\`\`\`json</code></td><td><code>\`\`\`</code></td></tr>
+<tr><td>Python code</td><td><code>\`\`\`python</code></td><td><code>\`\`\`</code></td></tr>
+<tr><td>Regex</td><td><code>/</code></td><td><code>/</code></td></tr>
+<tr><td>Raw list</td><td><code>- </code></td><td><code>\n\n</code></td></tr>
+</tbody>
+</table></div>
+
+<div class="callout callout-matters">
+<div class="callout-icon">💡</div>
+<div class="callout-content">
+<div class="callout-label">Why This Matters</div>
+<div class="callout-text">Any time you're building a pipeline that uses Claude's output programmatically — feeding it into another system, saving it to a DB, parsing it in code — you need clean output. Prefill + stop sequence is the simplest way to get exactly that.</div>
+</div>
+</div>
+</div>`
+  },
+
+  m3l1: {
+    module: 3, title: 'Prompt Evaluation',
+    tag: 'Module 3 · Lesson 1', tagClass: 'tag-m3',
+    subtitle: 'Automated testing of prompts with objective metrics — the difference between guessing and knowing.',
+    content: `
+<div class="content-body">
+<h3>The Three Paths</h3>
+<ul>
+<li>❌ <strong>Path 1:</strong> Write prompt → test once → deploy → discover issues in production</li>
+<li>❌ <strong>Path 2:</strong> Write prompt → test manually with a few custom inputs → ship</li>
+<li>✅ <strong>Path 3:</strong> Write prompt → run through evaluation pipeline → get objective score → iterate</li>
+</ul>
+
+<h3>What Prompt Evaluation Is</h3>
+<p>It's automated testing for prompts. You create a dataset of test inputs, run each one through your prompt, grade the outputs with a scoring system, and get a single number that tells you how well your prompt performs across the full dataset.</p>
+<p>This lets you compare <code>prompt_v1</code> vs <code>prompt_v2</code> objectively — not based on gut feel.</p>
+
+<h3>The Eval Pipeline</h3>
+<div class="flow">
+  <div class="flow-step">Write prompt</div><div class="flow-arrow">→</div>
+  <div class="flow-step">Create dataset</div><div class="flow-arrow">→</div>
+  <div class="flow-step">Run prompts</div><div class="flow-arrow">→</div>
+  <div class="flow-step">Grade outputs</div><div class="flow-arrow">→</div>
+  <div class="flow-step">Score</div><div class="flow-arrow">→</div>
+  <div class="flow-step">Iterate</div>
+</div>
+
+<div class="callout callout-matters">
+<div class="callout-icon">💡</div>
+<div class="callout-content">
+<div class="callout-label">Why This Matters</div>
+<div class="callout-text">Prompt engineering without evaluation is guesswork. Evaluation turns it into a measurable, improvable process — just like unit tests make code quality measurable. You can't improve what you can't measure.</div>
+</div>
+</div>
+</div>`
+  },
+
+  m3l2: {
+    module: 3, title: 'A Typical Eval Workflow',
+    tag: 'Module 3 · Lesson 2', tagClass: 'tag-m3',
+    subtitle: 'A 6-step loop that repeats until your prompt performs well enough.',
+    content: `
+<div class="content-body">
+<h3>The 6 Steps</h3>
+<ol>
+<li><strong>Write initial prompt draft</strong> — your baseline to improve from</li>
+<li><strong>Create evaluation dataset</strong> — 3 to thousands of test inputs, hand-written or LLM-generated</li>
+<li><strong>Generate prompt variations</strong> — slot each test case into your prompt template</li>
+<li><strong>Get LLM responses</strong> — run each variation through Claude and collect outputs</li>
+<li><strong>Grade responses</strong> — score each output 1–10, average for overall performance</li>
+<li><strong>Iterate</strong> — change something in the prompt, re-run, compare scores</li>
+</ol>
+
+<h3>Score Progression Example</h3>
+<div class="code-block">
+<div class="code-header"><span class="code-lang">example</span></div>
+<pre>Prompt v1 average score:  2.32
+Prompt v2 average score:  5.14
+Prompt v3 average score:  7.86</pre>
+</div>
+
+<h3>The Full Loop</h3>
+<div class="code-block">
+<div class="code-header"><span class="code-lang">logic</span></div>
+<pre>Write prompt
+    ↓
+Run against dataset → grade all outputs → get average score
+    ↓
+Is score good enough? → YES → Ship
+    ↓ NO
+Modify prompt → repeat</pre>
+</div>
+
+<div class="insight">
+<div class="insight-label">Key Insight</div>
+<div class="insight-text">The score itself isn't the goal — the <em>comparison between versions</em> is what drives improvement. Use Haiku for running evals to keep it fast (~31 seconds) and cheap.</div>
+</div>
+
+<div class="callout callout-matters">
+<div class="callout-icon">💡</div>
+<div class="callout-content">
+<div class="callout-label">Why This Matters</div>
+<div class="callout-text">This gives you an objective signal to optimise against instead of relying on intuition. The loop turns "my prompt sort of works" into "my prompt consistently works across diverse inputs."</div>
+</div>
+</div>
+</div>`
+  },
+
+  m3l3: {
+    module: 3, title: 'Generating Test Datasets',
+    tag: 'Module 3 · Lesson 3', tagClass: 'tag-m3',
+    subtitle: 'A dataset is just a list of realistic inputs. Use Claude (Haiku) to generate it automatically.',
+    content: `
+<div class="content-body">
+<h3>Two Approaches</h3>
+<ul>
+<li><strong>Manual</strong> — hand-write test cases. Good for small datasets. Slow to scale.</li>
+<li><strong>Automated with Claude</strong> — use Haiku (fast + cheap) to generate a batch. Combine with the structured data pattern for clean JSON output.</li>
+</ul>
+
+<h3>Automated Generation</h3>
+<div class="code-block">
+<div class="code-header"><span class="code-lang">python</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+<pre>def generate_dataset():
+    prompt = """Generate 10 diverse test tasks for an AWS code assistant.
+Each task should require Python code, JSON config, or regex as output.
+Return as JSON array with objects containing 'task' and 'format' fields."""
+
+    messages = [
+        {"role": "user", "content": prompt},
+        {"role": "assistant", "content": "\`\`\`json"}  # prefill for clean output
+    ]
+
+    response = client.messages.create(
+        model="claude-haiku-4-5",
+        max_tokens=2000,
+        messages=messages,
+        stop_sequences=["\`\`\`"]
+    )
+
+    dataset = json.loads(response.content[0].text.strip())
+
+    with open("dataset.json", "w") as f:
+        json.dump(dataset, f, indent=2)
+
+    return dataset</pre>
+</div>
+
+<h3>Dataset Structure</h3>
+<div class="code-block">
+<div class="code-header"><span class="code-lang">json</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+<pre>[
+  {"task": "Write a Python script to list all S3 buckets", "format": "Python"},
+  {"task": "Create a JSON config for a Lambda with 512MB memory", "format": "JSON"},
+  {"task": "Write a regex to match AWS ARN format", "format": "RegEx"}
+]</pre>
+</div>
+
+<div class="insight">
+<div class="insight-label">The format field</div>
+<div class="insight-text">Include a <code>format</code> field so the grader knows which validator to run: Python → AST check, JSON → parse check, RegEx → compile check. Save to a file so the same dataset is reused across prompt versions for fair comparison.</div>
+</div>
+
+<div class="callout callout-matters">
+<div class="callout-icon">💡</div>
+<div class="callout-content">
+<div class="callout-label">Why This Matters</div>
+<div class="callout-text">A dataset with 3 similar inputs gives a fragile score. 20+ diverse inputs — edge cases, different phrasings, different output types — gives a score you can actually trust and improve against.</div>
+</div>
+</div>
+</div>`
+  },
+
+  m3l4: {
+    module: 3, title: 'Running the Eval',
+    tag: 'Module 3 · Lesson 4', tagClass: 'tag-m3',
+    subtitle: 'Three functions: merge, run, grade. That\'s the entire eval pipeline.',
+    content: `
+<div class="content-body">
+<h3>Three Core Functions</h3>
+<div class="code-block">
+<div class="code-header"><span class="code-lang">python</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+<pre>def run_prompt(test_case, prompt_template):
+    """Merge test case into prompt and get Claude's output"""
+    prompt = prompt_template.replace("{task}", test_case["task"])
+    return chat(prompt)
+
+def run_test_case(test_case, prompt_template):
+    """Run one test case end-to-end"""
+    output = run_prompt(test_case, prompt_template)
+    score = grade(output, test_case)
+    return {"test_case": test_case, "output": output, "score": score}
+
+def run_eval(dataset, prompt_template):
+    """Loop through entire dataset"""
+    results = [run_test_case(tc, prompt_template) for tc in dataset]
+    avg = sum(r["score"] for r in results) / len(results)
+    print(f"Average score: {avg:.2f}")
+    return results</pre>
+</div>
+
+<h3>Basic v1 Prompt (Baseline)</h3>
+<div class="code-block">
+<div class="code-header"><span class="code-lang">template</span></div>
+<pre>Please solve the following task: {task}</pre>
+</div>
+
+<p>This intentionally minimal prompt scores around <span class="score-badge">2–3 / 10</span>. That's your baseline to beat.</p>
+
+<h3>Practical Notes</h3>
+<ul>
+<li><strong>Runtime:</strong> ~31 seconds for a full dataset run with Haiku</li>
+<li><strong>Scoring at this stage:</strong> Start with a hardcoded <code>score=10</code> to get the pipeline running first</li>
+<li><strong>Eval pipeline core:</strong> dataset + prompt + LLM + grader — minimal code, high value</li>
+</ul>
+
+<div class="callout callout-matters">
+<div class="callout-icon">💡</div>
+<div class="callout-content">
+<div class="callout-label">Why This Matters</div>
+<div class="callout-text">Running the eval turns your dataset into an actual score. Until you run it, you have ingredients but no measurement. Now you have a number to beat in the next iteration.</div>
+</div>
+</div>
+</div>`
+  },
+
+  m3l5: {
+    module: 3, title: 'Model-Based Grading',
+    tag: 'Module 3 · Lesson 5', tagClass: 'tag-m3',
+    subtitle: 'Use a second Claude call to evaluate outputs and return a numeric score.',
+    content: `
+<div class="content-body">
+<h3>Three Types of Graders</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>Type</th><th>How it works</th><th>Best for</th></tr></thead>
+<tbody>
+<tr><td><strong>Code grader</strong></td><td>Programmatic checks — syntax validation, length</td><td>Code, JSON, regex outputs</td></tr>
+<tr><td><strong>Model grader</strong></td><td>Another API call to grade the output</td><td>Quality, tone, instruction-following</td></tr>
+<tr><td><strong>Human grader</strong></td><td>A person reviews each output</td><td>Highest accuracy, but slow and tedious</td></tr>
+</tbody>
+</table></div>
+
+<h3>Model Grader Implementation</h3>
+<div class="code-block">
+<div class="code-header"><span class="code-lang">python</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+<pre>def grade_with_model(output, test_case):
+    grader_prompt = f"""Evaluate this AI assistant response.
+
+Task: {test_case['task']}
+Output: {output}
+
+Provide JSON with:
+- strengths: what it did well
+- weaknesses: what could improve
+- reasoning: explanation
+- score: integer 1-10"""
+
+    messages = [
+        {"role": "user", "content": grader_prompt},
+        {"role": "assistant", "content": "\`\`\`json"}
+    ]
+
+    response = client.messages.create(
+        model="claude-haiku-4-5", max_tokens=500,
+        messages=messages, stop_sequences=["\`\`\`"]
+    )
+
+    result = json.loads(response.content[0].text.strip())
+    return result["score"]</pre>
+</div>
+
+<div class="insight">
+<div class="insight-label">Critical Tip</div>
+<div class="insight-text">Ask for strengths, weaknesses, and reasoning <em>before</em> the score. If you only ask for a score, the model tends to default to middling numbers (5–6). Making it reason first leads to more spread-out, accurate scores.</div>
+</div>
+
+<div class="callout callout-matters">
+<div class="callout-icon">💡</div>
+<div class="callout-content">
+<div class="callout-label">Why This Matters</div>
+<div class="callout-text">Model graders can evaluate anything a human could — correctness, tone, formatting. The tradeoff is slight inconsistency, but it's still far better than no grading at all.</div>
+</div>
+</div>
+</div>`
+  },
+
+  m3l6: {
+    module: 3, title: 'Code-Based Grading',
+    tag: 'Module 3 · Lesson 6', tagClass: 'tag-m3',
+    subtitle: 'Validate code, JSON, or regex programmatically — instant, free, and deterministic.',
+    content: `
+<div class="content-body">
+<h3>Three Validators</h3>
+<div class="code-block">
+<div class="code-header"><span class="code-lang">python</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+<pre>import ast, json, re
+
+def validate_json(output):
+    try:
+        json.loads(output)
+        return 10  # valid
+    except:
+        return 0
+
+def validate_python(output):
+    try:
+        ast.parse(output)
+        return 10  # valid syntax
+    except SyntaxError:
+        return 0
+
+def validate_regex(output):
+    try:
+        re.compile(output)
+        return 10  # valid regex
+    except re.error:
+        return 0</pre>
+</div>
+
+<h3>Combined Scoring</h3>
+<div class="code-block">
+<div class="code-header"><span class="code-lang">python</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+<pre>def grade(output, test_case):
+    model_score = grade_with_model(output, test_case)  # semantic quality
+
+    if test_case["format"] == "JSON":
+        syntax_score = validate_json(output)
+    elif test_case["format"] == "Python":
+        syntax_score = validate_python(output)
+    elif test_case["format"] == "RegEx":
+        syntax_score = validate_regex(output)
+    else:
+        syntax_score = 10
+
+    return (model_score + syntax_score) / 2  # final score</pre>
+</div>
+
+<h3>Why Combine Both?</h3>
+<ul>
+<li>Model score catches <em>semantic</em> issues (wrong logic, missing requirements)</li>
+<li>Syntax score catches <em>structural</em> issues (invalid code that won't run)</li>
+<li>A response can score high semantically but fail syntax — combined score catches both</li>
+</ul>
+
+<div class="callout callout-matters">
+<div class="callout-icon">💡</div>
+<div class="callout-content">
+<div class="callout-label">Why This Matters</div>
+<div class="callout-text">Code-based grading is instant, free, and consistent. For any prompt producing structured output, adding a syntax validator alongside model grading gives a much more reliable signal.</div>
+</div>
+</div>
+</div>`
+  },
+
+  m4l1: {
+    module: 4, title: 'Prompt Engineering',
+    tag: 'Module 4 · Lesson 1', tagClass: 'tag-m4',
+    subtitle: 'The empirical approach: apply one technique, measure the score change, keep what helps.',
+    content: `
+<div class="content-body">
+<h3>The Process</h3>
+<div class="code-block">
+<div class="code-header"><span class="code-lang">workflow</span></div>
+<pre>Write basic prompt → Run eval → Score: 2.32
+Apply technique 1  → Run eval → Score: 3.92
+Apply technique 2  → Run eval → Score: 7.86
+... repeat until score is good enough</pre>
+</div>
+
+<h3>Running Example — Athlete Meal Planner</h3>
+<p>Goal: Generate a one-day meal plan for an athlete based on height, weight, physical goal, and dietary restrictions.</p>
+<p>The eval pipeline uses:</p>
+<ul>
+<li><code>prompt_input_spec</code> — dictionary defining required prompt inputs</li>
+<li><code>extra_criteria</code> — additional grading requirements for the model grader</li>
+<li><code>output.html</code> — formatted report showing each test case's output and score</li>
+<li>Concurrency support — run multiple test cases in parallel</li>
+</ul>
+
+<h3>Starting Point</h3>
+<p>A basic one-line prompt with no technique applied scores around <span class="score-badge">2.32 / 10</span> — even with a capable model. This is intentional. You need a low baseline to show improvement clearly.</p>
+
+<h3>Upcoming Techniques</h3>
+<ul>
+<li><strong>Being clear and direct</strong> — action verbs, direct language</li>
+<li><strong>Being specific</strong> — Type A attributes (output format) + Type B steps (reasoning process)</li>
+<li><strong>Structuring with XML tags</strong> — delineate content sections</li>
+<li><strong>Providing examples</strong> — one-shot and multi-shot prompting</li>
+</ul>
+
+<div class="callout callout-matters">
+<div class="callout-icon">💡</div>
+<div class="callout-content">
+<div class="callout-label">Why This Matters</div>
+<div class="callout-text">Prompt engineering without measurement is just guessing. This module ties evaluation directly to improvement — every technique is validated against the same dataset and grader so you know exactly what's working and by how much.</div>
+</div>
+</div>
+</div>`
+  },
+
+  m4l2: {
+    module: 4, title: 'Being Clear and Direct',
+    tag: 'Module 4 · Lesson 2', tagClass: 'tag-m4',
+    subtitle: 'The first line of your prompt is the most important. Start with an action verb and state exactly what you want.',
+    content: `
+<div class="content-body">
+<h3>The Core Principle</h3>
+<p>Use simple, direct language with an <strong>action verb in the very first line</strong> of your prompt. This sets the foundation for everything Claude generates — a vague first line means a vague response.</p>
+
+<h3>Prompt Structure</h3>
+<div class="code-block">
+<div class="code-header"><span class="code-lang">pattern</span></div>
+<pre>Action verb + clear task description + output specifications</pre>
+</div>
+
+<h3>Examples — Vague vs Direct</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>Vague ❌</th><th>Clear and Direct ✅</th></tr></thead>
+<tbody>
+<tr><td>"Tell me about solar panels"</td><td>"Write three paragraphs about how solar panels work"</td></tr>
+<tr><td>"Countries using geothermal energy"</td><td>"Identify three countries that use geothermal energy and for each include generation stats"</td></tr>
+<tr><td>"Meal plan for an athlete"</td><td>"Generate a one-day meal plan for an athlete that meets their dietary restrictions"</td></tr>
+</tbody>
+</table></div>
+
+<h3>Applied to the Meal Planner Example</h3>
+<p>Taking the athlete meal planner prompt from vague to direct:</p>
+
+<div class="code-block">
+<div class="code-header"><span class="code-lang">before — vague</span></div>
+<pre>Create a meal plan.</pre>
+</div>
+
+<div class="code-block">
+<div class="code-header"><span class="code-lang">after — clear and direct</span></div>
+<pre>Generate a one-day meal plan for an athlete that meets their dietary restrictions.</pre>
+</div>
+
+<h3>Score Impact</h3>
+<p>Applying just this one technique — being clear and direct — moves the eval score from a baseline of:</p>
+<p><span class="score-badge">2.32 → 3.92</span></p>
+<p>That's meaningful improvement from a single change: adding an action verb and being explicit about the output.</p>
+
+<h3>Key Components Checklist</h3>
+<ul>
+<li>✅ <strong>Action verb at start</strong> — Generate, Write, Identify, List, Explain, Compare...</li>
+<li>✅ <strong>Direct task statement</strong> — what exactly should be produced</li>
+<li>✅ <strong>Expected output details</strong> — format, length, scope, audience if relevant</li>
+</ul>
+
+<div class="callout callout-matters">
+<div class="callout-icon">💡</div>
+<div class="callout-content">
+<div class="callout-label">Why This Matters</div>
+<div class="callout-text">The first line is what Claude anchors its entire response around. A weak first line lets Claude interpret the task loosely — leading to generic, unfocused outputs. A strong first line narrows the solution space immediately and produces more precise results.</div>
+</div>
+</div>
+</div>`
+  },
+
+  m4l3: {
+    module: 4, title: 'Being Specific',
+    tag: 'Module 4 · Lesson 3', tagClass: 'tag-m4',
+    subtitle: 'Add guidelines to direct the output — Type A controls what Claude produces, Type B controls how Claude thinks.',
+    content: `
+<div class="content-body">
+<h3>The Core Technique</h3>
+<p>After making your prompt clear and direct, the next lever is <strong>specificity</strong> — adding guidelines that tell Claude exactly what qualities to aim for or what reasoning steps to follow.</p>
+
+<h3>Two Types of Guidelines</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>Type</th><th>What It Controls</th><th>When to Use</th></tr></thead>
+<tbody>
+<tr><td><strong>Type A — Attributes</strong></td><td>Output characteristics: length, structure, format, tone, what to include/exclude</td><td>Almost always — add to nearly every prompt</td></tr>
+<tr><td><strong>Type B — Steps</strong></td><td>Reasoning process: specific steps for Claude to follow before answering</td><td>Complex problems where you want Claude to consider a broader perspective or viewpoints it might skip</td></tr>
+</tbody>
+</table></div>
+
+<h3>Type A Example — Output Attributes</h3>
+<div class="code-block">
+<div class="code-header"><span class="code-lang">before — clear but not specific</span></div>
+<pre>Generate a one-day meal plan for an athlete that meets their dietary restrictions.</pre>
+</div>
+
+<div class="code-block">
+<div class="code-header"><span class="code-lang">after — with Type A attributes</span></div>
+<pre>Generate a one-day meal plan for an athlete that meets their dietary restrictions.
+
+Guidelines:
+- Include breakfast, lunch, dinner, and two snacks
+- Specify portion sizes and approximate calories for each meal
+- Balance macronutrients appropriate for athletic performance
+- Keep meals practical and realistic to prepare
+- Avoid any ingredients listed in the dietary restrictions</pre>
+</div>
+
+<h3>Type B Example — Reasoning Steps</h3>
+<div class="code-block">
+<div class="code-header"><span class="code-lang">type B steps</span></div>
+<pre>Generate a one-day meal plan for an athlete.
+
+Steps:
+1. First, consider the athlete's physical goal (weight loss, muscle gain, endurance)
+2. Calculate approximate daily calorie needs based on their stats
+3. Determine macro split appropriate for that goal
+4. Then build meals that hit those targets while respecting restrictions</pre>
+</div>
+
+<h3>Combined — Professional Prompts Use Both</h3>
+<p>Most real-world prompts combine Type A and Type B together:</p>
+<div class="code-block">
+<div class="code-header"><span class="code-lang">combined prompt</span></div>
+<pre>Generate a one-day meal plan for an athlete that meets their dietary restrictions.
+
+Steps:
+1. Assess the athlete's goal and calculate calorie/macro targets
+2. Design meals that hit those targets while respecting restrictions
+
+Guidelines:
+- Include breakfast, lunch, dinner, and two snacks
+- Specify portions and approximate calories per meal
+- Keep meals practical to prepare
+- Format as a clean, easy-to-read plan</pre>
+</div>
+
+<h3>Score Impact</h3>
+<p>Adding specificity to the meal planner prompt after being clear and direct:</p>
+<p><span class="score-badge">3.92 → 7.86</span></p>
+<p>The largest single jump in the module — nearly doubling the score — purely from adding structured guidelines.</p>
+
+<div class="insight">
+<div class="insight-label">When to use each type</div>
+<div class="insight-text">Type A is almost universally useful — always worth specifying output format, length, and key inclusions. Type B is most valuable for multi-step reasoning tasks where Claude might otherwise take the most obvious path rather than the most thorough one.</div>
+</div>
+
+<div class="callout callout-matters">
+<div class="callout-icon">💡</div>
+<div class="callout-content">
+<div class="callout-label">Why This Matters</div>
+<div class="callout-text">Vague prompts leave Claude guessing at what "good" looks like. Specific guidelines define "good" explicitly — and Claude reliably aims for targets it can see. The bigger the score jump here (3.92 → 7.86) shows that specificity matters more than almost any other single technique.</div>
+</div>
+</div>
+</div>`
+  },
+
+  m4l4: {
+    module: 4, title: 'Structure with XML Tags',
+    tag: 'Module 4 · Lesson 4', tagClass: 'tag-m4',
+    subtitle: 'When you interpolate content into prompts, XML tags tell Claude exactly where your instructions end and your data begins.',
+    content: `
+<div class="content-body">
+<h3>The Problem XML Tags Solve</h3>
+<p>When you embed external content into a prompt — user data, a code snippet, a document section — Claude needs to know what's an instruction and what's data. Without clear boundaries, Claude can confuse the two.</p>
+
+<div class="code-block">
+<div class="code-header"><span class="code-lang">ambiguous — no tags</span></div>
+<pre>Debug this code. Make sure to handle edge cases.
+def divide(a, b):
+    return a / b
+Make sure to handle edge cases.</pre>
+</div>
+
+<p>Claude might not be sure where the instruction ends and the code begins. Tags remove that ambiguity.</p>
+
+<div class="code-block">
+<div class="code-header"><span class="code-lang">clear — with XML tags</span></div>
+<pre>Debug this code and handle edge cases.
+
+&lt;my_code&gt;
+def divide(a, b):
+    return a / b
+&lt;/my_code&gt;</pre>
+</div>
+
+<h3>Tag Naming Matters</h3>
+<p>Use <strong>descriptive, specific tag names</strong> — they give Claude context about what kind of content is inside:</p>
+
+<div class="table-wrap"><table>
+<thead><tr><th>Generic ❌</th><th>Descriptive ✅</th></tr></thead>
+<tbody>
+<tr><td><code>&lt;data&gt;</code></td><td><code>&lt;sales_records&gt;</code></td></tr>
+<tr><td><code>&lt;text&gt;</code></td><td><code>&lt;customer_feedback&gt;</code></td></tr>
+<tr><td><code>&lt;code&gt;</code></td><td><code>&lt;my_python_code&gt;</code></td></tr>
+<tr><td><code>&lt;info&gt;</code></td><td><code>&lt;athlete_information&gt;</code></td></tr>
+</tbody>
+</table></div>
+
+<h3>Separating Mixed Content</h3>
+<p>Tags are especially valuable when a prompt contains multiple different types of content that need to stay separate:</p>
+
+<div class="code-block">
+<div class="code-header"><span class="code-lang">example — debugging prompt with mixed content</span></div>
+<pre>Fix the bug in the code using the documentation as reference.
+
+&lt;my_code&gt;
+def parse_config(file_path):
+    with open(file_path) as f:
+        return json.load(f)
+&lt;/my_code&gt;
+
+&lt;docs&gt;
+parse_config() expects a valid JSON file. It raises
+JSONDecodeError if the file is malformed.
+&lt;/docs&gt;</pre>
+</div>
+
+<h3>Applied to the Meal Planner</h3>
+<p>Even short interpolated content benefits from tags — it signals to Claude that this is external input to consider, not part of the instructions:</p>
+
+<div class="code-block">
+<div class="code-header"><span class="code-lang">meal planner with XML tags</span></div>
+<pre>Generate a one-day meal plan for an athlete.
+
+&lt;athlete_information&gt;
+Height: {height}
+Weight: {weight}
+Goal: {goal}
+Dietary restrictions: {restrictions}
+&lt;/athlete_information&gt;
+
+Steps:
+1. Assess the athlete's goal and calculate calorie targets
+2. Design meals respecting the restrictions above
+
+Guidelines:
+- Include breakfast, lunch, dinner, two snacks
+- Specify portions and approximate calories per meal</pre>
+</div>
+
+<h3>When to Use XML Tags</h3>
+<ul>
+<li>Any time you interpolate a variable or external content into a prompt</li>
+<li>When a prompt contains multiple distinct content sections</li>
+<li>When mixing instructions with code, documents, or user data</li>
+<li>Even for short content — it clarifies intent and prevents misreading</li>
+</ul>
+
+<div class="insight">
+<div class="insight-label">Key Insight</div>
+<div class="insight-text">You don't need a special XML library — these are just plain text markers. Claude recognises them natively and uses them to understand the structure of your prompt. Any descriptive tag name works.</div>
+</div>
+
+<div class="callout callout-matters">
+<div class="callout-icon">💡</div>
+<div class="callout-content">
+<div class="callout-label">Why This Matters</div>
+<div class="callout-text">As prompts grow more complex — interpolating user inputs, documents, code, and instructions together — unstructured text becomes a source of errors and inconsistency. XML tags give Claude a clear map of what's what, which directly reduces misinterpretation and improves output reliability.</div>
+</div>
+</div>
+</div>`
+  },
+
+  m4l5: {
+    module: 4, title: 'Providing Examples',
+    tag: 'Module 4 · Lesson 5', tagClass: 'tag-m4',
+    subtitle: 'One good example beats a paragraph of instructions. Show Claude exactly what ideal output looks like.',
+    content: `
+<div class="content-body">
+<h3>One-Shot vs Multi-Shot Prompting</h3>
+<p>Providing examples in prompts — also called few-shot prompting — is one of the most reliable ways to communicate expected output quality and format.</p>
+<ul>
+<li><strong>One-shot</strong> — a single example input + ideal output</li>
+<li><strong>Multi-shot</strong> — multiple examples covering different scenarios or edge cases</li>
+</ul>
+
+<h3>How to Structure Examples</h3>
+<p>Wrap examples in XML tags to clearly separate them from your actual instructions:</p>
+
+<div class="code-block">
+<div class="code-header"><span class="code-lang">one-shot example structure</span></div>
+<pre>Generate a one-day meal plan for an athlete.
+
+&lt;example&gt;
+  &lt;input&gt;
+    Height: 180cm, Weight: 80kg
+    Goal: Build muscle
+    Restrictions: No dairy
+  &lt;/input&gt;
+  &lt;ideal_output&gt;
+    Breakfast: Oat porridge with almond milk, banana, and peanut butter (620 kcal)
+    Snack: Apple with almonds (200 kcal)
+    Lunch: Grilled chicken, brown rice, roasted vegetables (750 kcal)
+    Snack: Rice cakes with avocado (300 kcal)
+    Dinner: Salmon fillet, quinoa, steamed broccoli (680 kcal)
+    Total: ~2,550 kcal | Protein: 180g | Carbs: 270g | Fat: 80g
+  &lt;/ideal_output&gt;
+&lt;/example&gt;
+
+&lt;athlete_information&gt;
+{athlete_data}
+&lt;/athlete_information&gt;</pre>
+</div>
+
+<h3>Key Applications</h3>
+
+<p><strong>1. Corner case handling</strong> — add examples for scenarios Claude tends to get wrong:</p>
+<div class="code-block">
+<div class="code-header"><span class="code-lang">sarcasm example</span></div>
+<pre>Classify customer sentiment as positive, negative, or neutral.
+Be especially careful with sarcasm — it often reads as positive but means negative.
+
+&lt;example&gt;
+  &lt;input&gt;"Oh great, another delay. Really loving this service."&lt;/input&gt;
+  &lt;ideal_output&gt;negative&lt;/ideal_output&gt;
+  &lt;reasoning&gt;Sarcastic phrasing — surface words are positive but intent is negative&lt;/reasoning&gt;
+&lt;/example&gt;</pre>
+</div>
+
+<p><strong>2. Complex output formatting</strong> — show exactly what structure Claude should produce:</p>
+<div class="code-block">
+<div class="code-header"><span class="code-lang">JSON output example</span></div>
+<pre>Extract product info from the description.
+
+&lt;example&gt;
+  &lt;input&gt;"Blue running shoes, size 10, waterproof, $89"&lt;/input&gt;
+  &lt;ideal_output&gt;
+    {"name": "Running shoes", "color": "blue", "size": 10,
+     "features": ["waterproof"], "price": 89}
+  &lt;/ideal_output&gt;
+&lt;/example&gt;</pre>
+</div>
+
+<h3>Best Practices</h3>
+<ul>
+<li><strong>Add reasoning</strong> to examples — explaining <em>why</em> an output is ideal reinforces the pattern more strongly than showing the output alone</li>
+<li><strong>Place examples after</strong> your main instructions and guidelines, not before</li>
+<li><strong>Use your highest-scoring eval outputs</strong> as example templates — your eval pipeline will surface the best ones</li>
+<li><strong>Cover diverse cases</strong> in multi-shot — multiple similar examples add less value than examples that each cover a different scenario</li>
+</ul>
+
+<h3>Multi-Shot for Edge Cases</h3>
+<div class="code-block">
+<div class="code-header"><span class="code-lang">multi-shot covering different scenarios</span></div>
+<pre>&lt;example&gt;
+  &lt;input&gt;Goal: Weight loss, Restriction: Vegan&lt;/input&gt;
+  &lt;ideal_output&gt;[calorie-deficit plant-based plan]&lt;/ideal_output&gt;
+&lt;/example&gt;
+
+&lt;example&gt;
+  &lt;input&gt;Goal: Endurance training, Restriction: Gluten-free&lt;/input&gt;
+  &lt;ideal_output&gt;[high-carb gluten-free plan]&lt;/ideal_output&gt;
+&lt;/example&gt;
+
+&lt;example&gt;
+  &lt;input&gt;Goal: Recovery, Restriction: None&lt;/input&gt;
+  &lt;ideal_output&gt;[anti-inflammatory nutrient-dense plan]&lt;/ideal_output&gt;
+&lt;/example&gt;</pre>
+</div>
+
+<div class="insight">
+<div class="insight-label">Eval → Examples Loop</div>
+<div class="insight-text">Run your eval, find the highest-scoring outputs, and use them as examples in the next prompt version. Your eval pipeline becomes a source of high-quality training signal for your own prompts.</div>
+</div>
+
+<div class="callout callout-matters">
+<div class="callout-icon">💡</div>
+<div class="callout-content">
+<div class="callout-label">Why This Matters</div>
+<div class="callout-text">Instructions describe what you want. Examples demonstrate it. When Claude sees a concrete ideal output, it calibrates its response to that standard rather than guessing what "good" looks like. Examples are especially powerful for tasks with nuanced quality criteria — tone, structure, edge cases — that are hard to fully specify in words.</div>
+</div>
+</div>
+</div>`
+  },
+
+  m4l6: {
+    module: 4, title: 'Prompting Exercise',
+    tag: 'Module 4 · Lesson 6', tagClass: 'tag-m4',
+    subtitle: 'Put all four techniques together. See the full journey from a 2.32 baseline to a production-quality prompt.',
+    content: `
+<div class="content-body">
+<h3>The Complete Journey</h3>
+<p>This exercise shows what happens when you apply all four techniques in sequence, measuring the score after each one:</p>
+
+<div class="table-wrap"><table>
+<thead><tr><th>Prompt Version</th><th>Technique Applied</th><th>Score</th><th>Change</th></tr></thead>
+<tbody>
+<tr><td>v1 — Baseline</td><td>None</td><td><span class="score-badge">2.32</span></td><td>—</td></tr>
+<tr><td>v2 — Direct</td><td>Clear action verb + task statement</td><td><span class="score-badge">3.92</span></td><td>+1.60</td></tr>
+<tr><td>v3 — Specific</td><td>Type A attributes + Type B steps</td><td><span class="score-badge">7.86</span></td><td>+3.94</td></tr>
+<tr><td>v4 — Structured</td><td>XML tags for interpolated content</td><td><span class="score-badge">8.10</span></td><td>+0.24</td></tr>
+<tr><td>v5 — Examples</td><td>One-shot example with reasoning</td><td><span class="score-badge">8.74</span></td><td>+0.64</td></tr>
+</tbody>
+</table></div>
+
+<h3>What Each Technique Contributed</h3>
+<ul>
+<li><strong>Clear and Direct (+1.60)</strong> — Gave Claude a defined task to anchor on.</li>
+<li><strong>Being Specific (+3.94)</strong> — The largest single jump. Steps gave Claude a reasoning process; guidelines defined what "good" means.</li>
+<li><strong>XML Tags (+0.24)</strong> — Smaller but meaningful: clean separation of instructions vs. input data.</li>
+<li><strong>Examples (+0.64)</strong> — Calibrated output quality and format.</li>
+</ul>
+
+<div class="insight">
+<div class="insight-label">The key takeaway</div>
+<div class="insight-text">Techniques stack. Applied in sequence with measurement at each step, you go from unusable (2.32) to production-quality (8.74) systematically. The eval pipeline made this visible.</div>
+</div>
+
+<div class="callout callout-matters">
+<div class="callout-icon">💡</div>
+<div class="callout-content">
+<div class="callout-label">Why This Matters</div>
+<div class="callout-text">Prompt engineering is a measurable, repeatable process. Apply one technique. Measure. Apply another. Measure again. Start with specificity (it contributes the most) and layer the others on top.</div>
+</div>
+</div>
+</div>`
+  },
+
+  m5l1: {
+    module: 5, title: 'Introducing Tool Use',
+    tag: 'Module 5 · Lesson 1', tagClass: 'tag-m5',
+    subtitle: 'Tools let Claude reach outside its training data — fetching live information and taking real actions in the world.',
+    content: `
+<div class="content-body">
+<h3>The Default Limitation</h3>
+<p>Without tools, Claude only knows what was in its training data. It can reason, write, and analyse — but it cannot answer questions about current events, access your database, or take actions in external systems.</p>
+
+<h3>What Tool Use Enables</h3>
+<p>Tools bridge the gap between Claude's reasoning and the real world. Instead of just knowing things, Claude can <em>do</em> things — look up current data, run calculations, set reminders, call APIs, and update external systems.</p>
+
+<h3>The Tool Use Flow</h3>
+<div class="flow">
+  <div class="flow-step">Your request</div><div class="flow-arrow">→</div>
+  <div class="flow-step">Claude decides if tool needed</div><div class="flow-arrow">→</div>
+  <div class="flow-step">Claude requests tool call</div><div class="flow-arrow">→</div>
+  <div class="flow-step">Your server executes it</div><div class="flow-arrow">→</div>
+  <div class="flow-step">Result sent back</div><div class="flow-arrow">→</div>
+  <div class="flow-step">Claude responds</div>
+</div>
+
+<ol>
+<li><strong>Send initial request to Claude</strong> — include tool schemas alongside the user message</li>
+<li><strong>Claude evaluates</strong> — decides whether external data is needed and which tool to call</li>
+<li><strong>Claude requests a tool call</strong> — returns a <code>tool_use</code> block with the function name and arguments</li>
+<li><strong>Your server executes the tool</strong> — runs the actual Python function with Claude's requested arguments</li>
+<li><strong>Send the result back</strong> — include a <code>tool_result</code> block in a follow-up request</li>
+<li><strong>Claude generates the final response</strong> — using both the original prompt and the tool result</li>
+</ol>
+
+<h3>Practical Example — Weather Query</h3>
+<div class="code-block">
+<div class="code-header"><span class="code-lang">without tools</span></div>
+<pre>User: "What's the weather in Mumbai right now?"
+Claude: "I don't have access to real-time weather data..."</pre>
+</div>
+
+<div class="code-block">
+<div class="code-header"><span class="code-lang">with tools</span></div>
+<pre>User: "What's the weather in Mumbai right now?"
+Claude: [calls get_weather(city="Mumbai")]
+Server: [fetches weather API → {"temp": 32, "condition": "Humid"}]
+Claude: "It's currently 32°C and humid in Mumbai."</pre>
+</div>
+
+<h3>Three Tools in This Module</h3>
+<p>The hands-on project teaches Claude to set time-based reminders — a task that requires three tools:</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Problem</th><th>Tool</th></tr></thead>
+<tbody>
+<tr><td>Claude doesn't know the exact current time</td><td><code>get_current_datetime()</code></td></tr>
+<tr><td>Claude sometimes miscalculates date arithmetic</td><td><code>add_duration_to_datetime()</code></td></tr>
+<tr><td>Claude can't actually set a reminder</td><td><code>set_reminder()</code></td></tr>
+</tbody>
+</table></div>
+
+<div class="insight">
+<div class="insight-label">Key Architecture Point</div>
+<div class="insight-text">Claude doesn't execute tools — <strong>your server does</strong>. Claude just decides which tool to call and with what arguments. The execution loop lives entirely in your application code.</div>
+</div>
+
+<div class="callout callout-matters">
+<div class="callout-icon">💡</div>
+<div class="callout-content">
+<div class="callout-label">Why This Matters</div>
+<div class="callout-text">Tool use transforms Claude from a static knowledge base into an active participant in your systems. Any gap between what Claude knows and what your application needs to do can be bridged by a tool.</div>
+</div>
+</div>
+</div>`
+  },
+
+  m5l2: {
+    module: 5, title: 'Project Overview',
+    tag: 'Module 5 · Lesson 2', tagClass: 'tag-m5',
+    subtitle: 'Three real problems that Claude cannot solve alone — and three tools that fix each one.',
+    content: `
+<div class="content-body">
+<h3>The Target Interaction</h3>
+<p>The goal for this module is to build a working reminder system. The target conversation looks like this:</p>
+
+<div class="code-block">
+<div class="code-header"><span class="code-lang">target interaction</span></div>
+<pre>User:   "Set a reminder for my doctor appointment, one week from Thursday"
+Claude: "Done — I have set a reminder for Thursday, May 29th at 9:00 AM."</pre>
+</div>
+
+<p>This sounds simple, but Claude can't do it without tools. Here's why.</p>
+
+<h3>Three Problems, Three Tools</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>#</th><th>Problem</th><th>Why it matters</th><th>Tool to build</th></tr></thead>
+<tbody>
+<tr>
+  <td>1</td>
+  <td><strong>Claude doesn't know the exact time</strong></td>
+  <td>Claude knows the current date but not the precise time — it has no live clock</td>
+  <td><code>get_current_datetime()</code></td>
+</tr>
+<tr>
+  <td>2</td>
+  <td><strong>Claude miscalculates date arithmetic</strong></td>
+  <td>Ask Claude to add 379 days to January 13th, 1973 — it may get it wrong. Time calculations are surprisingly unreliable</td>
+  <td><code>add_duration_to_datetime()</code></td>
+</tr>
+<tr>
+  <td>3</td>
+  <td><strong>Claude has no way to actually set a reminder</strong></td>
+  <td>Claude understands the concept but has no mechanism to persist or schedule anything</td>
+  <td><code>set_reminder()</code></td>
+</tr>
+</tbody>
+</table></div>
+
+<h3>Implementation Approach</h3>
+<p>The module builds these tools <strong>one at a time</strong>, adding each to the system and testing before moving to the next. This incremental approach lets you see exactly what each tool contributes and how the conversation changes.</p>
+
+<div class="flow">
+  <div class="flow-step">get_current_datetime</div><div class="flow-arrow">→</div>
+  <div class="flow-step">add_duration_to_datetime</div><div class="flow-arrow">→</div>
+  <div class="flow-step">set_reminder</div><div class="flow-arrow">→</div>
+  <div class="flow-step">Full system</div>
+</div>
+
+<h3>How the Tools Work Together</h3>
+<p>When the user says "one week from Thursday," Claude needs to:</p>
+<ol>
+<li>Call <code>get_current_datetime()</code> to find out today's date and time</li>
+<li>Call <code>add_duration_to_datetime()</code> to calculate what date is one week from the coming Thursday</li>
+<li>Call <code>set_reminder()</code> with that calculated date and the reminder message</li>
+</ol>
+<p>Claude chains these three tools automatically — you just ask it to set the reminder and it figures out the sequence.</p>
+
+<h3>Why Not Just Ask Claude to Calculate the Date?</h3>
+<p>You could prompt Claude to do the date math itself — but it sometimes gets it wrong, especially for relative date expressions like "next Thursday" or "in three weeks." Using a dedicated tool with Python's <code>datetime</code> library eliminates that class of error entirely.</p>
+
+<div class="insight">
+<div class="insight-label">Design Principle</div>
+<div class="insight-text">Don't rely on Claude for tasks where precision is required and a deterministic function exists. Offload exact calculations to code, and let Claude handle the natural language interpretation and user communication.</div>
+</div>
+
+<div class="callout callout-matters">
+<div class="callout-icon">💡</div>
+<div class="callout-content">
+<div class="callout-label">Why This Matters</div>
+<div class="callout-text">This project illustrates the general pattern for any tool-augmented Claude app: identify what Claude cannot reliably do alone, write a deterministic function for it, give Claude access to that function, and let Claude decide when to use it. The reminder app is small but the pattern scales to arbitrarily complex systems.</div>
+</div>
+</div>
+</div>`
+  },
+
+  m5l3: {
+    module: 5, title: 'Tool Functions',
+    tag: 'Module 5 · Lesson 3', tagClass: 'tag-m5',
+    subtitle: 'Tool functions are plain Python functions with one rule: name everything descriptively, because Claude reads those names to decide when and how to call them.',
+    content: `
+<div class="content-body">
+<h3>What a Tool Function Is</h3>
+<p>A tool function is just a regular Python function that your server executes when Claude requests it. Claude never runs code directly — it reads the function's name, description, and argument names from a schema, decides when to call it, and passes arguments back to you. Your server runs the actual function.</p>
+
+<h3>Three Best Practices</h3>
+
+<p><strong>1. Descriptive function and argument names</strong></p>
+<p>Claude uses these names to understand what the tool does and what inputs it needs. Vague names lead to wrong usage.</p>
+
+<div class="table-wrap"><table>
+<thead><tr><th>Bad</th><th>Good</th></tr></thead>
+<tbody>
+<tr><td><code>def get_dt(fmt)</code></td><td><code>def get_current_datetime(date_format)</code></td></tr>
+<tr><td><code>def add(dt, dur)</code></td><td><code>def add_duration_to_datetime(start_datetime, duration_string)</code></td></tr>
+</tbody>
+</table></div>
+
+<p><strong>2. Input validation with immediate errors</strong></p>
+<p>Raise errors for invalid inputs immediately. Claude can see your error messages and will automatically retry with corrected arguments.</p>
+
+<p><strong>3. Meaningful error messages that guide correction</strong></p>
+<p>Error messages are part of the tool's interface with Claude. A good error message tells Claude exactly what went wrong and what to do instead.</p>
+
+<h3>Example: get_current_datetime</h3>
+
+<div class="code-block">
+<div class="code-header"><span class="code-lang">python</span></div>
+<pre>from datetime import datetime
+
+def get_current_datetime(date_format="%Y-%m-%d %H:%M:%S"):
+    """Returns the current date and time in the requested format."""
+    if not date_format:
+        raise ValueError("date_format cannot be empty — provide a valid strftime format string")
+    
+    try:
+        return datetime.now().strftime(date_format)
+    except Exception as e:
+        raise ValueError(f"Invalid date format '{date_format}': {str(e)}")</pre>
+</div>
+
+<p>If Claude calls this with an invalid format string, it receives the error message and can retry with a corrected format — no human intervention needed.</p>
+
+<h3>Example: add_duration_to_datetime</h3>
+
+<div class="code-block">
+<div class="code-header"><span class="code-lang">python</span></div>
+<pre>from datetime import datetime, timedelta
+import re
+
+def add_duration_to_datetime(start_datetime: str, duration_string: str) -> str:
+    """Adds a duration to a datetime and returns the result.
+    
+    Args:
+        start_datetime: datetime string in format "YYYY-MM-DD HH:MM:SS"
+        duration_string: duration like "7 days", "2 hours", "30 minutes"
+    
+    Returns:
+        New datetime string in the same format as input
+    """
+    if not start_datetime:
+        raise ValueError("start_datetime is required")
+    if not duration_string:
+        raise ValueError("duration_string is required — provide a duration like '7 days' or '2 hours'")
+    
+    # Parse the start datetime
+    try:
+        dt = datetime.strptime(start_datetime, "%Y-%m-%d %H:%M:%S")
+    except ValueError:
+        raise ValueError(f"start_datetime must be in format 'YYYY-MM-DD HH:MM:SS', got: {start_datetime}")
+    
+    # Parse the duration
+    match = re.match(r"(\d+)\s*(day|hour|minute|week)s?", duration_string.lower())
+    if not match:
+        raise ValueError(f"Cannot parse duration '{duration_string}'. Use format like '7 days', '2 hours', '30 minutes', '1 week'")
+    
+    amount, unit = int(match.group(1)), match.group(2)
+    delta = {"day": timedelta(days=amount), "hour": timedelta(hours=amount),
+             "minute": timedelta(minutes=amount), "week": timedelta(weeks=amount)}[unit]
+    
+    return (dt + delta).strftime("%Y-%m-%d %H:%M:%S")</pre>
+</div>
+
+<h3>Example: set_reminder</h3>
+
+<div class="code-block">
+<div class="code-header"><span class="code-lang">python</span></div>
+<pre>def set_reminder(reminder_datetime: str, reminder_message: str) -> str:
+    """Schedules a reminder for the specified datetime.
+    
+    Args:
+        reminder_datetime: when to trigger the reminder ("YYYY-MM-DD HH:MM:SS")
+        reminder_message: the reminder text to display to the user
+    
+    Returns:
+        Confirmation string with the scheduled reminder details
+    """
+    if not reminder_datetime:
+        raise ValueError("reminder_datetime is required")
+    if not reminder_message:
+        raise ValueError("reminder_message cannot be empty")
+    
+    # In a real app: persist to DB, schedule a job, etc.
+    # For now: print confirmation (mock implementation)
+    print(f"[REMINDER SET] {reminder_datetime}: {reminder_message}")
+    
+    return f"Reminder set for {reminder_datetime}: '{reminder_message}'"</pre>
+</div>
+
+<h3>The Self-Correcting Loop</h3>
+<p>Good error messages make your tool system robust without extra code:</p>
+
+<div class="flow">
+  <div class="flow-step">Claude calls tool</div><div class="flow-arrow">→</div>
+  <div class="flow-step">Function raises ValueError</div><div class="flow-arrow">→</div>
+  <div class="flow-step">Error sent back to Claude</div><div class="flow-arrow">→</div>
+  <div class="flow-step">Claude reads error, retries with fix</div>
+</div>
+
+<div class="insight">
+<div class="insight-label">What Claude sees</div>
+<div class="insight-text">When your function raises an exception, the error message text is sent back to Claude as a <code>tool_result</code> with <code>is_error: true</code>. Claude reads the message and adjusts its next attempt. This means your error messages are instructions to Claude, not just logs for you.</div>
+</div>
+
+<div class="callout callout-matters">
+<div class="callout-icon">💡</div>
+<div class="callout-content">
+<div class="callout-label">Why This Matters</div>
+<div class="callout-text">Tool functions are the boundary between Claude's language understanding and your system's execution. The quality of your function names, docstrings, and error messages directly determines how reliably Claude can use your tools. Treat them like a well-documented API — Claude is the developer consuming it.</div>
+</div>
+</div>
+</div>`
+  },
+
+  m5l4: {
+    module: 5, title: 'Tool Schemas',
+    tag: 'Module 5 · Lesson 4', tagClass: 'tag-m5',
+    subtitle: 'A tool schema is how you introduce your function to Claude — what it does, when to use it, and what arguments it takes.',
+    content: `
+<div class="content-body">
+<h3>What a Tool Schema Is</h3>
+<p>A tool schema is a JSON object you pass to the API alongside your messages. It tells Claude what a tool does, when to use it, and what arguments it expects. Claude reads these schemas and decides — on its own — whether to call a tool and with what arguments.</p>
+
+<h3>Schema Structure</h3>
+<div class="code-block">
+<div class="code-header"><span class="code-lang">python</span></div>
+<pre>get_current_datetime_schema = {
+    "name": "get_current_datetime",          # Must match your function name
+    "description": """Returns the current date and time.
+Use this when you need to know what time it is right now.
+Returns a formatted datetime string based on the provided format.""",
+    "input_schema": {
+        "type": "object",
+        "properties": {
+            "date_format": {
+                "type": "string",
+                "description": "strftime format string, e.g. '%Y-%m-%d %H:%M:%S'. Defaults to standard datetime format."
+            }
+        },
+        "required": []   # date_format is optional
+    }
+}</pre>
+</div>
+
+<h3>Three Required Fields</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>Field</th><th>What it is</th><th>Writing tip</th></tr></thead>
+<tbody>
+<tr><td><code>name</code></td><td>Tool identifier — must match your function name</td><td>Use the exact same name as your Python function</td></tr>
+<tr><td><code>description</code></td><td>3–4 sentences: what it does, when to use it, what it returns</td><td>Be specific about the trigger condition ("use when you need to know the current time")</td></tr>
+<tr><td><code>input_schema</code></td><td>JSON Schema object describing arguments with types and descriptions</td><td>Describe each argument clearly — Claude reads these to decide what to pass</td></tr>
+</tbody>
+</table></div>
+
+<h3>Schema Generation Shortcut</h3>
+<p>Instead of writing schemas manually, paste your function into Claude.ai and prompt:</p>
+
+<div class="code-block">
+<div class="code-header"><span class="code-lang">prompt</span></div>
+<pre>Write a valid JSON schema spec for tool calling for this function.
+Follow best practices from the Anthropic API documentation tool use page.
+
+[paste your function here]</pre>
+</div>
+
+<p>Attach the Anthropic API tool use docs page for context, then copy the generated schema. This saves significant time especially for functions with many parameters.</p>
+
+<h3>Wrapping with ToolParam</h3>
+<p>Import <code>ToolParam</code> from <code>anthropic.types</code> and wrap your schema dictionary. This prevents type errors when passing schemas to the API:</p>
+
+<div class="code-block">
+<div class="code-header"><span class="code-lang">python</span></div>
+<pre>from anthropic.types import ToolParam
+
+get_current_datetime_schema = ToolParam({
+    "name": "get_current_datetime",
+    "description": "Returns the current date and time...",
+    "input_schema": {
+        "type": "object",
+        "properties": {
+            "date_format": {
+                "type": "string",
+                "description": "strftime format string, e.g. '%Y-%m-%d %H:%M:%S'"
+            }
+        },
+        "required": []
+    }
+})</pre>
+</div>
+
+<h3>Naming Convention</h3>
+<p>Name your schema variables consistently as <code>[function_name]_schema</code>:</p>
+<ul>
+<li><code>get_current_datetime_schema</code></li>
+<li><code>add_duration_to_datetime_schema</code></li>
+<li><code>set_reminder_schema</code></li>
+</ul>
+
+<h3>Passing Schemas to the API</h3>
+<p>Include schemas in the <code>tools</code> parameter of your API call:</p>
+
+<div class="code-block">
+<div class="code-header"><span class="code-lang">python</span></div>
+<pre>response = client.messages.create(
+    model=model,
+    max_tokens=1000,
+    tools=[
+        get_current_datetime_schema,
+        add_duration_to_datetime_schema,
+        set_reminder_schema
+    ],
+    messages=messages
+)</pre>
+</div>
+
+<div class="insight">
+<div class="insight-label">JSON Schema — not ML-specific</div>
+<div class="insight-text">JSON Schema is a standard data validation specification, not something invented for AI. The ML community adopted it for tool calling because it already had tooling, documentation, and wide adoption. Understanding JSON Schema basics helps you write better tool definitions.</div>
+</div>
+
+<div class="callout callout-matters">
+<div class="callout-icon">💡</div>
+<div class="callout-content">
+<div class="callout-label">Why This Matters</div>
+<div class="callout-text">The description field is the most important part of a schema. Claude uses it to decide which tool to call — and when. A vague description leads to wrong tool selection or tools being called at the wrong time. Invest time in making descriptions precise: name the trigger condition, describe what gets returned, and clarify any constraints on arguments.</div>
+</div>
+</div>
+</div>`
+  },
+
+  m5l5: {
+    module: 5, title: 'Handling Message Blocks',
+    tag: 'Module 5 · Lesson 5', tagClass: 'tag-m5',
+    subtitle: 'Once tools are involved, Claude\u2019s responses contain multiple blocks \u2014 not just text. Your message history management needs to handle all of them.',
+    content: `
+<div class="content-body">
+<h3>How Tool Requests Change the Response Structure</h3>
+<p>Without tools, a Claude response is simple: one text block. Once you pass tool schemas to the API, responses can contain multiple content blocks in a single message:</p>
+
+<div class="table-wrap"><table>
+<thead><tr><th>Block type</th><th>Contents</th><th>When it appears</th></tr></thead>
+<tbody>
+<tr><td><code>text</code></td><td>Claude's natural language explanation to the user</td><td>Almost always present</td></tr>
+<tr><td><code>tool_use</code></td><td>Function name + arguments Claude wants to call</td><td>When Claude decides a tool is needed</td></tr>
+</tbody>
+</table></div>
+
+<p>A typical tool response looks like this:</p>
+
+<div class="code-block">
+<div class="code-header"><span class="code-lang">response structure</span></div>
+<pre>response.content = [
+    TextBlock(
+        type="text",
+        text="I'll check the current date and time for you."
+    ),
+    ToolUseBlock(
+        type="tool_use",
+        id="toolu_01Abc123...",     # Unique ID for this tool call
+        name="get_current_datetime",
+        input={"date_format": "%Y-%m-%d %H:%M:%S"}
+    )
+]</pre>
+</div>
+
+<h3>Making the Request with Tools</h3>
+<p>Pass your schemas via the <code>tools</code> keyword argument — everything else stays the same:</p>
+
+<div class="code-block">
+<div class="code-header"><span class="code-lang">python</span></div>
+<pre>response = client.messages.create(
+    model=model,
+    max_tokens=1000,
+    tools=[get_current_datetime_schema],   # New: pass tool schemas
+    messages=messages
+)</pre>
+</div>
+
+<h3>The Critical Change: Message History</h3>
+<p>Previously, when appending an assistant response to history, you could just grab the text:</p>
+
+<div class="code-block">
+<div class="code-header"><span class="code-lang">python — without tools (old approach)</span></div>
+<pre># Only worked when responses were a single text block
+messages.append({
+    "role": "assistant",
+    "content": response.content[0].text   # BREAKS with tool use
+})</pre>
+</div>
+
+<p>With tools, you must append the <strong>entire content list</strong> — all blocks, not just the text:</p>
+
+<div class="code-block">
+<div class="code-header"><span class="code-lang">python — with tools (correct approach)</span></div>
+<pre># Append all content blocks to preserve tool use context
+messages.append({
+    "role": "assistant",
+    "content": response.content   # Full list: text + tool_use blocks
+})</pre>
+</div>
+
+<h3>Updated Helper Functions</h3>
+<p>The <code>add_assistant_message</code> helper needs to accept either a string or a list of blocks:</p>
+
+<div class="code-block">
+<div class="code-header"><span class="code-lang">python</span></div>
+<pre>def add_user_message(messages, content):
+    """content can be a string or a list of blocks."""
+    messages.append({"role": "user", "content": content})
+    return messages
+
+def add_assistant_message(messages, content):
+    """content can be a string or response.content (list of blocks)."""
+    messages.append({"role": "assistant", "content": content})
+    return messages</pre>
+</div>
+
+<h3>The Full Conversation Flow</h3>
+<div class="flow">
+  <div class="flow-step">User message added</div><div class="flow-arrow">&#x2192;</div>
+  <div class="flow-step">Claude responds (text + tool_use block)</div><div class="flow-arrow">&#x2192;</div>
+  <div class="flow-step">Append ALL blocks to history</div><div class="flow-arrow">&#x2192;</div>
+  <div class="flow-step">Execute tool, send result back</div>
+</div>
+
+<div class="insight">
+<div class="insight-label">Why the full content list matters</div>
+<div class="insight-text">Claude needs to see its own <code>tool_use</code> block in the history when you send the tool result back. If you only append the text block, Claude loses track of what tool it called and the follow-up request will fail with an API error. The conversation history must be a faithful record of every block exchanged.</div>
+</div>
+
+<div class="callout callout-matters">
+<div class="callout-icon">&#x1F4A1;</div>
+<div class="callout-content">
+<div class="callout-label">Why This Matters</div>
+<div class="callout-text">Message history management is the connective tissue of the tool use system. Get it wrong and the conversation breaks silently. The fix is simple (append <code>response.content</code> instead of <code>response.content[0].text</code>), but understanding why keeps you from debugging mysterious failures later.</div>
+</div>
+</div>
+</div>`
+  },
+
+  m5l6: {
+    module: 5, title: 'Sending Tool Results',
+    tag: 'Module 5 · Lesson 6', tagClass: 'tag-m5',
+    subtitle: 'After executing a tool, you send the result back as a user message containing a tool_result block matched to the original tool_use ID.',
+    content: `
+<div class="content-body">
+<h3>The Flow After Claude Requests a Tool</h3>
+<p>When Claude returns a <code>tool_use</code> block, the conversation is not over. Your server must execute the function, package the result, and send it back in a follow-up request. Only then does Claude generate its final response.</p>
+
+<div class="flow">
+  <div class="flow-step">Claude returns tool_use block</div><div class="flow-arrow">&#x2192;</div>
+  <div class="flow-step">Your server runs the function</div><div class="flow-arrow">&#x2192;</div>
+  <div class="flow-step">Build tool_result block</div><div class="flow-arrow">&#x2192;</div>
+  <div class="flow-step">Send full history + result</div><div class="flow-arrow">&#x2192;</div>
+  <div class="flow-step">Claude responds</div>
+</div>
+
+<h3>The tool_result Block Structure</h3>
+<div class="code-block">
+<div class="code-header"><span class="code-lang">python</span></div>
+<pre>tool_result = {
+    "type": "tool_result",
+    "tool_use_id": tool_use_block.id,   # Must match the original tool_use ID
+    "content": json.dumps(result),       # Always convert to string
+    "is_error": False                    # True if the function raised an exception
+}</pre>
+</div>
+
+<div class="table-wrap"><table>
+<thead><tr><th>Field</th><th>What it is</th><th>Notes</th></tr></thead>
+<tbody>
+<tr><td><code>type</code></td><td>Always <code>"tool_result"</code></td><td>Fixed string</td></tr>
+<tr><td><code>tool_use_id</code></td><td>The <code>id</code> from the original <code>tool_use</code> block</td><td>This is how Claude links results to requests. Must match exactly.</td></tr>
+<tr><td><code>content</code></td><td>Tool function output as a string</td><td>Use <code>json.dumps()</code> even for simple values</td></tr>
+<tr><td><code>is_error</code></td><td>Boolean — was there an exception?</td><td><code>False</code> on success, <code>True</code> on failure</td></tr>
+</tbody>
+</table></div>
+
+<h3>Why tool_use_id Matters</h3>
+<p>Each <code>tool_use</code> block has a unique ID generated by the API (e.g., <code>toolu_01Abc123...</code>). Your <code>tool_result</code> block must reference this exact ID. When Claude calls multiple tools in one message, the IDs tell it which result belongs to which request.</p>
+
+<h3>Sending the Result Back</h3>
+<p>The tool result goes in a <strong>user message</strong> — not an assistant message. You include the full conversation history plus this new user message:</p>
+
+<div class="code-block">
+<div class="code-header"><span class="code-lang">python</span></div>
+<pre>import json
+
+def send_tool_result(messages, tool_use_id, result, is_error=False):
+    """Package a tool result and add it to the conversation."""
+    tool_result_block = {
+        "type": "tool_result",
+        "tool_use_id": tool_use_id,
+        "content": json.dumps(result),
+        "is_error": is_error
+    }
+    # Tool results go in a user message
+    messages.append({
+        "role": "user",
+        "content": [tool_result_block]
+    })
+    return messages
+
+# Example usage
+tool_use_id = response.content[1].id          # From the tool_use block
+result = get_current_datetime("%Y-%m-%d")      # Execute the function
+
+messages = send_tool_result(messages, tool_use_id, result)
+
+# Now send the full history back to Claude (with tools)
+final_response = client.messages.create(
+    model=model,
+    max_tokens=1000,
+    tools=[get_current_datetime_schema],        # Include tools even in follow-up
+    messages=messages
+)</pre>
+</div>
+
+<h3>Handling Errors</h3>
+<div class="code-block">
+<div class="code-header"><span class="code-lang">python</span></div>
+<pre>try:
+    result = get_current_datetime(tool_input.get("date_format"))
+    messages = send_tool_result(messages, tool_use_id, result, is_error=False)
+except Exception as e:
+    # Send the error message back — Claude will read it and may retry
+    messages = send_tool_result(messages, tool_use_id, str(e), is_error=True)</pre>
+</div>
+
+<h3>Two Critical Rules</h3>
+
+<div class="insight">
+<div class="insight-label">Rule 1: Always include tool schemas in follow-up requests</div>
+<div class="insight-text">Even if you don't expect Claude to call another tool, include the original <code>tools</code> list in every follow-up request. The API requires it whenever the conversation history contains <code>tool_use</code> blocks.</div>
+</div>
+
+<div class="insight">
+<div class="insight-label">Rule 2: Tool results go in user messages, not assistant messages</div>
+<div class="insight-text">It feels counterintuitive since you are the one sending the result. But in the API conversation model, <code>tool_result</code> blocks belong inside a user-role message. Putting them in an assistant message causes an API error.</div>
+</div>
+
+<div class="callout callout-matters">
+<div class="callout-icon">&#x1F4A1;</div>
+<div class="callout-content">
+<div class="callout-label">Why This Matters</div>
+<div class="callout-text">Sending tool results correctly completes the tool use loop. The <code>tool_use_id</code> matching, the string conversion, the error flag, and the role placement are all details that either work silently or break visibly. Getting them right once means your tool infrastructure handles any function you add to it.</div>
+</div>
+</div>
+</div>`
+  },
+
+  m5l7: {
+    module: 5, title: 'Multi-Turn Conversations with Tools',
+    tag: 'Module 5 · Lesson 7', tagClass: 'tag-m5',
+    subtitle: 'A single user query can require multiple tools called in sequence. The solution is a loop that keeps calling Claude until it stops requesting tools.',
+    content: `
+<div class="content-body">
+<h3>The Problem: Unpredictable Tool Chains</h3>
+<p>You cannot know in advance how many tools a user query will require. "What day is 103 days from today?" needs two tool calls. "Set a reminder for next Thursday" needs three. Your code must handle arbitrary chains automatically.</p>
+
+<div class="code-block">
+<div class="code-header"><span class="code-lang">example — 2-tool chain</span></div>
+<pre>User: "What day is 103 days from today?"
+
+Turn 1: Claude calls get_current_datetime()
+        → Server returns "2025-05-18 10:30:00"
+
+Turn 2: Claude calls add_duration_to_datetime("2025-05-18 10:30:00", "103 days")
+        → Server returns "2025-08-29 10:30:00"
+
+Turn 3: Claude responds: "103 days from today is August 29, 2025."</pre>
+</div>
+
+<h3>The run_conversation Loop</h3>
+<p>The core pattern is a <code>while True</code> loop that calls Claude, checks <code>stop_reason</code>, executes tools if needed, and repeats until Claude stops requesting tools:</p>
+
+<div class="code-block">
+<div class="code-header"><span class="code-lang">python</span></div>
+<pre>def run_conversation(messages, tools):
+    """Keep calling Claude until it stops requesting tools."""
+    while True:
+        # Call Claude with the current message history
+        response = client.messages.create(
+            model=model,
+            max_tokens=1000,
+            tools=tools,
+            messages=messages
+        )
+        
+        # Add Claude response (all blocks) to history
+        messages = add_assistant_message(messages, response.content)
+        
+        # Check why Claude stopped
+        if response.stop_reason != "tool_use":
+            break   # Claude is done — return final response
+        
+        # Execute all requested tools and collect results
+        tool_results = run_tools(response.message)
+        
+        # Add tool results as a user message
+        messages = add_user_message(messages, tool_results)
+    
+    return messages, response</pre>
+</div>
+
+<h3>The stop_reason Field</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>stop_reason value</th><th>Meaning</th><th>Action</th></tr></thead>
+<tbody>
+<tr><td><code>"tool_use"</code></td><td>Claude wants to call one or more tools</td><td>Execute tools, add results, loop again</td></tr>
+<tr><td><code>"end_turn"</code></td><td>Claude has finished responding</td><td>Break the loop, return response</td></tr>
+<tr><td><code>"max_tokens"</code></td><td>Hit the token limit</td><td>Break and handle truncation</td></tr>
+</tbody>
+</table></div>
+
+<h3>run_tools: Handling Multiple Tool Requests</h3>
+<p>Claude can request multiple tools in a single message. <code>run_tools</code> processes all of them and returns a list of <code>tool_result</code> blocks:</p>
+
+<div class="code-block">
+<div class="code-header"><span class="code-lang">python</span></div>
+<pre>def run_tools(message):
+    """Execute all tool_use blocks in a message and return tool_result blocks."""
+    tool_results = []
+    
+    for block in message.content:
+        if block.type != "tool_use":
+            continue
+        
+        try:
+            output = run_tool(block.name, block.input)
+            tool_results.append({
+                "type": "tool_result",
+                "tool_use_id": block.id,
+                "content": json.dumps(output),
+                "is_error": False
+            })
+        except Exception as e:
+            tool_results.append({
+                "type": "tool_result",
+                "tool_use_id": block.id,
+                "content": str(e),
+                "is_error": True
+            })
+    
+    return tool_results
+
+def run_tool(tool_name, tool_input):
+    """Dispatch tool call to the correct function."""
+    if tool_name == "get_current_datetime":
+        return get_current_datetime(**tool_input)
+    elif tool_name == "add_duration_to_datetime":
+        return add_duration_to_datetime(**tool_input)
+    elif tool_name == "set_reminder":
+        return set_reminder(**tool_input)
+    else:
+        raise ValueError(f"Unknown tool: {tool_name}")</pre>
+</div>
+
+<h3>Required Helper Function Updates</h3>
+<p>The <code>chat</code> function needs to return the full message object (not just text), and a new helper extracts text from multi-block responses:</p>
+
+<div class="code-block">
+<div class="code-header"><span class="code-lang">python</span></div>
+<pre>def chat(messages, tools=None):
+    """Call Claude and return the full response message."""
+    params = {"model": model, "max_tokens": 1000, "messages": messages}
+    if tools:
+        params["tools"] = tools
+    return client.messages.create(**params)   # Return full response, not just text
+
+def text_from_message(message):
+    """Extract all text blocks from a multi-block message."""
+    return " ".join(
+        block.text for block in message.content
+        if block.type == "text"
+    )</pre>
+</div>
+
+<div class="insight">
+<div class="insight-label">Why the loop is essential</div>
+<div class="insight-text">There is no way to predict in advance whether Claude will need 1, 2, or 5 tool calls for a given query. The while loop with <code>stop_reason</code> checking is the only reliable pattern. It handles single-tool queries, multi-tool chains, and zero-tool responses identically.</div>
+</div>
+
+<div class="callout callout-matters">
+<div class="callout-icon">&#x1F4A1;</div>
+<div class="callout-content">
+<div class="callout-label">Why This Matters</div>
+<div class="callout-text">This lesson ties everything from Module 5 together. Tool functions, schemas, message block handling, and tool result sending all feed into this loop. Once <code>run_conversation</code> is working, adding new tools is just a matter of writing the function, adding the schema, and adding one line to <code>run_tool</code>. The infrastructure scales without changes.</div>
+</div>
+</div>
+</div>`
+  },
+
+  m5l8: {
+    module: 5, title: 'Implementing Multiple Turns',
+    tag: 'Module 5 · Lesson 8', tagClass: 'tag-m5',
+    subtitle: 'The complete implementation: stop_reason drives the loop, run_tools processes all tool_use blocks, and run_tool dispatches each call to the right function.',
+    content: `
+<div class="content-body">
+<h3>The stop_reason Signal</h3>
+<p>Every Claude response has a <code>stop_reason</code> field. For tool use, the two values that matter are:</p>
+
+<div class="table-wrap"><table>
+<thead><tr><th>stop_reason</th><th>Meaning</th><th>What to do</th></tr></thead>
+<tbody>
+<tr><td><code>"tool_use"</code></td><td>Claude wants to call one or more tools</td><td>Execute tools, add results, call Claude again</td></tr>
+<tr><td>anything else</td><td>Claude is done (end_turn, max_tokens, etc.)</td><td>Break the loop, return the final response</td></tr>
+</tbody>
+</table></div>
+
+<h3>run_conversation: The Main Loop</h3>
+<div class="code-block">
+<div class="code-header"><span class="code-lang">python</span></div>
+<pre>def run_conversation(messages, tools):
+    """Loop until Claude stops requesting tools."""
+    while True:
+        response = client.messages.create(
+            model=model,
+            max_tokens=1000,
+            tools=tools,
+            messages=messages
+        )
+        
+        # Append FULL content list (text + tool_use blocks)
+        messages = add_assistant_message(messages, response.content)
+        
+        # Break when Claude is done — any stop_reason other than "tool_use"
+        if response.stop_reason != "tool_use":
+            break
+        
+        # Execute all requested tools, add results as user message
+        tool_results = run_tools(response)
+        messages = add_user_message(messages, tool_results)
+    
+    return messages, response</pre>
+</div>
+
+<h3>run_tools: Process Every tool_use Block</h3>
+<div class="code-block">
+<div class="code-header"><span class="code-lang">python</span></div>
+<pre>import json
+
+def run_tools(response):
+    """Find all tool_use blocks in the response and execute each one."""
+    tool_results = []
+    
+    for block in response.content:
+        if block.type != "tool_use":
+            continue
+        
+        try:
+            output = run_tool(block.name, block.input)
+            tool_results.append({
+                "type": "tool_result",
+                "tool_use_id": block.id,      # Must match original ID
+                "content": json.dumps(output),
+                "is_error": False
+            })
+        except Exception as e:
+            tool_results.append({
+                "type": "tool_result",
+                "tool_use_id": block.id,
+                "content": str(e),
+                "is_error": True             # Claude reads this and may retry
+            })
+    
+    return tool_results</pre>
+</div>
+
+<h3>run_tool: The Dispatcher</h3>
+<div class="code-block">
+<div class="code-header"><span class="code-lang">python</span></div>
+<pre>def run_tool(tool_name, tool_input):
+    """Route a tool call to the correct function."""
+    if tool_name == "get_current_datetime":
+        return get_current_datetime(**tool_input)
+    elif tool_name == "add_duration_to_datetime":
+        return add_duration_to_datetime(**tool_input)
+    elif tool_name == "set_reminder":
+        return set_reminder(**tool_input)
+    else:
+        raise ValueError(f"Unknown tool: {tool_name}")</pre>
+</div>
+
+<p>Adding a new tool later requires only: write the function, add its schema, add one <code>elif</code> branch here.</p>
+
+<h3>Putting It All Together</h3>
+<div class="code-block">
+<div class="code-header"><span class="code-lang">python</span></div>
+<pre># Define available tools
+tools = [
+    get_current_datetime_schema,
+    add_duration_to_datetime_schema,
+    set_reminder_schema
+]
+
+# Start a conversation
+messages = []
+messages = add_user_message(messages, "Set a reminder for my doctor appointment next Thursday at 9am")
+
+# Run it — Claude chains tools automatically
+messages, final_response = run_conversation(messages, tools)
+
+# Print the final text response
+print(text_from_message(final_response))
+# -> "Done! I've set a reminder for Thursday, May 22nd at 9:00 AM for your doctor appointment."</pre>
+</div>
+
+<h3>What Happens Inside the Loop</h3>
+<div class="code-block">
+<div class="code-header"><span class="code-lang">trace</span></div>
+<pre>Loop iteration 1:
+  Claude responds: [TextBlock, ToolUseBlock(get_current_datetime)]
+  stop_reason = "tool_use" → execute tool
+  Result: "2025-05-18 10:30:00" → add as user message, loop again
+
+Loop iteration 2:
+  Claude responds: [ToolUseBlock(add_duration_to_datetime)]
+  stop_reason = "tool_use" → execute tool
+  Result: "2025-05-22 09:00:00" → add as user message, loop again
+
+Loop iteration 3:
+  Claude responds: [ToolUseBlock(set_reminder)]
+  stop_reason = "tool_use" → execute tool
+  Result: "Reminder set for 2025-05-22 09:00:00" → add, loop again
+
+Loop iteration 4:
+  Claude responds: [TextBlock("Done! I've set a reminder...")]
+  stop_reason = "end_turn" → BREAK
+  Return final response</pre>
+</div>
+
+<div class="insight">
+<div class="insight-label">Key architecture points</div>
+<div class="insight-text">Assistant messages must include all content blocks (<code>response.content</code>, not just text). Tool results go in user-role messages. Tools must be included in every request while the conversation contains <code>tool_use</code> blocks. The loop handles 0, 1, or N tool calls without any special casing.</div>
+</div>
+
+<div class="callout callout-matters">
+<div class="callout-icon">&#x1F4A1;</div>
+<div class="callout-content">
+<div class="callout-label">Why This Matters</div>
+<div class="callout-text">This implementation pattern — loop + stop_reason check + run_tools dispatcher — is the standard architecture for any Claude-powered application that uses tools. It scales from one tool to dozens without structural changes. Master this pattern and you have the foundation for building agents, assistants, and automated pipelines on top of Claude.</div>
+</div>
+</div>
+</div>`
+  },
+
+  m5l9: {
+    module: 5, title: 'Using Multiple Tools',
+    tag: 'Module 5 · Lesson 9', tagClass: 'tag-m5',
+    subtitle: 'Adding new tools to an existing system is a 3-step pattern. The framework from previous lessons handles everything else automatically.',
+    content: `
+<div class="content-body">
+<h3>The 3-Step Pattern for Adding Tools</h3>
+<p>Once the <code>run_conversation</code> loop is in place, adding any new tool follows exactly the same three steps:</p>
+
+<ol>
+<li><strong>Add the schema</strong> to the <code>tools</code> list in <code>run_conversation</code></li>
+<li><strong>Add a routing case</strong> in <code>run_tool</code> to dispatch calls to the function</li>
+<li><strong>Implement the function</strong></li>
+</ol>
+
+<p>That is the entire cost of adding a new tool. No changes to the loop logic, message handling, or history management.</p>
+
+<h3>Example: Adding the Reminder System Tools</h3>
+
+<div class="code-block">
+<div class="code-header"><span class="code-lang">step 1 — add schemas to the tools list</span></div>
+<pre>def run_conversation(messages):
+    tools = [
+        get_current_datetime_schema,        # Tool 1
+        add_duration_to_datetime_schema,    # Tool 2 (new)
+        set_reminder_schema                 # Tool 3 (new)
+    ]
+    # rest of the loop unchanged...</pre>
+</div>
+
+<div class="code-block">
+<div class="code-header"><span class="code-lang">step 2 — add routing cases</span></div>
+<pre>def run_tool(tool_name, tool_input):
+    if tool_name == "get_current_datetime":
+        return get_current_datetime(**tool_input)
+    elif tool_name == "add_duration_to_datetime":     # New
+        return add_duration_to_datetime(**tool_input)
+    elif tool_name == "set_reminder":                  # New
+        return set_reminder(**tool_input)
+    else:
+        raise ValueError(f"Unknown tool: {tool_name}")</pre>
+</div>
+
+<div class="code-block">
+<div class="code-header"><span class="code-lang">step 3 — implement the functions (example: set_reminder)</span></div>
+<pre>def set_reminder(reminder_datetime: str, reminder_message: str) -> str:
+    if not reminder_datetime:
+        raise ValueError("reminder_datetime is required")
+    if not reminder_message:
+        raise ValueError("reminder_message cannot be empty")
+    
+    # Mock implementation — replace with real scheduling in production
+    print(f"[REMINDER SET] At {reminder_datetime}: {reminder_message}")
+    return f"Reminder confirmed for {reminder_datetime}: '{reminder_message}'"</pre>
+</div>
+
+<h3>Tool Chaining in Action</h3>
+<p>With all three tools registered, Claude orchestrates them automatically. For a reminder request, the chain looks like this:</p>
+
+<div class="code-block">
+<div class="code-header"><span class="code-lang">interaction</span></div>
+<pre>User: "Set a reminder for my dentist appointment, two weeks from today"
+
+Claude: [calls get_current_datetime()]
+        → "2025-05-18 10:30:00"
+
+Claude: [calls add_duration_to_datetime("2025-05-18 10:30:00", "14 days")]
+        → "2025-06-01 10:30:00"
+
+Claude: [calls set_reminder("2025-06-01 10:30:00", "Dentist appointment")]
+        → "Reminder confirmed for 2025-06-01 10:30:00"
+
+Claude: "Done! I've set a reminder for your dentist appointment on June 1st, 2025."</pre>
+</div>
+
+<h3>Response Structure with Multiple Tools</h3>
+<p>When Claude uses multiple tools, a single assistant message can contain both text and multiple <code>tool_use</code> blocks:</p>
+
+<div class="code-block">
+<div class="code-header"><span class="code-lang">response structure</span></div>
+<pre>response.content = [
+    TextBlock(text="I'll get the current time and calculate the date..."),
+    ToolUseBlock(name="get_current_datetime", input={...}, id="toolu_001"),
+    ToolUseBlock(name="add_duration_to_datetime", input={...}, id="toolu_002")
+]</pre>
+</div>
+
+<p>The <code>run_tools</code> function handles this by iterating over all blocks and processing each <code>tool_use</code> one. Each gets its own <code>tool_result</code> with the matching <code>tool_use_id</code>.</p>
+
+<h3>Scalability Summary</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>What changes when you add a tool</th><th>What stays the same</th></tr></thead>
+<tbody>
+<tr><td>Schema added to tools list</td><td>run_conversation loop</td></tr>
+<tr><td>One elif in run_tool</td><td>Message history management</td></tr>
+<tr><td>The function itself</td><td>Tool result structure</td></tr>
+<tr><td></td><td>Error handling</td></tr>
+<tr><td></td><td>stop_reason logic</td></tr>
+</tbody>
+</table></div>
+
+<div class="callout callout-matters">
+<div class="callout-icon">&#x1F4A1;</div>
+<div class="callout-content">
+<div class="callout-label">Why This Matters</div>
+<div class="callout-text">The payoff of building the tool use infrastructure properly is that extending it is trivial. Every new capability you give Claude — whether a database lookup, an API call, a file operation, or a calculation — follows the same 3-step pattern. The loop, message handling, and history management never need to change. This is what makes the architecture scalable for real production systems.</div>
+</div>
+</div>
+</div>`
+  },
+
+  m5l10: {
+    module: 5, title: 'Fine-Grained Tool Calling',
+    tag: 'Module 5 · Lesson 10', tagClass: 'tag-m5',
+    subtitle: 'Streaming with tools requires handling a new event type. Fine-grained mode trades JSON validation for faster chunk delivery.',
+    content: `
+<div class="content-body">
+<h3>Streaming + Tool Use</h3>
+<p>When you combine streaming with tool use, responses include a new event type alongside the usual text chunks:</p>
+
+<div class="table-wrap"><table>
+<thead><tr><th>Event type</th><th>Contains</th><th>When it appears</th></tr></thead>
+<tbody>
+<tr><td><code>content_block_delta</code> (text)</td><td>Text chunk for user-facing output</td><td>Always</td></tr>
+<tr><td><code>content_block_delta</code> (tool)</td><td>JSON chunk for tool arguments</td><td>When Claude is calling a tool</td></tr>
+</tbody>
+</table></div>
+
+<p>Tool argument deltas have two fields:</p>
+<ul>
+<li><code>partial_json</code> &#x2014; the new chunk of JSON just generated</li>
+<li><code>snapshot</code> &#x2014; the cumulative JSON assembled so far</li>
+</ul>
+
+<div class="code-block">
+<div class="code-header"><span class="code-lang">python &#x2014; streaming with tools</span></div>
+<pre>with client.messages.stream(
+    model=model,
+    max_tokens=1000,
+    tools=tools,
+    messages=messages
+) as stream:
+    for event in stream:
+        if event.type == "content_block_delta":
+            if hasattr(event.delta, "text"):
+                # Normal text chunk
+                print(event.delta.text, end="", flush=True)
+            elif hasattr(event.delta, "partial_json"):
+                # Tool argument chunk
+                print(event.delta.partial_json, end="", flush=True)
+    
+    final_message = stream.get_final_message()</pre>
+</div>
+
+<h3>The Default Buffering Behaviour</h3>
+<p>Without any special configuration, the API buffers tool argument chunks before sending them. Specifically, it waits until a complete top-level key-value pair is assembled and validated against the schema before releasing chunks to your server.</p>
+
+<div class="code-block">
+<div class="code-header"><span class="code-lang">what you observe (default mode)</span></div>
+<pre>User asks: "What is the current time?"
+
+Claude starts generating tool arguments...
+[API buffers internally: {"date_fo...]
+[API buffers: {"date_format": "%Y-...]
+[API validates complete key-value pair]
+[BURST] chunks arrive all at once: {"date_format": "%Y-%m-%d %H:%M:%S"}
+[silence...]
+[BURST] next key-value pair arrives</pre>
+</div>
+
+<p>This produces an uneven, bursty streaming experience &#x2014; not the smooth word-by-word feel users expect from streaming.</p>
+
+<h3>Fine-Grained Mode</h3>
+<p>Setting <code>fine_grained: true</code> on the tool schema disables API-side validation and sends chunks immediately as they are generated:</p>
+
+<div class="code-block">
+<div class="code-header"><span class="code-lang">python &#x2014; enabling fine-grained mode</span></div>
+<pre>get_current_datetime_schema = {
+    "name": "get_current_datetime",
+    "description": "Returns the current date and time.",
+    "fine_grained": True,          # Disable buffering/validation
+    "input_schema": {
+        "type": "object",
+        "properties": {
+            "date_format": {
+                "type": "string",
+                "description": "strftime format string"
+            }
+        },
+        "required": []
+    }
+}</pre>
+</div>
+
+<h3>Trade-offs</h3>
+<div class="table-wrap"><table>
+<thead><tr><th></th><th>Default mode</th><th>Fine-grained mode</th></tr></thead>
+<tbody>
+<tr><td>Chunk delivery</td><td>Delayed, bursty</td><td>Immediate, smooth</td></tr>
+<tr><td>JSON validation</td><td>API validates before sending</td><td>No API-side validation</td></tr>
+<tr><td>JSON integrity</td><td>Guaranteed valid</td><td>May include invalid fragments (e.g. <code>undefined</code> instead of <code>null</code>)</td></tr>
+<tr><td>Client handling</td><td>Simple &#x2014; chunks are clean</td><td>Requires try/except on JSON parse</td></tr>
+</tbody>
+</table></div>
+
+<h3>When to Use Each</h3>
+<ul>
+<li><strong>Default mode</strong> &#x2014; you want validated JSON and buffering delays are acceptable (most cases, especially when tool arguments aren&#x27;t displayed to the user)</li>
+<li><strong>Fine-grained mode</strong> &#x2014; you want to show tool argument construction live in the UI, or you need to start processing argument fields before the full JSON arrives</li>
+</ul>
+
+<div class="code-block">
+<div class="code-header"><span class="code-lang">python &#x2014; safe fine-grained parsing</span></div>
+<pre>import json
+
+# Fine-grained chunks may be incomplete JSON fragments
+# Always wrap in try/except when parsing partial snapshots
+def try_parse_json(text):
+    try:
+        return json.loads(text)
+    except json.JSONDecodeError:
+        return None    # Still accumulating, not ready yet
+
+# Use the snapshot field to show progress
+for event in stream:
+    if hasattr(event.delta, "partial_json"):
+        parsed = try_parse_json(event.delta.snapshot)
+        if parsed:
+            update_ui(parsed)    # Full valid JSON available</pre>
+</div>
+
+<div class="callout callout-matters">
+<div class="callout-icon">&#x1F4A1;</div>
+<div class="callout-content">
+<div class="callout-label">Why This Matters</div>
+<div class="callout-text">For most applications that use streaming with tools, the default mode is fine &#x2014; tool arguments are usually internal plumbing that users never see. Fine-grained mode becomes valuable when building developer tools, debug UIs, or any interface where showing Claude&#x27;s reasoning process (including what arguments it is constructing) improves the user experience.</div>
+</div>
+</div>
+</div>`
+  },
+
+  m5l11: {
+    module: 5, title: 'The Text Edit Tool',
+    tag: 'Module 5 · Lesson 11', tagClass: 'tag-m5',
+    subtitle: 'A built-in Claude tool for file operations. You send a small schema stub, Claude expands it internally, and you implement the actual file system calls.',
+    content: `
+<div class="content-body">
+<h3>What It Is</h3>
+<p>The text editor tool is a built-in Claude capability for reading, writing, creating, replacing, and undoing operations on files and directories. Unlike custom tools you build from scratch, Claude already knows its full schema internally &#x2014; you just send a small stub to activate it.</p>
+
+<div class="table-wrap"><table>
+<thead><tr><th>Aspect</th><th>Custom tools</th><th>Text editor tool</th></tr></thead>
+<tbody>
+<tr><td>Schema</td><td>You write it fully</td><td>Send a stub, Claude expands internally</td></tr>
+<tr><td>Implementation</td><td>You write the Python function</td><td>You write it (Claude does not execute files)</td></tr>
+<tr><td>Operations</td><td>Whatever you define</td><td>view, str_replace, create, undo_edit</td></tr>
+</tbody>
+</table></div>
+
+<h3>Sending the Schema Stub</h3>
+<p>The schema type string is version-specific &#x2014; different for Claude 3.5 vs 3.7 models. Check the Anthropic docs for the exact string for your model version:</p>
+
+<div class="code-block">
+<div class="code-header"><span class="code-lang">python</span></div>
+<pre># Minimal stub &#x2014; Claude expands this to the full schema internally
+text_editor_schema = {
+    "type": "text_editor_20250124",   # Version-specific; check docs for your model
+    "name": "str_replace_based_edit_tool"
+}
+
+response = client.messages.create(
+    model=model,
+    max_tokens=4096,
+    tools=[text_editor_schema],
+    messages=messages
+)</pre>
+</div>
+
+<h3>Handling Tool Use Requests</h3>
+<p>Claude sends <code>tool_use</code> blocks with a <code>command</code> field specifying what it wants to do. Your code must execute the operation and return the result:</p>
+
+<div class="code-block">
+<div class="code-header"><span class="code-lang">python</span></div>
+<pre>def handle_text_editor(tool_input):
+    """Execute a text editor operation requested by Claude."""
+    command = tool_input.get("command")
+    path = tool_input.get("path", "")
+    
+    if command == "view":
+        # Read file or directory listing
+        if os.path.isdir(path):
+            return {"output": os.listdir(path)}
+        with open(path, "r") as f:
+            return {"output": f.read()}
+    
+    elif command == "create":
+        # Create a new file
+        content = tool_input.get("file_text", "")
+        os.makedirs(os.path.dirname(path), exist_ok=True)
+        with open(path, "w") as f:
+            f.write(content)
+        return {"output": f"File created: {path}"}
+    
+    elif command == "str_replace":
+        # Find and replace a string in a file
+        old_str = tool_input.get("old_str", "")
+        new_str = tool_input.get("new_str", "")
+        with open(path, "r") as f:
+            content = f.read()
+        if old_str not in content:
+            raise ValueError(f"String not found in {path}: {repr(old_str)}")
+        with open(path, "w") as f:
+            f.write(content.replace(old_str, new_str, 1))
+        return {"output": f"Replaced in {path}"}
+    
+    elif command == "undo_edit":
+        # Revert the last change (implement with a backup strategy)
+        return {"output": "Undo not implemented in this example"}
+    
+    else:
+        raise ValueError(f"Unknown command: {command}")</pre>
+</div>
+
+<h3>Integrating with run_tool</h3>
+<div class="code-block">
+<div class="code-header"><span class="code-lang">python</span></div>
+<pre>def run_tool(tool_name, tool_input):
+    if tool_name == "str_replace_based_edit_tool":
+        return handle_text_editor(tool_input)
+    elif tool_name == "get_current_datetime":
+        return get_current_datetime(**tool_input)
+    # ... other tools
+    else:
+        raise ValueError(f"Unknown tool: {tool_name}")</pre>
+</div>
+
+<h3>Use Cases</h3>
+<ul>
+<li><strong>AI code editor</strong> &#x2014; Claude reads files, makes targeted string replacements, creates new files</li>
+<li><strong>Multi-file project manipulation</strong> &#x2014; refactoring across a codebase</li>
+<li><strong>Automated code generation</strong> &#x2014; Claude writes to disk without manual copy-paste</li>
+<li><strong>File operations in environments without a GUI</strong> &#x2014; headless servers, CI pipelines</li>
+</ul>
+
+<div class="insight">
+<div class="insight-label">Claude does not execute files</div>
+<div class="insight-text">The tool schema tells Claude what operations are available and what arguments to provide. Executing the actual file system operations is always your responsibility. Claude tells you <em>what</em> to do; your code does it.</div>
+</div>
+
+<div class="callout callout-matters">
+<div class="callout-icon">&#x1F4A1;</div>
+<div class="callout-content">
+<div class="callout-label">Why This Matters</div>
+<div class="callout-text">The text editor tool lets you build an AI code editor through the API &#x2014; the same capability that powers tools like Cursor or Claude Code &#x2014; with relatively little code. The key advantage over having Claude output code in a text block is precision: <code>str_replace</code> makes surgical edits to specific lines rather than rewriting an entire file, which reduces errors and makes changes auditable.</div>
+</div>
+</div>
+</div>`
+  },
+
+  m5l12: {
+    module: 5, title: 'The Web Search Tool',
+    tag: 'Module 5 · Lesson 12', tagClass: 'tag-m5',
+    subtitle: 'A built-in tool that gives Claude live web access. No implementation needed &#x2014; just pass the schema and Claude handles everything.',
+    content: `
+<div class="content-body">
+<h3>What Makes It Different</h3>
+<p>Unlike the text editor tool, the web search tool requires <strong>no implementation code</strong> on your side. You pass the schema, and Claude executes searches, fetches pages, and synthesizes results entirely on its own.</p>
+
+<h3>Schema Requirements</h3>
+<div class="code-block">
+<div class="code-header"><span class="code-lang">python</span></div>
+<pre>web_search_schema = {
+    "type": "web_search_20250305",    # Fixed type string
+    "name": "web_search",
+    "max_uses": 5,                    # Max searches per request (default 5)
+    # Optional: restrict to specific domains
+    "allowed_domains": ["nih.gov"]    # Omit to allow all domains
+}
+
+response = client.messages.create(
+    model=model,
+    max_tokens=2048,
+    tools=[web_search_schema],
+    messages=messages
+)</pre>
+</div>
+
+<h3>Response Structure</h3>
+<p>Web search responses contain up to four block types:</p>
+
+<div class="table-wrap"><table>
+<thead><tr><th>Block type</th><th>Contains</th><th>What to do with it</th></tr></thead>
+<tbody>
+<tr><td><code>text</code></td><td>Claude&#x27;s synthesis and explanation</td><td>Display to user</td></tr>
+<tr><td><code>tool_use</code></td><td>The search queries Claude executed</td><td>Optionally show as "searched for..."</td></tr>
+<tr><td><code>web_search_result</code></td><td>Pages found: title + URL</td><td>Show as reference list</td></tr>
+<tr><td><code>citation</code></td><td>Specific text supporting Claude&#x27;s statements, with source</td><td>Highlight inline with source attribution</td></tr>
+</tbody>
+</table></div>
+
+<h3>Rendering Web Search Results</h3>
+<div class="code-block">
+<div class="code-header"><span class="code-lang">python</span></div>
+<pre>def render_search_response(response):
+    text_parts = []
+    sources = []
+
+    for block in response.content:
+        if block.type == "text":
+            text_parts.append(block.text)
+
+        elif block.type == "web_search_result":
+            sources.append({"title": block.title, "url": block.url})
+
+        elif block.type == "citation":
+            print(f"[{block.source.domain}]: {block.cited_text}")
+
+    print(" ".join(text_parts))
+    if sources:
+        print("\nSources:")
+        for s in sources:
+            print(f"  - {s['title']}: {s['url']}")</pre>
+</div>
+
+<h3>Domain Restriction</h3>
+<p>Restricting to trusted domains is the most practical use of the schema configuration. For medical queries, restricting to <code>nih.gov</code> ensures scientifically-backed results instead of generic web content:</p>
+
+<div class="code-block">
+<div class="code-header"><span class="code-lang">python</span></div>
+<pre># Medical queries &#x2014; restrict to NIH
+medical_search = {
+    "type": "web_search_20250305",
+    "name": "web_search",
+    "max_uses": 3,
+    "allowed_domains": ["nih.gov", "pubmed.ncbi.nlm.nih.gov"]
+}
+
+# General queries &#x2014; no restriction
+general_search = {
+    "type": "web_search_20250305",
+    "name": "web_search",
+    "max_uses": 5
+}</pre>
+</div>
+
+<h3>Multiple Searches Per Request</h3>
+<p>Claude may run several searches within one request to answer a complex question. The <code>max_uses</code> parameter caps the total. Each search appears as its own <code>tool_use</code> block in the response.</p>
+
+<div class="insight">
+<div class="insight-label">Citations vs search results</div>
+<div class="insight-text">Search result blocks show the pages Claude found. Citation blocks show the specific text from those pages that Claude used to support its statements. For a transparency-first UI, render citations inline &#x2014; hovering over a cited claim shows the exact source text, domain, and page title.</div>
+</div>
+
+<div class="callout callout-matters">
+<div class="callout-icon">&#x1F4A1;</div>
+<div class="callout-content">
+<div class="callout-label">Why This Matters</div>
+<div class="callout-text">Web search is the simplest way to give Claude access to current information. There is no tool execution loop to implement, no function to write, and no result to format &#x2014; just a schema in the request. The citation system makes responses verifiable, which matters whenever users need to trust the information Claude provides.</div>
+</div>
+</div>
+</div>`
+  },
+
+  m6l1: {
+    module: 6, title: 'Introducing RAG',
+    tag: 'Module 6 · Lesson 1', tagClass: 'tag-m6',
+    subtitle: 'When documents are too large for the context window, RAG retrieves only the relevant chunks instead of stuffing everything into the prompt.',
+    content: `
+<div class="content-body">
+<h3>The Problem RAG Solves</h3>
+<p>You have a 500-page document and a user question. How do you get Claude to answer using that document?</p>
+
+<div class="table-wrap"><table>
+<thead><tr><th>Approach</th><th>How it works</th><th>Limitations</th></tr></thead>
+<tbody>
+<tr>
+  <td><strong>Direct (stuff everything)</strong></td>
+  <td>Paste the entire document into the prompt</td>
+  <td>Hard token limits, decreased effectiveness with long prompts, higher cost, slower</td>
+</tr>
+<tr>
+  <td><strong>RAG (retrieve relevant parts)</strong></td>
+  <td>Break document into chunks, find the relevant ones, include only those</td>
+  <td>More complexity, requires preprocessing, no guarantee chunks have full context</td>
+</tr>
+</tbody>
+</table></div>
+
+<h3>What RAG Is</h3>
+<p>Retrieval Augmented Generation is a two-step process:</p>
+<ol>
+<li><strong>Pre-processing:</strong> Break documents into small chunks and store them in a searchable index</li>
+<li><strong>At query time:</strong> Find the most relevant chunks for the user question and include only those in the prompt</li>
+</ol>
+
+<div class="flow">
+  <div class="flow-step">User question</div><div class="flow-arrow">&#x2192;</div>
+  <div class="flow-step">Search chunks</div><div class="flow-arrow">&#x2192;</div>
+  <div class="flow-step">Top matches</div><div class="flow-arrow">&#x2192;</div>
+  <div class="flow-step">Add to prompt</div><div class="flow-arrow">&#x2192;</div>
+  <div class="flow-step">Claude answers</div>
+</div>
+
+<h3>Benefits</h3>
+<ul>
+<li><strong>Scales to large/multiple documents</strong> &#x2014; no token limit bottleneck</li>
+<li><strong>Smaller prompts</strong> &#x2014; lower cost, faster processing</li>
+<li><strong>Focused context</strong> &#x2014; model attends to relevant content, not 500 pages of noise</li>
+</ul>
+
+<h3>Trade-offs</h3>
+<ul>
+<li><strong>More complexity</strong> &#x2014; chunking, embedding, indexing, search all need implementation</li>
+<li><strong>Preprocessing required</strong> &#x2014; documents must be chunked and indexed before queries work</li>
+<li><strong>Retrieval quality matters</strong> &#x2014; if the search returns the wrong chunks, the answer will be wrong</li>
+<li><strong>No guaranteed completeness</strong> &#x2014; relevant context may span multiple chunks that the search misses</li>
+</ul>
+
+<h3>The Key Challenge</h3>
+<p>RAG quality depends entirely on two decisions: how you chunk the documents and how you search for relevant chunks. The rest of this module covers both in depth, building from simple approaches to production-grade hybrid search with reranking.</p>
+
+<div class="callout callout-matters">
+<div class="callout-icon">&#x1F4A1;</div>
+<div class="callout-content">
+<div class="callout-label">Why This Matters</div>
+<div class="callout-text">RAG is the standard approach for building any application where Claude needs to answer questions from your data &#x2014; internal docs, knowledge bases, legal contracts, research papers. The direct approach works for small documents; RAG is what makes it work at scale.</div>
+</div>
+</div>
+</div>`
+  },
+
+  m6l2: {
+    module: 6, title: 'Text Chunking Strategies',
+    tag: 'Module 6 · Lesson 2', tagClass: 'tag-m6',
+    subtitle: 'How you split documents determines what your search can find. There is no universal best method &#x2014; it depends on what your documents look like.',
+    content: `
+<div class="content-body">
+<h3>Why Chunking Matters</h3>
+<p>Chunking is the first step in any RAG pipeline, and it directly controls retrieval quality. If a chunk about medical "bugs" (bacteria) gets retrieved for a query about software bugs, the problem is the chunking &#x2014; not the search algorithm.</p>
+
+<h3>Three Strategies</h3>
+
+<div class="table-wrap"><table>
+<thead><tr><th>Strategy</th><th>How it works</th><th>Best for</th><th>Weakness</th></tr></thead>
+<tbody>
+<tr>
+  <td><strong>Size-based</strong></td>
+  <td>Split text into equal-length strings (by character count)</td>
+  <td>Any document type; most common in production</td>
+  <td>Cuts words mid-sentence, chunks lack context</td>
+</tr>
+<tr>
+  <td><strong>Structure-based</strong></td>
+  <td>Split on document structure (headers, paragraphs, sections)</td>
+  <td>Markdown, HTML, structured docs</td>
+  <td>Requires guaranteed formatting</td>
+</tr>
+<tr>
+  <td><strong>Semantic-based</strong></td>
+  <td>Group consecutive sentences by semantic similarity using NLP</td>
+  <td>Complex, unstructured text</td>
+  <td>Most complex to implement</td>
+</tr>
+</tbody>
+</table></div>
+
+<h3>Size-Based Chunking</h3>
+<p>The simplest approach: split text into fixed-length strings.</p>
+
+<div class="code-block">
+<div class="code-header"><span class="code-lang">python</span></div>
+<pre>def chunk_by_size(text, chunk_size=500):
+    return [text[i:i+chunk_size] for i in range(0, len(text), chunk_size)]
+
+chunks = chunk_by_size(document_text, 500)
+# ["The software engineering team...", "...implemented a new CI/CD pi...", ...]</pre>
+</div>
+
+<p>The problem: chunks can cut words and sentences in half. The fix is <strong>overlap</strong> &#x2014; include characters from neighboring chunks to preserve context at boundaries:</p>
+
+<div class="code-block">
+<div class="code-header"><span class="code-lang">python</span></div>
+<pre>def chunk_by_size_with_overlap(text, chunk_size=500, overlap=50):
+    chunks = []
+    for i in range(0, len(text), chunk_size - overlap):
+        chunks.append(text[i:i+chunk_size])
+    return chunks</pre>
+</div>
+
+<p>Overlap creates some text duplication but significantly improves chunk coherence at boundaries.</p>
+
+<h3>Structure-Based Chunking</h3>
+<p>Split on document structure rather than character count. Works well for markdown, HTML, or any document with reliable formatting:</p>
+
+<div class="code-block">
+<div class="code-header"><span class="code-lang">python</span></div>
+<pre>def chunk_by_section(text, delimiter="## "):
+    """Split markdown by second-level headers."""
+    sections = text.split(delimiter)
+    # Re-add the delimiter to each section (except the first)
+    return [sections[0]] + [delimiter + s for s in sections[1:]]
+
+chunks = chunk_by_section(report_text)
+# Each chunk is a complete section with its header</pre>
+</div>
+
+<h3>Semantic-Based Chunking</h3>
+<p>The most advanced approach: use NLP to group sentences that are semantically related. Consecutive sentences with similar meaning stay together; a shift in topic triggers a new chunk. Complex to implement but produces the most meaningful chunks for unstructured text.</p>
+
+<h3>Choosing a Strategy</h3>
+
+<div class="table-wrap"><table>
+<thead><tr><th>If you can guarantee...</th><th>Use this</th></tr></thead>
+<tbody>
+<tr><td>Nothing about document format</td><td>Size-based with overlap (reliable fallback)</td></tr>
+<tr><td>Consistent headers/structure</td><td>Structure-based (best results for structured input)</td></tr>
+<tr><td>Complex unstructured text, high accuracy needed</td><td>Semantic-based (most effort, best quality)</td></tr>
+</tbody>
+</table></div>
+
+<div class="insight">
+<div class="insight-label">The practical middle ground</div>
+<div class="insight-text">In production, size-based chunking with overlap is the most common choice because it works with any document. Structure-based chunking is better when you control the input format. Semantic chunking is rarely needed unless retrieval accuracy on unstructured text is critical to the product.</div>
+</div>
+
+<div class="callout callout-matters">
+<div class="callout-icon">&#x1F4A1;</div>
+<div class="callout-content">
+<div class="callout-label">Why This Matters</div>
+<div class="callout-text">Chunking is upstream of everything else in the RAG pipeline. Embeddings, search, and reranking can only work with the chunks you give them. Poor chunks produce poor retrieval no matter how good the rest of the pipeline is. Pick the strategy that matches your document guarantees, and test with real queries to verify.</div>
+</div>
+</div>
+</div>`
+  },
+
+  m6l3: {
+    module: 6, title: 'Text Embeddings',
+    tag: 'Module 6 · Lesson 3', tagClass: 'tag-m6',
+    subtitle: 'Embeddings turn text into numbers so you can measure how similar two pieces of text are &#x2014; the foundation of semantic search in RAG.',
+    content: `
+<div class="content-body">
+<h3>What Embeddings Are</h3>
+<p>An embedding model takes a piece of text and outputs a long list of numbers (typically hundreds or thousands), each in the range -1 to +1. This list is the text&#x27;s <strong>embedding</strong> &#x2014; a numerical fingerprint of its meaning.</p>
+
+<div class="code-block">
+<div class="code-header"><span class="code-lang">conceptual</span></div>
+<pre>"The software team shipped a new feature"
+    &#x2193;
+[0.23, -0.87, 0.14, 0.65, -0.32, ...] (hundreds of numbers)</pre>
+</div>
+
+<p>Each number theoretically scores a different quality of the text &#x2014; topic, sentiment, formality &#x2014; but the actual meaning of each dimension is opaque. You don&#x27;t need to interpret individual numbers; you just compare entire vectors.</p>
+
+<h3>Why Embeddings Matter for RAG</h3>
+<p>Embeddings solve the search problem in RAG: given a user question and hundreds of document chunks, which chunks are most relevant?</p>
+
+<div class="flow">
+  <div class="flow-step">User question</div><div class="flow-arrow">&#x2192;</div>
+  <div class="flow-step">Generate embedding</div><div class="flow-arrow">&#x2192;</div>
+  <div class="flow-step">Compare to chunk embeddings</div><div class="flow-arrow">&#x2192;</div>
+  <div class="flow-step">Return closest matches</div>
+</div>
+
+<p>Unlike keyword search, embeddings match on <strong>meaning</strong>. A query about "shipping software" will match a chunk about "deploying code to production" even though they share no words.</p>
+
+<h3>Semantic Search vs Keyword Search</h3>
+<div class="table-wrap"><table>
+<thead><tr><th></th><th>Keyword search</th><th>Semantic search (embeddings)</th></tr></thead>
+<tbody>
+<tr><td>Matches on</td><td>Exact words</td><td>Meaning / concepts</td></tr>
+<tr><td>Finds synonyms</td><td>No</td><td>Yes</td></tr>
+<tr><td>Handles paraphrases</td><td>No</td><td>Yes</td></tr>
+<tr><td>Speed</td><td>Very fast</td><td>Fast (with vector DB)</td></tr>
+<tr><td>Misses</td><td>Semantically similar text with different words</td><td>Exact term matches that keyword search catches</td></tr>
+</tbody>
+</table></div>
+
+<h3>Implementation</h3>
+<p>Anthropic recommends <strong>Voyage AI</strong> for embedding generation. It requires a separate account and API key but is free to start and integrates easily via its SDK:</p>
+
+<div class="code-block">
+<div class="code-header"><span class="code-lang">python</span></div>
+<pre># Install: pip install voyageai
+import voyageai
+
+voyage_client = voyageai.Client(api_key="your-voyage-api-key")
+
+# Embed a single string
+result = voyage_client.embed(["The engineering team deployed a hotfix"], model="voyage-2")
+embedding = result.embeddings[0]   # List of floats
+
+# Embed multiple strings at once
+results = voyage_client.embed(chunks, model="voyage-2")
+chunk_embeddings = results.embeddings   # List of lists</pre>
+</div>
+
+<h3>The RAG Pipeline with Embeddings</h3>
+<ol>
+<li>Chunk your documents (previous lesson)</li>
+<li><strong>Generate an embedding for each chunk</strong> and store both together</li>
+<li>When a user asks a question, <strong>embed the question</strong> with the same model</li>
+<li>Find stored chunk embeddings closest to the question embedding</li>
+<li>Include those chunks in the prompt to Claude</li>
+</ol>
+
+<div class="insight">
+<div class="insight-label">Same model for chunks and queries</div>
+<div class="insight-text">You must use the same embedding model for both document chunks and user queries. Embeddings from different models occupy different vector spaces and cannot be compared. If you switch models, you need to re-embed all your chunks.</div>
+</div>
+
+<div class="callout callout-matters">
+<div class="callout-icon">&#x1F4A1;</div>
+<div class="callout-content">
+<div class="callout-label">Why This Matters</div>
+<div class="callout-text">Embeddings are what make RAG intelligent rather than just pattern-matching on keywords. They let a question about "annual revenue growth" find a chunk that discusses "year-over-year sales increases" &#x2014; something no keyword search would catch. The quality of your embeddings directly determines the quality of your retrieval.</div>
+</div>
+</div>
+</div>`
+  },
+
+  m6l4: {
+    module: 6, title: 'The Full RAG Flow',
+    tag: 'Module 6 · Lesson 4', tagClass: 'tag-m6',
+    subtitle: 'The complete 7-step pipeline: chunk documents, embed them, store in a vector database, then retrieve relevant context at query time.',
+    content: `
+<div class="content-body">
+<h3>The 7 Steps</h3>
+<p>RAG combines everything from the previous lessons into one pipeline. Steps 1&#x2013;4 happen once during preprocessing; steps 5&#x2013;7 run every time a user asks a question.</p>
+
+<div class="flow">
+  <div class="flow-step">1. Chunk</div><div class="flow-arrow">&#x2192;</div>
+  <div class="flow-step">2. Embed</div><div class="flow-arrow">&#x2192;</div>
+  <div class="flow-step">3. Normalize</div><div class="flow-arrow">&#x2192;</div>
+  <div class="flow-step">4. Store</div>
+</div>
+<p style="text-align:center; color: var(--muted); margin: 0.5rem 0;">&#x25BC; preprocessing complete &#x25BC;</p>
+<div class="flow">
+  <div class="flow-step">5. Embed query</div><div class="flow-arrow">&#x2192;</div>
+  <div class="flow-step">6. Similarity search</div><div class="flow-arrow">&#x2192;</div>
+  <div class="flow-step">7. Assemble prompt</div>
+</div>
+
+<div class="table-wrap"><table>
+<thead><tr><th>Step</th><th>What happens</th><th>Key detail</th></tr></thead>
+<tbody>
+<tr><td>1. Chunk</td><td>Split documents into text pieces</td><td>Strategy depends on doc format (previous lesson)</td></tr>
+<tr><td>2. Embed</td><td>Convert each chunk to a numerical vector</td><td>Use the same model for chunks and queries</td></tr>
+<tr><td>3. Normalize</td><td>Scale vector magnitudes to 1.0</td><td>Handled automatically by embedding APIs</td></tr>
+<tr><td>4. Store</td><td>Save embeddings in a vector database</td><td>Optimized for fast similarity calculations</td></tr>
+<tr><td>5. Embed query</td><td>Convert user question to a vector</td><td>Same embedding model as step 2</td></tr>
+<tr><td>6. Search</td><td>Find most similar stored embeddings</td><td>Uses cosine similarity</td></tr>
+<tr><td>7. Assemble</td><td>Combine question + retrieved chunks, send to LLM</td><td>Only the top-k chunks go into the prompt</td></tr>
+</tbody>
+</table></div>
+
+<h3>The Math: Cosine Similarity</h3>
+<p>Cosine similarity measures the angle between two vectors. It returns a value from -1 to 1, where 1 means identical direction (most similar) and -1 means opposite.</p>
+
+<div class="table-wrap"><table>
+<thead><tr><th>Metric</th><th>Range</th><th>Interpretation</th></tr></thead>
+<tbody>
+<tr><td>Cosine similarity</td><td>-1 to 1</td><td>Closer to 1 = more similar</td></tr>
+<tr><td>Cosine distance</td><td>0 to 2</td><td>Closer to 0 = more similar (= 1 minus similarity)</td></tr>
+</tbody>
+</table></div>
+
+<p>The vector database handles this calculation for you. You submit a query embedding and ask for the top <em>k</em> results; it returns the closest matches ranked by distance.</p>
+
+<h3>Vector Databases</h3>
+<p>A vector database is just a database optimized for storing embeddings and running similarity searches over them. You can start with a simple in-memory implementation for prototyping, then move to a production solution (Pinecone, Weaviate, ChromaDB, pgvector) when needed. The API pattern is the same:</p>
+
+<div class="code-block">
+<div class="code-header"><span class="code-lang">python</span></div>
+<pre># Pseudocode &#x2014; same pattern across vector DBs
+store = VectorIndex()
+
+# Preprocessing: store chunks with their embeddings
+for chunk, embedding in zip(chunks, embeddings):
+    store.add_vector(embedding, metadata={"content": chunk})
+
+# Query time: find the 3 most relevant chunks
+query_embedding = generate_embedding(user_question)
+results = store.search(query_embedding, top_k=3)
+
+# Assemble prompt
+context = "\n\n".join([r.metadata["content"] for r in results])
+prompt = f"Using this context:\n{context}\n\nAnswer: {user_question}"</pre>
+</div>
+
+<h3>Preprocessing vs Query Time</h3>
+<p>This split is important to understand:</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Phase</th><th>When</th><th>Steps</th><th>Cost</th></tr></thead>
+<tbody>
+<tr><td><strong>Preprocessing</strong></td><td>Once, when documents are added/updated</td><td>Chunk &#x2192; Embed &#x2192; Normalize &#x2192; Store</td><td>Embedding API calls (one-time)</td></tr>
+<tr><td><strong>Query time</strong></td><td>Every user question</td><td>Embed query &#x2192; Search &#x2192; Assemble &#x2192; LLM</td><td>1 embedding call + 1 LLM call per question</td></tr>
+</tbody>
+</table></div>
+
+<div class="insight">
+<div class="insight-label">Store original text alongside embeddings</div>
+<div class="insight-text">Always store the original chunk text as metadata when you insert an embedding. The embedding itself is just numbers &#x2014; without the original text, a search result gives you a similarity score but nothing to put in the prompt.</div>
+</div>
+
+<div class="callout callout-matters">
+<div class="callout-icon">&#x1F4A1;</div>
+<div class="callout-content">
+<div class="callout-label">Why This Matters</div>
+<div class="callout-text">This 7-step flow is the core architecture behind any RAG system. The preprocessing/query-time split means users get fast answers (one embedding call + one vector search) even when the underlying corpus is massive. The remaining lessons in this module improve retrieval quality by layering additional search methods and post-processing on top of this foundation.</div>
+</div>
+</div>
+</div>`
+  },
+
+  m6l5: {
+    module: 6, title: 'Implementing the RAG Flow',
+    tag: 'Module 6 · Lesson 5', tagClass: 'tag-m6',
+    subtitle: 'A hands-on walkthrough: chunk a document, embed the chunks, populate a vector store, embed a query, and retrieve the closest matches.',
+    content: `
+<div class="content-body">
+<h3>The 5 Implementation Steps</h3>
+<p>This lesson puts the 7-step theory from the previous lesson into working code. The implementation uses a custom <code>VectorIndex</code> class as the vector store and Voyage AI for embeddings.</p>
+
+<h3>Step 1: Chunk the Document</h3>
+<div class="code-block">
+<div class="code-header"><span class="code-lang">python</span></div>
+<pre># Structure-based chunking on a markdown report
+chunks = chunk_by_section(report_text)
+# Each chunk is a complete section with its header</pre>
+</div>
+
+<h3>Step 2: Generate Embeddings</h3>
+<div class="code-block">
+<div class="code-header"><span class="code-lang">python</span></div>
+<pre># generate_embedding() supports a single string or a list of strings
+chunk_embeddings = generate_embedding(chunks)
+# Returns a list of vectors, one per chunk</pre>
+</div>
+
+<h3>Step 3: Populate the Vector Store</h3>
+<div class="code-block">
+<div class="code-header"><span class="code-lang">python</span></div>
+<pre>store = VectorIndex()
+
+for chunk, embedding in zip(chunks, chunk_embeddings):
+    store.add_vector(embedding, metadata={"content": chunk})</pre>
+</div>
+
+<div class="insight">
+<div class="insight-label">Why store the original text as metadata</div>
+<div class="insight-text">The embedding is just a list of numbers. When a search returns a match, you need the original text to put into the prompt. Storing it as metadata alongside the embedding makes this retrieval automatic.</div>
+</div>
+
+<h3>Step 4: Embed the User Query</h3>
+<div class="code-block">
+<div class="code-header"><span class="code-lang">python</span></div>
+<pre>question = "What did the software engineering department do last year?"
+query_embedding = generate_embedding(question)</pre>
+</div>
+
+<h3>Step 5: Similarity Search</h3>
+<div class="code-block">
+<div class="code-header"><span class="code-lang">python</span></div>
+<pre># Find the 2 most relevant chunks
+results = store.search(query_embedding, top_k=2)
+
+for result in results:
+    print(f"Distance: {result.distance:.2f}")
+    print(result.metadata["content"][:100], "...")
+
+# Example output:
+# Distance: 0.71  &#x2192; Software engineering section
+# Distance: 0.72  &#x2192; Methodology section</pre>
+</div>
+
+<h3>Assembling the Final Prompt</h3>
+<div class="code-block">
+<div class="code-header"><span class="code-lang">python</span></div>
+<pre># Combine retrieved chunks with the user question
+context = "\n\n".join([r.metadata["content"] for r in results])
+
+prompt = f"""Using the following context from our internal report,
+answer the question below.
+
+&lt;context&gt;
+{context}
+&lt;/context&gt;
+
+Question: {question}"""
+
+# Send to Claude
+response = client.messages.create(
+    model=model, max_tokens=1000,
+    messages=[{"role": "user", "content": prompt}]
+)</pre>
+</div>
+
+<h3>How to Read Cosine Distance Results</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>Distance</th><th>Meaning</th></tr></thead>
+<tbody>
+<tr><td>0.0</td><td>Identical (perfect match)</td></tr>
+<tr><td>0.3&#x2013;0.5</td><td>Very similar</td></tr>
+<tr><td>0.7&#x2013;0.8</td><td>Moderately related</td></tr>
+<tr><td>1.0+</td><td>Unrelated</td></tr>
+</tbody>
+</table></div>
+
+<p>In the example above, distances of 0.71 and 0.72 indicate moderate relevance &#x2014; the correct sections were retrieved, but there is room for improvement. The remaining lessons in this module address that with hybrid search, reranking, and contextual retrieval.</p>
+
+<div class="callout callout-matters">
+<div class="callout-icon">&#x1F4A1;</div>
+<div class="callout-content">
+<div class="callout-label">Why This Matters</div>
+<div class="callout-text">This is the minimum viable RAG pipeline: chunk, embed, store, search, assemble. It works, but moderate cosine distances show its limits &#x2014; semantic search alone can miss exact terms and lacks the nuance of hybrid approaches. The next lessons layer BM25 lexical search, multi-index fusion, reranking, and contextual retrieval on top of this foundation to close those gaps.</div>
+</div>
+</div>
+</div>`
+  },
+
+  m6l6: {
+    module: 6, title: 'BM25 Lexical Search',
+    tag: 'Module 6 · Lesson 6', tagClass: 'tag-m6',
+    subtitle: 'Semantic search misses exact keyword matches. BM25 fills that gap by ranking documents based on term frequency and rarity.',
+    content: `
+<div class="content-body">
+<h3>The Problem with Semantic Search Alone</h3>
+<p>Semantic search matches on meaning, but it can miss exact term matches. If a user searches for "ENG team incident 2023" and a document contains that exact phrase repeatedly, semantic search might still rank a loosely related document higher because it is semantically closer in vector space.</p>
+
+<h3>What BM25 Is</h3>
+<p>BM25 (Best Match 25) is a lexical search algorithm that ranks documents by keyword relevance. It complements semantic search by catching exact term matches that embeddings miss.</p>
+
+<h3>How BM25 Works</h3>
+<ol>
+<li><strong>Tokenize the query</strong> &#x2014; split into individual terms, remove punctuation</li>
+<li><strong>Count term frequency</strong> &#x2014; how often each term appears across all chunks</li>
+<li><strong>Weight by rarity</strong> &#x2014; rare terms get higher importance, common terms (like "the", "a") get lower importance</li>
+<li><strong>Rank chunks</strong> &#x2014; score each chunk by how many high-weight terms it contains</li>
+</ol>
+
+<div class="code-block">
+<div class="code-header"><span class="code-lang">conceptual</span></div>
+<pre>Query: "ENG team incident 2023"
+
+Term weights (based on rarity across corpus):
+  "ENG"      &#x2192; high weight (rare, specific)
+  "incident" &#x2192; medium weight
+  "2023"     &#x2192; medium weight
+  "team"     &#x2192; low weight (appears in many chunks)
+
+Chunk with "ENG" + "incident" + "2023" &#x2192; top ranked</pre>
+</div>
+
+<div class="insight">
+<div class="insight-label">The core insight</div>
+<div class="insight-text">Rare terms matter more than common ones. If "ENG" only appears in 2 out of 50 chunks, it is a strong signal. If "team" appears in 40 out of 50, it tells you almost nothing. BM25 encodes this intuition mathematically.</div>
+</div>
+
+<h3>Hybrid Search: Semantic + Lexical</h3>
+<p>The production approach is to run both searches in parallel and merge the results:</p>
+
+<div class="flow">
+  <div class="flow-step">User query</div><div class="flow-arrow">&#x2192;</div>
+  <div class="flow-step">Vector search</div>
+</div>
+<div class="flow" style="margin-top:4px">
+  <div class="flow-step">User query</div><div class="flow-arrow">&#x2192;</div>
+  <div class="flow-step">BM25 search</div>
+</div>
+<div class="flow" style="margin-top:4px">
+  <div class="flow-step">Merge results</div><div class="flow-arrow">&#x2192;</div>
+  <div class="flow-step">Final ranking</div>
+</div>
+
+<h3>Implementation</h3>
+<p>Both search systems use the same API pattern, making them easy to combine:</p>
+
+<div class="code-block">
+<div class="code-header"><span class="code-lang">python</span></div>
+<pre># Both indexes share the same interface
+vector_index = VectorIndex()
+bm25_index = BM25Index()
+
+# Populate both with the same chunks
+for chunk in chunks:
+    embedding = generate_embedding(chunk)
+    vector_index.add_vector(embedding, metadata={"content": chunk})
+    bm25_index.add_document(chunk)
+
+# Search both
+vector_results = vector_index.search(query_embedding, top_k=5)
+bm25_results = bm25_index.search(query_text, top_k=5)</pre>
+</div>
+
+<h3>When Each Method Wins</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>Query type</th><th>Semantic search</th><th>BM25</th></tr></thead>
+<tbody>
+<tr><td>Paraphrased questions</td><td>&#x2705; Matches meaning</td><td>&#x274C; Different words, no match</td></tr>
+<tr><td>Exact technical terms</td><td>&#x274C; May rank loosely related content higher</td><td>&#x2705; Finds exact matches</td></tr>
+<tr><td>Acronyms / proper nouns</td><td>&#x274C; Often poor at abbreviations</td><td>&#x2705; Exact string match</td></tr>
+<tr><td>Broad conceptual queries</td><td>&#x2705; Understands relationships</td><td>&#x274C; Only matches literal words</td></tr>
+</tbody>
+</table></div>
+
+<div class="callout callout-matters">
+<div class="callout-icon">&#x1F4A1;</div>
+<div class="callout-content">
+<div class="callout-label">Why This Matters</div>
+<div class="callout-text">Neither semantic search nor keyword search is sufficient on its own. Semantic search catches meaning but misses exact terms; BM25 catches exact terms but misses meaning. Running both in parallel and merging results gives you the best of both &#x2014; the next lesson covers exactly how to merge them with Reciprocal Rank Fusion.</div>
+</div>
+</div>
+</div>`
+  },
+
+  m6l7: {
+    module: 6, title: 'Multi-Index RAG Pipeline',
+    tag: 'Module 6 · Lesson 7', tagClass: 'tag-m6',
+    subtitle: 'Run semantic and lexical search in parallel, then merge their results with Reciprocal Rank Fusion for better retrieval than either alone.',
+    content: `
+<div class="content-body">
+<h3>The Architecture</h3>
+<p>A multi-index pipeline wraps two (or more) search indexes behind a single <code>Retriever</code> class. When a query comes in, the retriever forwards it to every index, collects the results, and merges them into one ranked list.</p>
+
+<div class="flow">
+  <div class="flow-step">Query</div><div class="flow-arrow">&#x2192;</div>
+  <div class="flow-step">Retriever</div>
+</div>
+<div class="flow" style="margin-top:4px">
+  <div class="flow-step" style="margin-left:120px">Vector Index</div><div class="flow-arrow">&#x2192;</div>
+  <div class="flow-step" style="background:var(--surface2)">[doc2, doc7, doc6]</div>
+</div>
+<div class="flow" style="margin-top:4px">
+  <div class="flow-step" style="margin-left:120px">BM25 Index</div><div class="flow-arrow">&#x2192;</div>
+  <div class="flow-step" style="background:var(--surface2)">[doc6, doc2, doc7]</div>
+</div>
+<div class="flow" style="margin-top:4px">
+  <div class="flow-step">Merge (RRF)</div><div class="flow-arrow">&#x2192;</div>
+  <div class="flow-step">Final: [doc2, doc6, doc7]</div>
+</div>
+
+<h3>Reciprocal Rank Fusion (RRF)</h3>
+<p>RRF is the algorithm that merges ranked lists from different search methods into a single ranking. For each document, it sums a score based on where that document appeared in each list:</p>
+
+<div class="code-block">
+<div class="code-header"><span class="code-lang">formula</span></div>
+<pre>RRF_score(doc) = sum of  1 / (rank + 1)  across all search methods</pre>
+</div>
+
+<h3>Worked Example</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>Document</th><th>Vector rank</th><th>BM25 rank</th><th>RRF score</th></tr></thead>
+<tbody>
+<tr><td><strong>doc2</strong></td><td>1st &#x2192; 1/(1+1) = 0.50</td><td>2nd &#x2192; 1/(2+1) = 0.33</td><td><strong>0.83</strong></td></tr>
+<tr><td><strong>doc6</strong></td><td>3rd &#x2192; 1/(3+1) = 0.25</td><td>1st &#x2192; 1/(1+1) = 0.50</td><td><strong>0.75</strong></td></tr>
+<tr><td><strong>doc7</strong></td><td>2nd &#x2192; 1/(2+1) = 0.33</td><td>3rd &#x2192; 1/(3+1) = 0.25</td><td><strong>0.58</strong></td></tr>
+</tbody>
+</table></div>
+
+<p>doc2 wins because it ranked high in <em>both</em> methods. doc6 ranked #1 in BM25 but only #3 in vector search, so it lands second overall. RRF rewards documents that perform well across multiple search paradigms.</p>
+
+<h3>Implementation Pattern</h3>
+<div class="code-block">
+<div class="code-header"><span class="code-lang">python</span></div>
+<pre>class Retriever:
+    def __init__(self):
+        self.vector_index = VectorIndex()
+        self.bm25_index = BM25Index()
+
+    def add_document(self, chunk, embedding):
+        self.vector_index.add_vector(embedding, {"content": chunk})
+        self.bm25_index.add_document(chunk)
+
+    def search(self, query_text, query_embedding, top_k=5):
+        vec_results = self.vector_index.search(query_embedding, top_k)
+        bm25_results = self.bm25_index.search(query_text, top_k)
+        return self._reciprocal_rank_fusion(vec_results, bm25_results)
+
+    def _reciprocal_rank_fusion(self, *result_lists):
+        scores = {}
+        for results in result_lists:
+            for rank, doc in enumerate(results):
+                doc_id = doc.id
+                scores[doc_id] = scores.get(doc_id, 0) + 1 / (rank + 1)
+        # Sort by combined score, highest first
+        return sorted(scores.items(), key=lambda x: x[1], reverse=True)</pre>
+</div>
+
+<h3>Design Benefits</h3>
+<ul>
+<li><strong>Modular</strong> &#x2014; each index class is isolated; swap or upgrade one without touching the other</li>
+<li><strong>Standardized API</strong> &#x2014; every index exposes <code>search()</code> and <code>add_document()</code></li>
+<li><strong>Extensible</strong> &#x2014; adding a third search method (e.g., a specialized domain index) means adding one more index to the retriever</li>
+<li><strong>Better edge-case handling</strong> &#x2014; when one method fails on a query type, the other compensates</li>
+</ul>
+
+<div class="callout callout-matters">
+<div class="callout-icon">&#x1F4A1;</div>
+<div class="callout-content">
+<div class="callout-label">Why This Matters</div>
+<div class="callout-text">Multi-index search with RRF is the production standard for RAG pipelines. It is simple to implement (the fusion formula is one line of math), modular to maintain, and consistently outperforms either search method alone. The next lessons add two more improvements on top: LLM-based reranking and contextual retrieval.</div>
+</div>
+</div>
+</div>`
+  },
+
+};
+
+// ── LESSON ORDER ──
+const lessonOrder = [
+  'm1l1',
+  'm2l1','m2l2','m2l3','m2l4','m2l5','m2l6','m2l7','m2l8','m2l9',
+  'm3l1','m3l2','m3l3','m3l4','m3l5','m3l6',
+  'm4l1','m4l2','m4l3','m4l4','m4l5','m4l6',
+  'm5l1','m5l2','m5l3','m5l4','m5l5','m5l6','m5l7','m5l8','m5l9','m5l10','m5l11','m5l12',
+  'm6l1','m6l2','m6l3','m6l4','m6l5','m6l6','m6l7'
+];
+
+const totalLessons = lessonOrder.length;
+let currentLesson = null;
+let completedLessons = new Set();
+let sidebarOpen = true;
+
+function toggleModule(header) {
+  const group = header.parentElement;
+  group.classList.toggle('open');
+}
+
+function showLesson(id) {
+  currentLesson = id;
+  const lesson = lessons[id];
+  if (!lesson) return;
+
+  // Hide home screen, show content
+  document.getElementById('home-screen').style.display = 'none';
+  const area = document.getElementById('content-area');
+  area.style.display = 'block';
+
+  // Mark completed
+  completedLessons.add(id);
+  updateProgress();
+
+  // Update active states
+  document.querySelectorAll('.lesson-item').forEach(el => {
+    el.classList.remove('active');
+    if (el.dataset.id === id) el.classList.add('active');
+    if (completedLessons.has(el.dataset.id)) el.classList.add('completed');
+  });
+
+  // Update breadcrumb
+  const modNames = ['','Anthropic Overview','Accessing Claude with the API','Prompt Evaluation','Prompt Engineering Techniques'];
+  document.getElementById('breadcrumb').innerHTML = `
+    <span onclick="showHome()" style="cursor:pointer;color:var(--text-muted)">Home</span>
+    <span class="sep">›</span>
+    <span style="color:var(--text-muted)">Module ${lesson.module}</span>
+    <span class="sep">›</span>
+    <span class="current">${lesson.title}</span>
+  `;
+
+  // Open module in sidebar
+  document.querySelectorAll('.module-group').forEach(g => {
+    if (parseInt(g.dataset.module) === lesson.module) g.classList.add('open');
+  });
+
+  // Render content
+  area.innerHTML = `
+    <div class="fade-in">
+      <div class="lesson-hero">
+        <div class="lesson-tag ${lesson.tagClass}">${lesson.tag}</div>
+        <h1 class="lesson-title">${lesson.title}</h1>
+        <p class="lesson-subtitle">${lesson.subtitle}</p>
+      </div>
+      <hr class="section-divider">
+      ${lesson.content}
+    </div>
+  `;
+
+  area.scrollTop = 0;
+  updateNavButtons();
+}
+
+function showHome() {
+  currentLesson = null;
+  document.getElementById('home-screen').style.display = 'block';
+  document.getElementById('content-area').style.display = 'none';
+  document.getElementById('breadcrumb').innerHTML = '<span>Building with the Claude API</span>';
+  document.querySelectorAll('.lesson-item').forEach(el => el.classList.remove('active'));
+  updateNavButtons();
+}
+
+function navigate(dir) {
+  const idx = lessonOrder.indexOf(currentLesson);
+  const newIdx = idx + dir;
+  if (newIdx >= 0 && newIdx < lessonOrder.length) {
+    showLesson(lessonOrder[newIdx]);
+  }
+}
+
+function updateNavButtons() {
+  const idx = lessonOrder.indexOf(currentLesson);
+  document.getElementById('prev-btn').disabled = idx <= 0;
+  document.getElementById('next-btn').disabled = idx >= lessonOrder.length - 1 || currentLesson === null;
+}
+
+function updateProgress() {
+  const count = completedLessons.size;
+  const pct = Math.round((count / totalLessons) * 100);
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('progress-label').textContent = `${count} / ${totalLessons}`;
+}
+
+function toggleSidebar() {
+  sidebarOpen = !sidebarOpen;
+  document.getElementById('sidebar').classList.toggle('collapsed', !sidebarOpen);
+}
+
+function copyCode(btn) {
+  const pre = btn.closest('.code-block').querySelector('pre');
+  navigator.clipboard.writeText(pre.textContent).then(() => {
+    btn.textContent = 'Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
+  });
+}
+
+// Init nav buttons
+updateNavButtons();
+
+
+</script>
+</body>
+</html>

@@ -1,0 +1,18 @@
+# ── Shared across all projects ─────────────────────────────────────────────
+anthropic>=0.40
+python-dotenv>=1.0
+
+# ── Claude_Chatbot ──────────────────────────────────────────────────────────
+flask>=3.0
+
+# ── AI_Support_Bot ──────────────────────────────────────────────────────────
+groq
+google-genai
+fastapi
+uvicorn
+
+# ── JupyterNotebook ─────────────────────────────────────────────────────────
+voyageai
+ipykernel>=6.0
+jupyter>=1.0
+nbconvert>=7.0
