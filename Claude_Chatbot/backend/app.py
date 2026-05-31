@@ -12,7 +12,7 @@ Run:
   pip install -r requirements.txt
   python app.py                 # reads .env by default
   python app.py --port 9000     # override port
-  open http://localhost:8080
+  open http://localhost:9000
 """
 
 import argparse
@@ -30,7 +30,7 @@ from flask import Flask, Response, jsonify, request, send_from_directory, stream
 # Load .env from the repo root (AI_Learning/). Path: backend/ -> Claude_Chatbot/ -> AI_Learning/
 load_dotenv(Path(__file__).resolve().parent.parent.parent / ".env")
 
-DEFAULT_PORT = 8080
+DEFAULT_PORT = 9000
 
 # Frontend lives one level up from backend/
 FRONTEND_DIR = (Path(__file__).resolve().parent.parent / "frontend").resolve()

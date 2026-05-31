@@ -90,7 +90,7 @@ All keys are read from `AI_Learning/.env` at the repo root (3 levels up from `ba
 | Key | Required | Notes |
 |-----|----------|-------|
 | `ANTHROPIC_API_KEY` | Yes | Read from `AI_Learning/.env` at repo root |
-| `PORT` | No | Overrides default 8080; also settable via `--port` CLI arg |
+| `PORT` | No | Overrides default 9000; also settable via `--port` CLI arg |
 | `VERIFY_SSL` | No | Set to `false` only behind a TLS-intercepting corporate proxy |
 
 ---
@@ -100,7 +100,7 @@ All keys are read from `AI_Learning/.env` at the repo root (3 levels up from `ba
 **From repo root (recommended):**
 ```bash
 make install        # one-time setup — creates root .venv, installs all deps
-make chatbot        # starts on port 8080
+make chatbot        # starts on port 9000
 ```
 
 **Custom port:**
@@ -116,7 +116,7 @@ pip install -r requirements.txt
 python app.py
 ```
 
-Open `http://localhost:8080`.
+Open `http://localhost:9000`.
 
 `app.py` must be run from inside `backend/` — it resolves the `frontend/` path relative to its own location.
 

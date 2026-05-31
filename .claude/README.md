@@ -25,7 +25,8 @@ Each subproject is self-contained. When working on one:
 | Task | Where to start |
 | --- | --- |
 | Run the simple chatbot | `Claude_Chatbot/backend/` → `python app.py` |
-| Run the support bot | `AI_Support_Bot/` → `uvicorn backend.api:app --reload` |
+| Run the support bot | `AI_Bot/` → `uvicorn backend.api:app --reload` |
 | Open notebooks | `JupyterNotebook/` → select kernel `Python (JupyterNotebook .venv)` |
-| Add a new AI provider | `AI_Support_Bot/CLAUDE.md` → OCP section |
+| Add a new AI provider | `AI_Bot/CLAUDE.md` → OCP section |
 | Add a new notebook | `JupyterNotebook/CLAUDE.md` → "When adding a new notebook" |
+

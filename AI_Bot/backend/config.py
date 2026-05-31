@@ -1,7 +1,7 @@
 from pathlib import Path
 from dotenv import dotenv_values
 
-# Path: backend/ -> AI_Support_Bot/ -> AI_Learning/ (repo root)
+# Path: backend/ -> AI_Bot/ -> AI_Learning/ (repo root)
 config = dotenv_values(Path(__file__).resolve().parent.parent.parent / ".env")
 
 # Approximate cost per token in USD, keyed by model name.
@@ -18,3 +18,4 @@ COST_PER_TOKEN: dict[str, dict[str, float]] = {
     "gemini-2.5-flash":      {"input": 0.15 / 1_000_000, "output": 0.60 / 1_000_000},
     "gemini-2.5-flash-lite": {"input": 0.10 / 1_000_000, "output": 0.40 / 1_000_000},
 }
+

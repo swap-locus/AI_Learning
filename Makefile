@@ -1,4 +1,13 @@
 ROOT      := $(CURDIR)
+
+ifeq ($(OS),Windows_NT)
+PYTHON    := $(ROOT)/.venv/Scripts/python.exe
+PIP       := $(ROOT)/.venv/Scripts/pip.exe
+JUPYTER   := $(ROOT)/.venv/Scripts/jupyter.exe
+UVICORN   := $(ROOT)/.venv/Scripts/uvicorn.exe
+ENV       :=
+VENV_PYTHON := python
+else
 PYTHON    := $(ROOT)/.venv/bin/python
 PIP       := $(ROOT)/.venv/bin/pip
 JUPYTER   := $(ROOT)/.venv/bin/jupyter
@@ -7,6 +16,8 @@ UVICORN   := $(ROOT)/.venv/bin/uvicorn
 # Setting DYLD_LIBRARY_PATH makes the Homebrew expat visible to the dynamic linker.
 EXPAT_LIB := /opt/homebrew/Cellar/expat/2.8.1/lib
 ENV       := DYLD_LIBRARY_PATH=$(EXPAT_LIB)
+VENV_PYTHON := /opt/homebrew/bin/python3.13
+endif
 
 .PHONY: install chatbot support-bot support-cli jupyter help
 
@@ -22,22 +33,22 @@ help:
 	@echo ""
 
 install:
-	$(ENV) /opt/homebrew/bin/python3.13 -m venv .venv
-	$(ENV) $(PIP) install --upgrade pip
-	$(ENV) $(PIP) install -r requirements.txt
+	$(ENV) $(VENV_PYTHON) -m venv .venv
+	$(ENV) $(PYTHON) -m pip install --upgrade pip
+	$(ENV) $(PYTHON) -m pip install -r requirements.txt
 	$(ENV) $(PYTHON) -m ipykernel install --user --name ai-learning-venv \
 		--display-name "Python (AI_Learning .venv)"
 	@echo ""
 	@echo "Done. Run 'make help' to see available commands."
 
 chatbot:
-	cd $(ROOT)/Claude_Chatbot/backend && $(ENV) $(PYTHON) app.py
+	cd $(ROOT)/Claude_Chatbot/backend && $(ENV) $(PYTHON) app.py --port 9000
 
 support-bot:
-	cd $(ROOT)/AI_Support_Bot && $(ENV) $(UVICORN) backend.api:app --reload --port 8001
+	cd $(ROOT)/AI_Bot && $(ENV) $(UVICORN) backend.api:app --reload --port 9001
 
 support-cli:
-	cd $(ROOT)/AI_Support_Bot && $(ENV) $(PYTHON) -m backend.main
+	cd $(ROOT)/AI_Bot && $(ENV) $(PYTHON) -m backend.main
 
 jupyter:
 	cd $(ROOT)/JupyterNotebook && $(ENV) $(JUPYTER) lab

@@ -16,8 +16,8 @@ cp .env.example .env        # fill in ANTHROPIC_API_KEY, GROQ_API_KEY, GEMINI_AP
 make install
 
 # 3. Run whichever project you want
-make chatbot                # Claude Chatbot  → http://localhost:8080
-make support-bot            # AI Support Bot  → http://localhost:8001
+make chatbot                # Claude Chatbot  → http://localhost:9000
+make support-bot            # AI Support Bot  → http://localhost:9001
 make support-cli            # AI Support Bot  → terminal (CLI mode)
 make jupyter                # JupyterNotebook → JupyterLab in browser
 ```
@@ -34,7 +34,7 @@ AI_Learning/
 ├── requirements.txt         # Combined dependencies for all three projects
 ├── Makefile                 # install + run targets for every project
 ├── Claude_Chatbot/          # Minimal chatbot — Flask proxy, SSE streaming, model picker
-├── AI_Support_Bot/          # Production bot — multi-provider, classifier routing, cost tracking
+├── AI_Bot/          # Production bot — multi-provider, classifier routing, cost tracking
 └── JupyterNotebook/         # Interactive labs — evals, RAG pipeline, tool use, prompt techniques
 ```
 
@@ -52,21 +52,21 @@ make install            # creates .venv, installs all deps, registers Jupyter ke
 | Key | Required by |
 |-----|------------|
 | `ANTHROPIC_API_KEY` | all three projects |
-| `GROQ_API_KEY` | AI_Support_Bot |
-| `GEMINI_API_KEY` | AI_Support_Bot |
+| `GROQ_API_KEY` | AI_Bot |
+| `GEMINI_API_KEY` | AI_Bot |
 | `VOYAGE_API_KEY` | JupyterNotebook (RAG series) |
 
 ---
 
 ## Learning Progression
 
-Start with `Claude_Chatbot` to understand the API proxy pattern and streaming. Move to `JupyterNotebook` to explore embeddings, RAG, and tool use interactively. Finish with `AI_Support_Bot` to see production patterns: strategy routing, multi-provider fallback, cost tracking, and observability.
+Start with `Claude_Chatbot` to understand the API proxy pattern and streaming. Move to `JupyterNotebook` to explore embeddings, RAG, and tool use interactively. Finish with `AI_Bot` to see production patterns: strategy routing, multi-provider fallback, cost tracking, and observability.
 
 | Step | Project | Core Skill |
 |------|---------|-----------|
 | 1 | `Claude_Chatbot` | API proxy, SSE streaming, model picker UI |
 | 2 | `JupyterNotebook` | Prompt evals, RAG from scratch, tool use patterns |
-| 3 | `AI_Support_Bot` | Multi-provider fallback, classifier routing, cost tracking |
+| 3 | `AI_Bot` | Multi-provider fallback, classifier routing, cost tracking |
 
 ---
 
@@ -143,18 +143,18 @@ Model dropdown, max tokens (1–8192), temperature slider (0–1, step 0.01), st
 | Key | Required | Notes |
 |-----|----------|-------|
 | `ANTHROPIC_API_KEY` | Yes | Read from `AI_Learning/.env` at repo root |
-| `PORT` | No | Overrides default 8080; also settable via `--port` CLI arg |
+| `PORT` | No | Overrides default 9000; also settable via `--port` CLI arg |
 | `VERIFY_SSL` | No | Set to `false` only behind a TLS-intercepting corporate proxy |
 
 ### How to run
 
 ```bash
-make chatbot                # from repo root — starts on port 8080
+make chatbot                # from repo root — starts on port 9000
 ```
 
 Custom port: `cd Claude_Chatbot/backend && ../../.venv/bin/python app.py --port 9000`
 
-Open `http://localhost:8080`.
+Open `http://localhost:9000`.
 
 ### What NOT to do
 
@@ -304,7 +304,7 @@ Run series in order: PromptEvaluation → Prompt_Techniques → RAG_Agentic_Sear
 ## Project 3: AI Support Bot
 
 **Stack:** Python, FastAPI, Anthropic + Groq + Gemini SDKs, vanilla HTML/CSS/JS
-**Location:** `AI_Support_Bot/`
+**Location:** `AI_Bot/`
 
 A production-grade support chatbot for coding challenges (codingchallenges.fyi). Demonstrates multi-provider resilience, cost-aware classifier routing, SSE streaming, and per-session observability. Built incrementally (Steps 0–9), so the git history is itself a learning progression.
 
@@ -464,7 +464,7 @@ Both `chat()` and `chat_iter()` mutate the history list in place: user message a
 ### How to run
 
 ```bash
-make support-bot            # from repo root — web UI at http://localhost:8001
+make support-bot            # from repo root — web UI at http://localhost:9001
 make support-cli            # from repo root — CLI mode in terminal
 ```
 
@@ -478,7 +478,7 @@ make support-cli            # from repo root — CLI mode in terminal
 - Do not hardcode model names outside their respective provider file
 - Do not key `COST_PER_TOKEN` by provider name — always by model name
 - Do not swallow exceptions inside `stream()` — let `chat.py` handle fallback
-- Do not run from inside `backend/` — always run from `AI_Support_Bot/` root
+- Do not run from inside `backend/` — always run from `AI_Bot/` root
 - Do not commit `.env`
 
 ---
@@ -535,7 +535,7 @@ The loop runs until the model produces a final text response (`stop_reason == "e
 
 ### Error handling — fail-fast providers
 
-In `AI_Support_Bot`, provider `stream()` raises exceptions on failure — never swallows them. `chat.py` catches, logs the failed attempt with full error detail, then tries the next provider. This makes fallback explicit and observable rather than silent.
+In `AI_Bot`, provider `stream()` raises exceptions on failure — never swallows them. `chat.py` catches, logs the failed attempt with full error detail, then tries the next provider. This makes fallback explicit and observable rather than silent.
 
 ---
 
@@ -554,8 +554,8 @@ Install [Windows Subsystem for Linux](https://learn.microsoft.com/en-us/windows/
 ```bash
 cp .env.example .env    # fill in your keys
 make install
-make chatbot            # http://localhost:8080
-make support-bot        # http://localhost:8001
+make chatbot            # http://localhost:9000
+make support-bot        # http://localhost:9001
 make support-cli
 make jupyter
 ```
@@ -580,24 +580,24 @@ python -m venv .venv
     --display-name "Python (AI_Learning .venv)"
 ```
 
-**Run Claude Chatbot** → http://localhost:8080
+**Run Claude Chatbot** → http://localhost:9000
 
 ```powershell
 cd Claude_Chatbot\backend
 ..\..\venv\Scripts\python app.py
 ```
 
-**Run AI Support Bot — web UI** → http://localhost:8001
+**Run AI Support Bot — web UI** → http://localhost:9001
 
 ```powershell
-cd AI_Support_Bot
-..\venv\Scripts\uvicorn backend.api:app --reload --port 8001
+cd AI_Bot
+..\venv\Scripts\uvicorn backend.api:app --reload --port 9001
 ```
 
 **Run AI Support Bot — CLI**
 
 ```powershell
-cd AI_Support_Bot
+cd AI_Bot
 ..\venv\Scripts\python -m backend.main
 ```
 
@@ -611,3 +611,4 @@ cd JupyterNotebook
 In VS Code / Cursor: select kernel **Python (AI_Learning .venv)** when opening any notebook.
 
 **Stop any running server:** `Ctrl+C` in the terminal where it is running.
+

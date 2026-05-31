@@ -60,7 +60,7 @@ Browser                FastAPI (uvicorn)            Provider SDKs
 ### File structure
 
 ```
-AI_Support_Bot/
+AI_Bot/
 ├── .gitignore
 ├── README.md
 ├── backend/
@@ -289,19 +289,19 @@ Keys are read from `AI_Learning/.env` at the repo root — no project-level `.en
 **From repo root (recommended):**
 ```bash
 make install            # one-time setup
-make support-bot        # web UI at http://localhost:8001
+make support-bot        # web UI at http://localhost:9001
 make support-cli        # CLI mode in terminal
 ```
 
 **Manual (no Makefile):**
 ```bash
-# Always run from AI_Support_Bot/ root — required for package imports
-cd AI_Support_Bot/
+# Always run from AI_Bot/ root — required for package imports
+cd AI_Bot/
 python3 -m venv .venv && source .venv/bin/activate
 pip install -r backend/requirements.txt
 
 python -m backend.main                              # CLI
-uvicorn backend.api:app --reload --port 8001        # web UI
+uvicorn backend.api:app --reload --port 9001        # web UI
 ```
 
 `python -m backend.main` — not `python backend/main.py`. The `-m` flag runs the file as part of the `backend` package so relative imports resolve correctly.
@@ -318,5 +318,6 @@ uvicorn backend.api:app --reload --port 8001        # web UI
 - Do not hardcode model names outside their respective provider file
 - Do not key `COST_PER_TOKEN` by provider name — always by model name
 - Do not swallow exceptions inside `stream()` — let `chat.py` handle fallback
-- Do not run from inside `backend/` — always run from `AI_Support_Bot/` root
+- Do not run from inside `backend/` — always run from `AI_Bot/` root
 - Do not commit `.env`
+
