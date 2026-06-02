@@ -19,7 +19,7 @@ ENV       := DYLD_LIBRARY_PATH=$(EXPAT_LIB)
 VENV_PYTHON := /opt/homebrew/bin/python3.13
 endif
 
-.PHONY: install chatbot support-bot support-cli jupyter help
+.PHONY: install chatbot support-bot support-cli jupyter claude-features help
 
 help:
 	@echo ""
@@ -29,7 +29,8 @@ help:
 	@echo "  chatbot       Run Claude Chatbot at http://localhost:8080"
 	@echo "  support-bot   Run AI Support Bot web UI at http://localhost:8001"
 	@echo "  support-cli   Run AI Support Bot in CLI mode"
-	@echo "  jupyter       Start JupyterLab in the JupyterNotebook/ directory"
+	@echo "  jupyter         Start JupyterLab in the JupyterNotebook/ directory"
+	@echo "  claude-features Start JupyterLab in the ClaudeFeatures/ directory"
 	@echo ""
 
 install:
@@ -52,3 +53,6 @@ support-cli:
 
 jupyter:
 	cd $(ROOT)/JupyterNotebook && $(ENV) $(JUPYTER) lab
+
+claude-features:
+	cd $(ROOT)/ClaudeFeatures && $(ENV) $(JUPYTER) lab
