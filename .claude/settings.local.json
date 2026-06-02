@@ -24,7 +24,8 @@
       "Bash(.venv/bin/python --version)",
       "Bash(.venv/bin/pip list *)",
       "Bash(make chatbot *)",
-      "Bash(xargs kill -9)"
+      "Bash(xargs kill -9)",
+      "Bash(make claude-features *)"
     ]
   }
 }
