@@ -11,7 +11,8 @@ AI_Learning/
 ├── .gitignore
 ├── Claude_Chatbot/      # Minimal chatbot — Flask + Anthropic SDK, single-file UI
 ├── AI_Bot/      # Production-grade multi-provider support bot with classifiers
-└── JupyterNotebook/     # AI engineering labs — prompt evals, RAG pipeline, tool use
+├── JupyterNotebook/     # AI engineering labs — prompt evals, RAG pipeline, tool use
+└── MCP_Learning/        # MCP chat CLI — uv-managed, Anthropic SDK + mcp[cli]
 ```
 
 ## Subprojects at a glance
@@ -21,6 +22,7 @@ AI_Learning/
 | `Claude_Chatbot/` | Flask, Anthropic SDK, HTML/JS | API proxy pattern, SSE streaming, model picker UI |
 | `AI_Bot/` | FastAPI, multi-provider (Anthropic + Groq + Gemini), HTML/JS | Strategy pattern, classifier routing, cost-aware provider fallback, observability |
 | `JupyterNotebook/` | Jupyter, Anthropic SDK, VoyageAI | Prompt engineering, RAG from scratch, tool use, prompt evals |
+| `MCP_Learning/` | uv, Anthropic SDK, mcp[cli], prompt-toolkit | Model Control Protocol — stdio client/server, tools, resources, prompts, CLI chat |
 
 ## Learning progression
 
@@ -35,6 +37,7 @@ Each subproject's `README.md` is the source of truth for architecture, running i
 - [`Claude_Chatbot/README.md`](Claude_Chatbot/README.md) — architecture diagram, API endpoints, SSE events, env vars, what NOT to do
 - [`AI_Bot/README.md`](AI_Bot/README.md) — step progression, SRP/OCP principles, provider contract, classifier routing, SDK gotchas, cost tracking
 - [`JupyterNotebook/README.md`](JupyterNotebook/README.md) — conventions, all four series, common patterns, adding new notebooks
+- [`MCP_Learning/README.md`](MCP_Learning/README.md) — uv setup, root `.env` keys, Makefile targets, MCP client/server usage
 
 ## Conventions
 

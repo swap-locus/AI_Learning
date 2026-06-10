@@ -1,25 +1,27 @@
 # AI Learning — Hands-On AI Engineering with the Anthropic API
 
-A progressive series of AI engineering projects built on the Anthropic Claude API. Each subproject teaches a distinct layer of complexity — from a minimal chatbot proxy to a production-grade multi-provider support bot and a full suite of interactive Jupyter labs.
+A progressive series of AI engineering projects built on the Anthropic Claude API. Each subproject teaches a distinct layer of complexity — from a minimal chatbot proxy to a production-grade multi-provider support bot, interactive Jupyter labs, an MCP (Model Control Protocol) chat client/server, and a set of Claude API feature labs.
 
 ---
 
 ## Quick Start
 
-All dependencies install into a single root venv. One setup command, then `make <project>` to run anything.
+Most projects install into a single root venv; `MCP_Learning` manages its own venv via `uv`. One setup command installs everything, then `make <project>` runs anything.
 
 ```bash
 # 1. Add your API keys
-cp .env.example .env        # fill in ANTHROPIC_API_KEY, GROQ_API_KEY, GEMINI_API_KEY, VOYAGE_API_KEY
+cp .env.example .env        # fill in ANTHROPIC_API_KEY, GROQ_API_KEY, GEMINI_API_KEY, VOYAGE_API_KEY, CLAUDE_MODEL
 
-# 2. Install everything
+# 2. Install everything (root .venv + MCP_Learning uv env)
 make install
 
 # 3. Run whichever project you want
-make chatbot                # Claude Chatbot  → http://localhost:9000
-make support-bot            # AI Support Bot  → http://localhost:9001
-make support-cli            # AI Support Bot  → terminal (CLI mode)
-make jupyter                # JupyterNotebook → JupyterLab in browser
+make chatbot                # Claude Chatbot   → http://localhost:9000
+make support-bot            # AI Support Bot   → http://localhost:9001
+make support-cli            # AI Support Bot   → terminal (CLI mode)
+make jupyter                # JupyterNotebook  → JupyterLab in browser
+make claude-features        # Claude Features  → JupyterLab in browser
+make mcp-chat               # MCP Chat         → terminal (CLI mode)
 ```
 
 ---
@@ -31,14 +33,16 @@ AI_Learning/
 ├── .env                     # All API keys — single source of truth, never commit
 ├── .env.example             # Template — copy to .env and fill in keys
 ├── .gitignore
-├── requirements.txt         # Combined dependencies for all three projects
+├── requirements.txt         # Combined dependencies for the root-venv projects
 ├── Makefile                 # install + run targets for every project
 ├── Claude_Chatbot/          # Minimal chatbot — Flask proxy, SSE streaming, model picker
 ├── AI_Bot/          # Production bot — multi-provider, classifier routing, cost tracking
-└── JupyterNotebook/         # Interactive labs — evals, RAG pipeline, tool use, prompt techniques
+├── JupyterNotebook/         # Interactive labs — evals, RAG pipeline, tool use, prompt techniques
+├── ClaudeFeatures/          # Claude API feature labs — thinking, images, PDFs, caching, code execution
+└── MCP_Learning/            # MCP chat CLI — uv-managed stdio client/server, tools, resources, prompts
 ```
 
-A single `.env` at the repo root supplies API keys to all subprojects. A single `.venv` at the repo root runs all three projects.
+A single `.env` at the repo root supplies API keys to **all** subprojects. A single `.venv` at the repo root runs every project **except** `MCP_Learning`, which keeps its own `uv`-managed `.venv` (it ships a `pyproject.toml` + `uv.lock`).
 
 ---
 
@@ -51,22 +55,26 @@ make install            # creates .venv, installs all deps, registers Jupyter ke
 
 | Key | Required by |
 |-----|------------|
-| `ANTHROPIC_API_KEY` | all three projects |
+| `ANTHROPIC_API_KEY` | all projects |
 | `GROQ_API_KEY` | AI_Bot |
 | `GEMINI_API_KEY` | AI_Bot |
 | `VOYAGE_API_KEY` | JupyterNotebook (RAG series) |
+| `CLAUDE_MODEL` | MCP_Learning (model id passed to the Claude service) |
+| `USE_UV` | MCP_Learning (optional — spawn the MCP server via `uv run` (`1`) or `python` (`0`)) |
 
 ---
 
 ## Learning Progression
 
-Start with `Claude_Chatbot` to understand the API proxy pattern and streaming. Move to `JupyterNotebook` to explore embeddings, RAG, and tool use interactively. Finish with `AI_Bot` to see production patterns: strategy routing, multi-provider fallback, cost tracking, and observability.
+Start with `Claude_Chatbot` to understand the API proxy pattern and streaming. Move to `JupyterNotebook` to explore embeddings, RAG, and tool use interactively, and `ClaudeFeatures` to exercise individual Claude API capabilities. Then learn the Model Control Protocol with `MCP_Learning`. Finish with `AI_Bot` to see production patterns: strategy routing, multi-provider fallback, cost tracking, and observability.
 
 | Step | Project | Core Skill |
 |------|---------|-----------|
 | 1 | `Claude_Chatbot` | API proxy, SSE streaming, model picker UI |
 | 2 | `JupyterNotebook` | Prompt evals, RAG from scratch, tool use patterns |
-| 3 | `AI_Bot` | Multi-provider fallback, classifier routing, cost tracking |
+| 3 | `ClaudeFeatures` | Extended thinking, vision, PDFs, prompt caching, code execution |
+| 4 | `MCP_Learning` | MCP stdio client/server — tools, resources, prompts, CLI chat |
+| 5 | `AI_Bot` | Multi-provider fallback, classifier routing, cost tracking |
 
 ---
 
@@ -483,6 +491,116 @@ make support-cli            # from repo root — CLI mode in terminal
 
 ---
 
+## Project 4: Claude Features Labs
+
+**Stack:** Python, Jupyter, Anthropic SDK
+**Location:** `ClaudeFeatures/`
+
+A set of focused notebooks, each exercising one Claude API capability in isolation. Like `JupyterNotebook`, every notebook is self-contained and loads keys from the root `.env`. Runs on the shared root `.venv` and the **Python (AI_Learning .venv)** kernel.
+
+### Notebooks
+
+| Notebook | Feature |
+|----------|---------|
+| `001_thinking_complete.ipynb` | Extended thinking — `thinking` blocks and budget control |
+| `002_images.ipynb` | Vision — sending images as content blocks |
+| `003_pdf.ipynb` | PDF input — document understanding (`earth.pdf` sample) |
+| `004_caching.ipynb` | Prompt caching — `cache_control` breakpoints and cost savings |
+| `005_code_execution.ipynb` | Code execution tool — running model-generated code |
+
+Supporting assets in the folder: `earth.pdf`, `images/`, `streaming.csv`.
+
+### How to run
+
+```bash
+make claude-features        # from repo root — opens JupyterLab in browser
+```
+
+In VS Code / Cursor, select kernel **Python (AI_Learning .venv)**. Keys load from `AI_Learning/.env`.
+
+---
+
+## Project 5: MCP Chat
+
+**Stack:** Python, Anthropic SDK, `mcp[cli]`, prompt-toolkit, managed by `uv`
+**Location:** `MCP_Learning/`
+
+A command-line chat application demonstrating the **Model Control Protocol (MCP)**: a Claude-powered CLI client talks to an MCP server over stdio, consuming the server's tools, resources, and prompts. Unlike the other projects, `MCP_Learning` manages its own `uv`-based environment (`pyproject.toml` + `uv.lock`, pinned to Python 3.13 via `.python-version`) while still reading keys from the single root `.env`.
+
+### Architecture
+
+```
+Terminal              main.py (CliApp)            mcp_server.py (FastMCP)
+  │                       │                              │
+  │  > prompt             │  Claude.messages.create()    │
+  │ ────────────────────► │  ── tools from server ──────►│  read_doc_contents
+  │                       │                              │  edit_document
+  │                       │  ◄── stdio (MCP) ────────────│  docs:// resources
+  │ ◄── response ─────────│                              │  format prompt
+```
+
+The client (`main.py`) loads `ANTHROPIC_API_KEY` and `CLAUDE_MODEL` from `AI_Learning/.env`, then spawns the MCP server as a stdio subprocess (`uv run mcp_server.py` when `USE_UV=1`, else `python mcp_server.py`).
+
+### File structure
+
+```
+MCP_Learning/
+├── main.py              # Entry point — loads root .env, wires client + CLI
+├── mcp_server.py        # FastMCP server — in-memory docs, tools, resources, prompts
+├── mcp_client.py        # MCPClient — stdio session, tool/resource/prompt calls
+├── core/
+│   ├── claude.py        # Anthropic SDK wrapper (Claude service)
+│   ├── chat.py          # Base chat loop
+│   ├── cli_chat.py      # Chat with @document and /command support
+│   ├── cli.py           # prompt-toolkit CLI app (autocomplete)
+│   └── tools.py         # Tool execution helpers
+├── pyproject.toml       # uv project definition
+├── uv.lock              # Pinned dependency lockfile
+└── .python-version      # Pins Python 3.13
+```
+
+### What the MCP server exposes
+
+| Kind | Name | What it does |
+|------|------|-------------|
+| Tool | `read_doc_contents` | Read a document's contents by id |
+| Tool | `edit_document` | Replace a string inside a document |
+| Resource | `docs://documents` | List all document ids (JSON) |
+| Resource | `docs://documents/{doc_id}` | Fetch one document's contents (text) |
+| Prompt | `format` | Rewrite a document in Markdown via the edit tool |
+
+Documents are an in-memory dict in `mcp_server.py` (`deposition.md`, `report.pdf`, `financials.docx`, etc.) — edit that dict to add more.
+
+### CLI usage
+
+| Input | Effect |
+|-------|--------|
+| Plain text | Chat with Claude |
+| `@deposition.md` | Inject a document's contents into the query (Tab-completes) |
+| `/format deposition.md` | Run a server-defined prompt/command (Tab-completes) |
+
+### How to run
+
+```bash
+make mcp-install            # from repo root — uv sync the MCP_Learning env (once)
+make mcp-chat               # from repo root — start the MCP Chat CLI
+make mcp-inspect            # from repo root — launch the MCP Inspector web UI
+```
+
+`make install` runs `mcp-install` automatically as part of full setup.
+
+### MCP Inspector
+
+`make mcp-inspect` runs the server under the [MCP Inspector](https://github.com/modelcontextprotocol/inspector) (`uv run mcp dev mcp_server.py --with-editable .`) — a browser UI for calling the server's tools, reading its resources, and running its prompts without Claude in the loop. It serves a proxy on `localhost:6277` and the UI on `localhost:6274`. Requires Node.js / `npx` on PATH.
+
+### What NOT to do
+
+- Do not add keys to a local `MCP_Learning/.env` — the root `AI_Learning/.env` is the single source of truth
+- Do not share the root `.venv` — this project uses its own `uv`-managed environment
+- Do not commit `.env`
+
+---
+
 ## Common Patterns Across Projects
 
 ### API proxy pattern
@@ -558,9 +676,11 @@ make chatbot            # http://localhost:9000
 make support-bot        # http://localhost:9001
 make support-cli
 make jupyter
+make claude-features
+make mcp-chat
 ```
 
-No extra setup needed — `make`, Python, and all paths resolve identically inside WSL.
+No extra setup needed — `make`, Python, `uv`, and all paths resolve identically inside WSL.
 
 ---
 
@@ -601,14 +721,23 @@ cd AI_Bot
 ..\venv\Scripts\python -m backend.main
 ```
 
-**Run JupyterLab**
+**Run JupyterLab** (JupyterNotebook or ClaudeFeatures)
 
 ```powershell
-cd JupyterNotebook
+cd JupyterNotebook        # or: cd ClaudeFeatures
 ..\venv\Scripts\jupyter lab
 ```
 
 In VS Code / Cursor: select kernel **Python (AI_Learning .venv)** when opening any notebook.
+
+**Run MCP Chat** (uses its own `uv` environment, not the root `.venv`)
+
+```powershell
+# Install uv once: https://docs.astral.sh/uv/getting-started/installation/
+cd MCP_Learning
+uv sync
+uv run main.py
+```
 
 **Stop any running server:** `Ctrl+C` in the terminal where it is running.
 
