@@ -138,6 +138,10 @@
   .mod-4 .module-number { background: rgba(82,201,126,0.15); color: var(--success); }
   .mod-5 .module-number { background: rgba(240,100,120,0.15); color: #f06478; }
   .mod-6 .module-number { background: rgba(100,180,255,0.15); color: #64b4ff; }
+  .mod-7 .module-number { background: rgba(224,160,64,0.15); color: #e0a040; }
+  .mod-8 .module-number { background: rgba(176,126,232,0.15); color: #b07ee8; }
+  .mod-9 .module-number { background: rgba(224,104,140,0.15); color: #e0688c; }
+  .mod-10 .module-number { background: rgba(80,184,216,0.15); color: #50b8d8; }
 
   .module-label {
     font-size: 12px;
@@ -184,6 +188,10 @@
   .mod-4 .lesson-item.active { border-left-color: var(--success); }
   .mod-5 .lesson-item.active { border-left-color: #f06478; }
   .mod-6 .lesson-item.active { border-left-color: #64b4ff; }
+  .mod-7 .lesson-item.active { border-left-color: #e0a040; }
+  .mod-8 .lesson-item.active { border-left-color: #b07ee8; }
+  .mod-9 .lesson-item.active { border-left-color: #e0688c; }
+  .mod-10 .lesson-item.active { border-left-color: #50b8d8; }
     width: 6px;
     height: 6px;
     border-radius: 50%;
@@ -301,6 +309,10 @@
   .tag-m4 { background: rgba(82,201,126,0.1); color: var(--success); border: 1px solid rgba(82,201,126,0.2); }
   .tag-m5 { background: rgba(240,100,120,0.1); color: #f06478; border: 1px solid rgba(240,100,120,0.2); }
   .tag-m6 { background: rgba(100,180,255,0.1); color: #64b4ff; border: 1px solid rgba(100,180,255,0.2); }
+  .tag-m7 { background: rgba(224,160,64,0.1); color: #e0a040; border: 1px solid rgba(224,160,64,0.2); }
+  .tag-m8 { background: rgba(176,126,232,0.1); color: #b07ee8; border: 1px solid rgba(176,126,232,0.2); }
+  .tag-m9 { background: rgba(224,104,140,0.1); color: #e0688c; border: 1px solid rgba(224,104,140,0.2); }
+  .tag-m10 { background: rgba(80,184,216,0.1); color: #50b8d8; border: 1px solid rgba(80,184,216,0.2); }
     font-family: 'DM Serif Display', serif;
     font-size: 38px;
     line-height: 1.15;
@@ -821,6 +833,78 @@
         <div class="lesson-item" onclick="showLesson('m6l7')" data-id="m6l7"><div class="lesson-dot"></div>Multi-Index RAG Pipeline</div>
       </div>
     </div>
+
+    <!-- Module 7 -->
+    <div class="module-group mod-7" data-module="7">
+      <div class="module-header" onclick="toggleModule(this)">
+        <div class="module-number">7</div>
+        <div class="module-label">Features of Claude</div>
+        <div class="module-chevron">&#x25B6;</div>
+      </div>
+      <div class="lesson-list">
+        <div class="lesson-item" onclick="showLesson('m7l1')" data-id="m7l1"><div class="lesson-dot"></div>Extended Thinking</div>
+        <div class="lesson-item" onclick="showLesson('m7l2')" data-id="m7l2"><div class="lesson-dot"></div>Image Support</div>
+        <div class="lesson-item" onclick="showLesson('m7l3')" data-id="m7l3"><div class="lesson-dot"></div>PDF Support</div>
+        <div class="lesson-item" onclick="showLesson('m7l4')" data-id="m7l4"><div class="lesson-dot"></div>Citations</div>
+        <div class="lesson-item" onclick="showLesson('m7l5')" data-id="m7l5"><div class="lesson-dot"></div>Prompt Caching</div>
+        <div class="lesson-item" onclick="showLesson('m7l6')" data-id="m7l6"><div class="lesson-dot"></div>Code Execution and Files API</div>
+      </div>
+    </div>
+
+    <!-- Module 8 -->
+    <div class="module-group mod-8" data-module="8">
+      <div class="module-header" onclick="toggleModule(this)">
+        <div class="module-number">8</div>
+        <div class="module-label">Model Context Protocol</div>
+        <div class="module-chevron">&#x25B6;</div>
+      </div>
+      <div class="lesson-list">
+        <div class="lesson-item" onclick="showLesson('m8l1')" data-id="m8l1"><div class="lesson-dot"></div>Introducing MCP</div>
+        <div class="lesson-item" onclick="showLesson('m8l2')" data-id="m8l2"><div class="lesson-dot"></div>MCP Clients</div>
+        <div class="lesson-item" onclick="showLesson('m8l3')" data-id="m8l3"><div class="lesson-dot"></div>Project Setup</div>
+        <div class="lesson-item" onclick="showLesson('m8l4')" data-id="m8l4"><div class="lesson-dot"></div>Defining Tools with MCP</div>
+        <div class="lesson-item" onclick="showLesson('m8l5')" data-id="m8l5"><div class="lesson-dot"></div>The Server Inspector</div>
+        <div class="lesson-item" onclick="showLesson('m8l6')" data-id="m8l6"><div class="lesson-dot"></div>Implementing a Client</div>
+        <div class="lesson-item" onclick="showLesson('m8l7')" data-id="m8l7"><div class="lesson-dot"></div>Defining Resources</div>
+        <div class="lesson-item" onclick="showLesson('m8l8')" data-id="m8l8"><div class="lesson-dot"></div>Accessing Resources</div>
+        <div class="lesson-item" onclick="showLesson('m8l9')" data-id="m8l9"><div class="lesson-dot"></div>Defining Prompts</div>
+        <div class="lesson-item" onclick="showLesson('m8l10')" data-id="m8l10"><div class="lesson-dot"></div>Prompts in the Client</div>
+        <div class="lesson-item" onclick="showLesson('m8l11')" data-id="m8l11"><div class="lesson-dot"></div>MCP Review</div>
+      </div>
+    </div>
+
+    <!-- Module 9 -->
+    <div class="module-group mod-9" data-module="9">
+      <div class="module-header" onclick="toggleModule(this)">
+        <div class="module-number">9</div>
+        <div class="module-label">Anthropic Apps</div>
+        <div class="module-chevron">&#x25B6;</div>
+      </div>
+      <div class="lesson-list">
+        <div class="lesson-item" onclick="showLesson('m9l1')" data-id="m9l1"><div class="lesson-dot"></div>Anthropic Apps</div>
+        <div class="lesson-item" onclick="showLesson('m9l2')" data-id="m9l2"><div class="lesson-dot"></div>Claude Code Setup</div>
+        <div class="lesson-item" onclick="showLesson('m9l3')" data-id="m9l3"><div class="lesson-dot"></div>Claude Code in Action</div>
+        <div class="lesson-item" onclick="showLesson('m9l4')" data-id="m9l4"><div class="lesson-dot"></div>Enhancements with MCP Servers</div>
+      </div>
+    </div>
+
+    <!-- Module 10 -->
+    <div class="module-group mod-10" data-module="10">
+      <div class="module-header" onclick="toggleModule(this)">
+        <div class="module-number">10</div>
+        <div class="module-label">Agents &#x26; Workflows</div>
+        <div class="module-chevron">&#x25B6;</div>
+      </div>
+      <div class="lesson-list">
+        <div class="lesson-item" onclick="showLesson('m10l1')" data-id="m10l1"><div class="lesson-dot"></div>Agents and Workflows</div>
+        <div class="lesson-item" onclick="showLesson('m10l2')" data-id="m10l2"><div class="lesson-dot"></div>Parallelization Workflows</div>
+        <div class="lesson-item" onclick="showLesson('m10l3')" data-id="m10l3"><div class="lesson-dot"></div>Chaining Workflows</div>
+        <div class="lesson-item" onclick="showLesson('m10l4')" data-id="m10l4"><div class="lesson-dot"></div>Routing Workflows</div>
+        <div class="lesson-item" onclick="showLesson('m10l5')" data-id="m10l5"><div class="lesson-dot"></div>Agents and Tools</div>
+        <div class="lesson-item" onclick="showLesson('m10l6')" data-id="m10l6"><div class="lesson-dot"></div>Environment Inspection</div>
+        <div class="lesson-item" onclick="showLesson('m10l7')" data-id="m10l7"><div class="lesson-dot"></div>Workflows vs Agents</div>
+      </div>
+    </div>
   </div>
 </nav>
 
@@ -887,6 +971,38 @@
     </div>
 
     <div class="module-cards fade-in" style="grid-template-columns: repeat(2, 1fr); margin-top:0">
+      <div class="module-card" style="border-color: rgba(80,184,216,0.25); cursor:pointer" onclick="showLesson('m10l1')">
+        <div class="card-num" style="color:#50b8d8">Module 10</div>
+        <div class="card-title">Agents &#x26; Workflows</div>
+        <div class="card-count">7 lessons</div>
+        <div class="card-lessons">
+          <div class="card-lesson-item">Intro &#x00b7; Parallel &#x00b7; Chain &#x00b7; Route &#x00b7; Tools &#x00b7; Inspect &#x00b7; Review</div>
+        </div>
+      </div>
+      <div class="module-card" style="border-color: rgba(224,104,140,0.25); cursor:pointer" onclick="showLesson('m9l1')">
+        <div class="card-num" style="color:#e0688c">Module 9</div>
+        <div class="card-title">Anthropic Apps</div>
+        <div class="card-count">4 lessons (in progress)</div>
+        <div class="card-lessons">
+          <div class="card-lesson-item">Apps &#x00b7; Setup &#x00b7; In Action &#x00b7; MCP Enhancements</div>
+        </div>
+      </div>
+      <div class="module-card" style="border-color: rgba(176,126,232,0.25); cursor:pointer" onclick="showLesson('m8l1')">
+        <div class="card-num" style="color:#b07ee8">Module 8</div>
+        <div class="card-title">Model Context Protocol</div>
+        <div class="card-count">11 lessons</div>
+        <div class="card-lessons">
+          <div class="card-lesson-item">MCP Intro &#x00b7; Clients &#x00b7; Setup &#x00b7; Tools &#x00b7; Inspector &#x00b7; Client &#x00b7; Resources &#x00b7; Access &#x00b7; Prompts &#x00b7; Prompts in Client</div>
+        </div>
+      </div>
+      <div class="module-card" style="border-color: rgba(224,160,64,0.25); cursor:pointer" onclick="showLesson('m7l1')">
+        <div class="card-num" style="color:#e0a040">Module 7</div>
+        <div class="card-title">Features of Claude</div>
+        <div class="card-count">6 lessons (in progress)</div>
+        <div class="card-lessons">
+          <div class="card-lesson-item">Extended Thinking &#x00b7; Image Support</div>
+        </div>
+      </div>
       <div class="module-card" style="border-color: rgba(100,180,255,0.25); cursor:pointer" onclick="showLesson('m6l1')">
         <div class="card-num" style="color:#64b4ff">Module 6</div>
         <div class="card-title">RAG and Agentic Search</div>
@@ -4281,6 +4397,2092 @@ bm25_results = bm25_index.search(query_text, top_k=5)</pre>
 </div>`
   },
 
+  m7l1: {
+    module: 7, title: 'Extended Thinking',
+    tag: 'Module 7 · Lesson 1', tagClass: 'tag-m7',
+    subtitle: 'Give Claude time to reason before responding. Thinking tokens improve accuracy on complex tasks but add cost and latency.',
+    content: `
+<div class="content-body">
+<h3>What Extended Thinking Does</h3>
+<p>Extended thinking lets Claude reason through a problem step-by-step before generating its final response. The thinking process is visible in the response as a separate block, so you can see how Claude arrived at its answer.</p>
+
+<div class="flow">
+  <div class="flow-step">Your prompt</div><div class="flow-arrow">&#x2192;</div>
+  <div class="flow-step">Thinking block (reasoning)</div><div class="flow-arrow">&#x2192;</div>
+  <div class="flow-step">Text block (final answer)</div>
+</div>
+
+<h3>When to Use It</h3>
+<p>Extended thinking is not a default &#x2014; it is an optimization for complex tasks where prompt engineering alone fails to achieve the desired accuracy. Use prompt evals to determine whether it is actually needed before enabling it.</p>
+
+<div class="table-wrap"><table>
+<thead><tr><th>Enable when</th><th>Skip when</th></tr></thead>
+<tbody>
+<tr><td>Complex multi-step reasoning</td><td>Simple factual queries</td></tr>
+<tr><td>Prompt optimization has plateaued</td><td>Good results with standard prompts</td></tr>
+<tr><td>Accuracy is critical and latency is acceptable</td><td>Speed is the priority</td></tr>
+</tbody>
+</table></div>
+
+<h3>Implementation</h3>
+<div class="code-block">
+<div class="code-header"><span class="code-lang">python</span></div>
+<pre>response = client.messages.create(
+    model=model,
+    max_tokens=5000,
+    thinking={
+        "type": "enabled",
+        "budget_tokens": 1024    # Minimum 1024 tokens for thinking
+    },
+    messages=[{"role": "user", "content": "Solve this step by step..."}]
+)</pre>
+</div>
+
+<h3>Key Constraints</h3>
+<ul>
+<li><strong>Minimum budget:</strong> <code>budget_tokens</code> must be at least 1024</li>
+<li><strong>max_tokens must exceed budget:</strong> if budget is 1024, max_tokens must be at least 1025 to leave room for the actual response</li>
+<li><strong>Cost:</strong> thinking tokens are billed just like output tokens</li>
+</ul>
+
+<h3>Response Structure</h3>
+<div class="code-block">
+<div class="code-header"><span class="code-lang">python</span></div>
+<pre># Response contains two block types
+for block in response.content:
+    if block.type == "thinking":
+        print("Reasoning:", block.thinking)
+        # Also contains block.signature (cryptographic hash)
+    elif block.type == "text":
+        print("Answer:", block.text)</pre>
+</div>
+
+<p>The <strong>signature</strong> on thinking blocks is a cryptographic hash that prevents tampering with the reasoning text. This is a safety measure &#x2014; it ensures the thinking content was produced by Claude, not modified after the fact.</p>
+
+<h3>Redacted Thinking Blocks</h3>
+<p>Occasionally, thinking content gets flagged by Claude&#x27;s safety systems. In these cases, the thinking text is encrypted rather than shown in plain text. The redacted block is still included in the response so that conversation continuity is preserved &#x2014; Claude can reference its own reasoning in follow-up turns without losing context.</p>
+
+<div class="insight">
+<div class="insight-label">Budget vs actual usage</div>
+<div class="insight-text">The <code>budget_tokens</code> parameter sets the maximum thinking tokens, not a target. Claude may use fewer if the problem is straightforward. You are only charged for tokens actually generated, but setting a higher budget does not force Claude to think longer &#x2014; it just allows it to if needed.</div>
+</div>
+
+<div class="callout callout-matters">
+<div class="callout-icon">&#x1F4A1;</div>
+<div class="callout-content">
+<div class="callout-label">Why This Matters</div>
+<div class="callout-text">Extended thinking is the last lever to pull when prompt engineering has been exhausted. It trades cost and latency for accuracy on genuinely hard problems. The key discipline is to measure first (with evals) rather than enabling it by default &#x2014; for most tasks, a well-engineered prompt without thinking is faster, cheaper, and sufficient.</div>
+</div>
+</div>
+</div>`
+  },
+
+  m7l2: {
+    module: 7, title: 'Image Support',
+    tag: 'Module 7 · Lesson 2', tagClass: 'tag-m7',
+    subtitle: 'Claude can analyze images sent as base64 or URLs. Accuracy depends almost entirely on prompt quality, not image quality.',
+    content: `
+<div class="content-body">
+<h3>How Image Input Works</h3>
+<p>Images are sent as special blocks inside user messages, alongside text blocks. You can include up to 100 images per request. Each image consumes tokens based on its pixel dimensions.</p>
+
+<div class="code-block">
+<div class="code-header"><span class="code-lang">python</span></div>
+<pre>import base64
+
+# Read and encode the image
+with open("satellite.png", "rb") as f:
+    image_data = base64.standard_b64encode(f.read()).decode("utf-8")
+
+response = client.messages.create(
+    model=model,
+    max_tokens=1000,
+    messages=[{
+        "role": "user",
+        "content": [
+            {
+                "type": "image",
+                "source": {
+                    "type": "base64",
+                    "media_type": "image/png",
+                    "data": image_data
+                }
+            },
+            {
+                "type": "text",
+                "text": "Analyze this satellite image..."
+            }
+        ]
+    }]
+)</pre>
+</div>
+
+<h3>Image Block Structure</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>Field</th><th>Value</th></tr></thead>
+<tbody>
+<tr><td><code>type</code></td><td><code>"image"</code></td></tr>
+<tr><td><code>source.type</code></td><td><code>"base64"</code> or <code>"url"</code></td></tr>
+<tr><td><code>source.media_type</code></td><td><code>"image/png"</code>, <code>"image/jpeg"</code>, <code>"image/gif"</code>, <code>"image/webp"</code></td></tr>
+<tr><td><code>source.data</code></td><td>Base64-encoded image string (for base64 type)</td></tr>
+</tbody>
+</table></div>
+
+<h3>The Critical Factor: Prompt Quality</h3>
+<p>Simple prompts like "describe this image" produce vague results. Accurate image analysis requires the same prompt engineering techniques used for text: step-by-step instructions, guidelines, examples, and verification steps.</p>
+
+<div class="code-block">
+<div class="code-header"><span class="code-lang">prompt</span></div>
+<pre># Weak prompt (vague results)
+"What do you see in this image?"
+
+# Strong prompt (accurate, structured results)
+"Analyze this satellite image for fire risk. For each factor below,
+assign a score from 1-10 and explain your reasoning:
+1. Tree density within 30 feet of structure
+2. Vehicle/emergency access to property
+3. Roof overhang and material type
+4. Defensible space around buildings
+After scoring each factor, provide an overall risk rating."</pre>
+</div>
+
+<h3>Prompting Techniques for Images</h3>
+<ul>
+<li><strong>Step-by-step analysis</strong> &#x2014; tell Claude exactly what to look for and in what order</li>
+<li><strong>One-shot / multi-shot examples</strong> &#x2014; alternate image + text pairs showing ideal analysis</li>
+<li><strong>Verification steps</strong> &#x2014; ask Claude to double-check its observations</li>
+<li><strong>Structured output</strong> &#x2014; request specific formats (scores, tables, categories)</li>
+</ul>
+
+<h3>Limitations</h3>
+<ul>
+<li>Max 100 images per request</li>
+<li>Size and dimension restrictions apply</li>
+<li>Token cost scales with pixel count (height &#xD7; width)</li>
+</ul>
+
+<div class="insight">
+<div class="insight-label">Images reuse text prompting techniques</div>
+<div class="insight-text">Every technique from Module 4 (being clear and direct, being specific, XML tags, providing examples) applies to image analysis prompts. The image provides the data; the prompt determines how well Claude processes it. A sophisticated prompt with a mediocre image outperforms a simple prompt with a perfect image.</div>
+</div>
+
+<div class="callout callout-matters">
+<div class="callout-icon">&#x1F4A1;</div>
+<div class="callout-content">
+<div class="callout-label">Why This Matters</div>
+<div class="callout-text">Image support turns Claude into a visual analysis tool &#x2014; satellite imagery assessment, document scanning, UI screenshot review, chart interpretation. The implementation is minimal (base64 encode + image block), but the real work is in the prompt. Treat image prompts with the same rigor as text prompts: structured instructions, examples, and evaluation.</div>
+</div>
+</div>
+</div>`
+  },
+
+  m7l3: {
+    module: 7, title: 'PDF Support',
+    tag: 'Module 7 · Lesson 3', tagClass: 'tag-m7',
+    subtitle: 'Claude reads PDFs directly using the same pattern as images. Swap the block type to "document" and the media type to "application/pdf" &#x2014; everything else stays the same.',
+    content: `
+<div class="content-body">
+<h3>How PDF Input Works</h3>
+<p>PDF support follows the exact same code pattern as image support. The only differences are the block type, media type, and variable naming:</p>
+
+<div class="table-wrap"><table>
+<thead><tr><th></th><th>Image</th><th>PDF</th></tr></thead>
+<tbody>
+<tr><td>Block type</td><td><code>"image"</code></td><td><code>"document"</code></td></tr>
+<tr><td>Media type</td><td><code>"image/png"</code></td><td><code>"application/pdf"</code></td></tr>
+<tr><td>Source type</td><td><code>"base64"</code></td><td><code>"base64"</code></td></tr>
+</tbody>
+</table></div>
+
+<h3>Implementation</h3>
+<div class="code-block">
+<div class="code-header"><span class="code-lang">python</span></div>
+<pre>import base64
+
+with open("report.pdf", "rb") as f:
+    file_data = base64.standard_b64encode(f.read()).decode("utf-8")
+
+response = client.messages.create(
+    model=model,
+    max_tokens=2000,
+    messages=[{
+        "role": "user",
+        "content": [
+            {
+                "type": "document",
+                "source": {
+                    "type": "base64",
+                    "media_type": "application/pdf",
+                    "data": file_data
+                }
+            },
+            {
+                "type": "text",
+                "text": "Summarize the key findings in this report."
+            }
+        ]
+    }]
+)</pre>
+</div>
+
+<h3>What Claude Can Extract from PDFs</h3>
+<ul>
+<li><strong>Text</strong> &#x2014; body content, headers, footnotes</li>
+<li><strong>Images</strong> &#x2014; embedded charts, diagrams, photos</li>
+<li><strong>Tables</strong> &#x2014; structured data within the document</li>
+<li><strong>Charts</strong> &#x2014; visual data representations</li>
+<li><strong>Mixed content</strong> &#x2014; combinations of all the above in a single pass</li>
+</ul>
+
+<h3>PDF vs Image: When to Use Which</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>Use PDF input when</th><th>Use image input when</th></tr></thead>
+<tbody>
+<tr><td>You have a PDF file with text + visuals</td><td>You have a standalone image (photo, screenshot)</td></tr>
+<tr><td>You need text extraction from documents</td><td>You need visual analysis (object detection, scene description)</td></tr>
+<tr><td>Working with reports, contracts, papers</td><td>Working with satellite imagery, UI screenshots, photos</td></tr>
+</tbody>
+</table></div>
+
+<div class="insight">
+<div class="insight-label">One pattern, two input types</div>
+<div class="insight-text">If you already have image input working, PDF support is a three-field change: <code>type</code>, <code>media_type</code>, and the variable name. The message structure, base64 encoding, and prompt patterns are identical. Claude handles the PDF parsing internally.</div>
+</div>
+
+<div class="callout callout-matters">
+<div class="callout-icon">&#x1F4A1;</div>
+<div class="callout-content">
+<div class="callout-label">Why This Matters</div>
+<div class="callout-text">PDF support makes Claude a comprehensive document analysis tool. Rather than pre-processing PDFs through separate OCR or extraction libraries, you send the raw file and Claude reads text, images, tables, and charts in a single request. For applications that process contracts, reports, or research papers, this eliminates an entire preprocessing pipeline.</div>
+</div>
+</div>
+</div>`
+  },
+
+  m7l4: {
+    module: 7, title: 'Citations',
+    tag: 'Module 7 · Lesson 4', tagClass: 'tag-m7',
+    subtitle: 'Enable citations so Claude shows exactly where its answers come from &#x2014; by page number for PDFs, by character position for plain text.',
+    content: `
+<div class="content-body">
+<h3>What Citations Do</h3>
+<p>When citations are enabled, Claude links its statements back to specific locations in the source documents you provided. Instead of appearing to answer from memory, Claude shows the exact page or text position that supports each claim.</p>
+
+<h3>Two Citation Types</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>Type</th><th>Source</th><th>Location data</th></tr></thead>
+<tbody>
+<tr><td><code>citation_page_location</code></td><td>PDF documents</td><td>Document index, title, start page, end page, cited text</td></tr>
+<tr><td><code>citation_char_location</code></td><td>Plain text</td><td>Character start/end position in the text block</td></tr>
+</tbody>
+</table></div>
+
+<h3>Implementation</h3>
+<p>Two additions to your request: enable citations and add a title to identify the source document.</p>
+
+<div class="code-block">
+<div class="code-header"><span class="code-lang">python</span></div>
+<pre>response = client.messages.create(
+    model=model,
+    max_tokens=2000,
+    citations={"enabled": True},       # Enable citations
+    messages=[{
+        "role": "user",
+        "content": [
+            {
+                "type": "document",
+                "source": {
+                    "type": "base64",
+                    "media_type": "application/pdf",
+                    "data": file_data
+                },
+                "title": "Q3 Financial Report"   # Identify the source
+            },
+            {
+                "type": "text",
+                "text": "What were the key revenue figures?"
+            }
+        ]
+    }]
+)</pre>
+</div>
+
+<h3>Response Structure</h3>
+<p>With citations enabled, the response content contains text blocks that may include a <code>citations</code> array with location data:</p>
+
+<div class="code-block">
+<div class="code-header"><span class="code-lang">python</span></div>
+<pre>for block in response.content:
+    if block.type == "text":
+        print(block.text)
+        
+        # Check for citations attached to this text block
+        if hasattr(block, "citations") and block.citations:
+            for cite in block.citations:
+                if cite.type == "citation_page_location":
+                    print(f"  Source: {cite.document_title}")
+                    print(f"  Pages: {cite.start_page}-{cite.end_page}")
+                    print(f"  Cited: {cite.cited_text}")
+                elif cite.type == "citation_char_location":
+                    print(f"  Chars: {cite.start_char_index}-{cite.end_char_index}")</pre>
+</div>
+
+<h3>Works with Both PDFs and Plain Text</h3>
+<p>Citations work with any source document you provide &#x2014; PDFs get page-level citations, plain text gets character-position citations. You can also provide a <code>title</code> field on plain text blocks to help identify sources when multiple documents are included.</p>
+
+<h3>Building a Citation UI</h3>
+<p>The citation data enables rich UI patterns: hovering over a claim shows the source document, page number, and exact quoted text in a popup or sidebar. This gives users a way to verify every statement Claude makes rather than trusting it at face value.</p>
+
+<div class="insight">
+<div class="insight-label">Citations require source documents</div>
+<div class="insight-text">Citations only work when you include source documents in the request (PDFs or text blocks). If Claude answers from its training data without a provided source, there is nothing to cite. Citations are for document-grounded Q&#x26;A, not general knowledge questions.</div>
+</div>
+
+<div class="callout callout-matters">
+<div class="callout-icon">&#x1F4A1;</div>
+<div class="callout-content">
+<div class="callout-label">Why This Matters</div>
+<div class="callout-text">Citations turn Claude from an oracle into a transparent research assistant. Users can verify answers against the original source, which is essential for high-stakes use cases like legal analysis, financial reporting, or medical research. The implementation cost is minimal &#x2014; two fields added to the request &#x2014; but the trust improvement is significant.</div>
+</div>
+</div>
+</div>`
+  },
+
+  m7l5: {
+    module: 7, title: 'Prompt Caching',
+    tag: 'Module 7 · Lesson 5', tagClass: 'tag-m7',
+    subtitle: 'Reuse computational work across requests by caching tools, system prompts, and static message content. Speeds up responses and cuts costs.',
+    content: `
+<div class="content-body">
+<h3>The Problem</h3>
+<p>Every request to Claude involves processing input (tokenization, internal data structures, calculations) before generating output. Normally, all that processing work is discarded after the response. If the next request contains the same tool schemas, system prompt, and earlier messages, Claude repeats all the same work from scratch.</p>
+
+<h3>How Caching Works</h3>
+<div class="flow">
+  <div class="flow-step">Request 1</div><div class="flow-arrow">&#x2192;</div>
+  <div class="flow-step">Process + cache</div><div class="flow-arrow">&#x2192;</div>
+  <div class="flow-step">Generate response</div>
+</div>
+<div class="flow" style="margin-top:4px">
+  <div class="flow-step">Request 2 (same input)</div><div class="flow-arrow">&#x2192;</div>
+  <div class="flow-step">Read from cache</div><div class="flow-arrow">&#x2192;</div>
+  <div class="flow-step">Generate response (faster)</div>
+</div>
+
+<h3>Cache Rules</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>Rule</th><th>Detail</th></tr></thead>
+<tbody>
+<tr><td>Duration</td><td>1 hour max</td></tr>
+<tr><td>Activation</td><td>Manual &#x2014; add <code>cache_control</code> breakpoints to message blocks</td></tr>
+<tr><td>Scope</td><td>Everything up to and including the breakpoint gets cached</td></tr>
+<tr><td>Invalidation</td><td>Any change before a breakpoint invalidates that entire cache layer</td></tr>
+<tr><td>Max breakpoints</td><td>4 per request</td></tr>
+<tr><td>Min content size</td><td>1024 tokens required for content to be cached</td></tr>
+<tr><td>Processing order</td><td>Tools &#x2192; system prompt &#x2192; messages</td></tr>
+</tbody>
+</table></div>
+
+<h3>Longhand vs Shorthand Content</h3>
+<p>Caching requires longhand content blocks (with <code>cache_control</code>). Shorthand strings cannot carry cache metadata:</p>
+
+<div class="code-block">
+<div class="code-header"><span class="code-lang">python</span></div>
+<pre># Shorthand &#x2014; cannot add cache control
+system = "You are a helpful assistant"
+
+# Longhand &#x2014; required for caching
+system = [{
+    "type": "text",
+    "text": "You are a helpful assistant",
+    "cache_control": {"type": "ephemeral"}
+}]</pre>
+</div>
+
+<h3>Implementation: Caching Tools + System Prompt</h3>
+<div class="code-block">
+<div class="code-header"><span class="code-lang">python</span></div>
+<pre>def chat_with_caching(messages, tools, system_prompt):
+    # Cache tool schemas: add cache_control to the LAST tool
+    cached_tools = [t for t in tools]            # Shallow copy
+    last_tool = dict(cached_tools[-1])           # Clone last tool
+    last_tool["cache_control"] = {"type": "ephemeral"}
+    cached_tools[-1] = last_tool
+
+    # Cache system prompt: wrap in longhand with cache_control
+    cached_system = [{
+        "type": "text",
+        "text": system_prompt,
+        "cache_control": {"type": "ephemeral"}
+    }]
+
+    return client.messages.create(
+        model=model,
+        max_tokens=2000,
+        tools=cached_tools,
+        system=cached_system,
+        messages=messages
+    )</pre>
+</div>
+
+<div class="insight">
+<div class="insight-label">Clone before modifying</div>
+<div class="insight-text">Always clone tool schemas before adding <code>cache_control</code>. Modifying the original schema objects means the cache metadata leaks into your source data, which can cause issues if those schemas are reused elsewhere in your code.</div>
+</div>
+
+<h3>Token Usage Patterns</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>Field</th><th>Meaning</th></tr></thead>
+<tbody>
+<tr><td><code>cache_creation_input_tokens</code></td><td>Tokens written to cache (first request)</td></tr>
+<tr><td><code>cache_read_input_tokens</code></td><td>Tokens retrieved from cache (subsequent requests)</td></tr>
+<tr><td><code>input_tokens</code></td><td>Tokens processed normally (not cached)</td></tr>
+</tbody>
+</table></div>
+
+<p>On the first request, you see <code>cache_creation_input_tokens</code>. On subsequent identical requests, those shift to <code>cache_read_input_tokens</code> &#x2014; faster and cheaper. If only some content matches, you get a partial cache read.</p>
+
+<h3>What to Cache</h3>
+<ul>
+<li><strong>Tool schemas</strong> &#x2014; identical across every request in a tool-using conversation</li>
+<li><strong>System prompts</strong> &#x2014; rarely change between requests</li>
+<li><strong>Static message prefixes</strong> &#x2014; document context that stays the same while user messages change</li>
+</ul>
+
+<div class="callout callout-matters">
+<div class="callout-icon">&#x1F4A1;</div>
+<div class="callout-content">
+<div class="callout-label">Why This Matters</div>
+<div class="callout-text">In any application with tool use or system prompts, the same content gets resent with every request. Prompt caching eliminates the redundant processing cost. The implementation is small (add <code>cache_control</code> to 1&#x2013;2 blocks), but the payoff compounds across every request in a conversation &#x2014; faster responses, lower token bills, and no change to behavior.</div>
+</div>
+</div>
+</div>`
+  },
+
+  m7l6: {
+    module: 7, title: 'Code Execution and the Files API',
+    tag: 'Module 7 · Lesson 6', tagClass: 'tag-m7',
+    subtitle: 'Upload files once via the Files API, then let Claude write and run Python code in isolated Docker containers to analyze them.',
+    content: `
+<div class="content-body">
+<h3>Two Features, One Workflow</h3>
+<p>The Files API and Code Execution solve different problems but work best together: the Files API gets data in, code execution processes it, and the response comes back with results and generated files.</p>
+
+<div class="table-wrap"><table>
+<thead><tr><th>Feature</th><th>What it does</th><th>Implementation effort</th></tr></thead>
+<tbody>
+<tr><td><strong>Files API</strong></td><td>Upload files once, reference by ID in future requests</td><td>Upload call &#x2192; get file ID &#x2192; use ID in messages</td></tr>
+<tr><td><strong>Code Execution</strong></td><td>Claude writes + runs Python in isolated Docker containers</td><td>Include predefined tool schema &#x2014; no custom code needed</td></tr>
+</tbody>
+</table></div>
+
+<h3>Files API</h3>
+<p>Instead of base64-encoding a file into every request, upload it once and reference it by ID:</p>
+
+<div class="code-block">
+<div class="code-header"><span class="code-lang">python</span></div>
+<pre># Upload once
+file_metadata = client.files.create(
+    file=open("sales_data.csv", "rb")
+)
+file_id = file_metadata.id   # Reuse this in future requests</pre>
+</div>
+
+<h3>Code Execution</h3>
+<p>Code execution is a server-side tool &#x2014; Claude writes Python, runs it in a Docker container, interprets results, and can iterate. You just include the tool schema; no implementation needed on your side.</p>
+
+<div class="code-block">
+<div class="code-header"><span class="code-lang">python</span></div>
+<pre>response = client.messages.create(
+    model=model,
+    max_tokens=4096,
+    tools=[{"type": "code_execution_20250522", "name": "code_execution"}],
+    messages=[{
+        "role": "user",
+        "content": [
+            {
+                "type": "container_upload",
+                "file_id": file_id          # File available inside container
+            },
+            {
+                "type": "text",
+                "text": "Analyze this CSV. Show top 5 products by revenue and create a bar chart."
+            }
+        ]
+    }]
+)</pre>
+</div>
+
+<h3>What Happens Inside</h3>
+<div class="flow">
+  <div class="flow-step">Claude reads file</div><div class="flow-arrow">&#x2192;</div>
+  <div class="flow-step">Writes Python code</div><div class="flow-arrow">&#x2192;</div>
+  <div class="flow-step">Executes in Docker</div><div class="flow-arrow">&#x2192;</div>
+  <div class="flow-step">Interprets results</div>
+</div>
+
+<p>Claude can run code multiple times in the same request &#x2014; if the first attempt errors or produces unexpected results, it adjusts and retries. The response contains code blocks, execution output, and a final analysis.</p>
+
+<h3>Generated Files</h3>
+<p>Claude can create files inside the container (plots, reports, processed data). These are returned as file IDs in the response that you can download.</p>
+
+<h3>Key Constraints</h3>
+<ul>
+<li><strong>No network access</strong> &#x2014; Docker containers are isolated; Claude cannot fetch external data from inside the container</li>
+<li><strong>Data goes through Files API</strong> &#x2014; all input data must be uploaded via the Files API and referenced by ID</li>
+<li><strong>Python only</strong> &#x2014; code execution runs Python in the container</li>
+</ul>
+
+<div class="insight">
+<div class="insight-label">Code execution vs tool use</div>
+<div class="insight-text">With regular tools, you write the function and Claude calls it. With code execution, Claude writes and runs its own code. This makes it ideal for ad-hoc analysis where you cannot predict what code will be needed &#x2014; data exploration, custom visualizations, one-off computations.</div>
+</div>
+
+<div class="callout callout-matters">
+<div class="callout-icon">&#x1F4A1;</div>
+<div class="callout-content">
+<div class="callout-label">Why This Matters</div>
+<div class="callout-text">Code execution turns Claude into a data analyst. Upload a CSV, ask a question, and get back code, results, and charts &#x2014; without writing any analysis code yourself. The Files API makes this efficient by uploading data once instead of base64-encoding it into every request. Together, they handle the entire workflow from raw data to actionable insights.</div>
+</div>
+</div>
+</div>`
+  },
+
+  m8l1: {
+    module: 8, title: 'Introducing MCP',
+    tag: 'Module 8 · Lesson 1', tagClass: 'tag-m8',
+    subtitle: 'MCP shifts the tool integration burden from your application to dedicated servers. You connect to tools instead of building them.',
+    content: `
+<div class="content-body">
+<h3>The Problem MCP Solves</h3>
+<p>Building a Claude-powered chatbot that integrates with GitHub requires implementing tool schemas and functions for repositories, pull requests, issues, and projects &#x2014; significant developer effort. Multiply that by every service you want to integrate (Slack, Jira, AWS, databases), and tool maintenance becomes a major burden.</p>
+
+<h3>What MCP Is</h3>
+<p>Model Context Protocol is a communication layer that connects your application to <strong>MCP servers</strong> &#x2014; dedicated servers that wrap external services into ready-to-use tools, resources, and prompts. Instead of writing tool schemas and functions yourself, the MCP server handles both.</p>
+
+<div class="flow">
+  <div class="flow-step">Your app</div><div class="flow-arrow">&#x2192;</div>
+  <div class="flow-step">MCP client</div><div class="flow-arrow">&#x2192;</div>
+  <div class="flow-step">MCP server</div><div class="flow-arrow">&#x2192;</div>
+  <div class="flow-step">External service</div>
+</div>
+
+<h3>MCP Server Components</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>Component</th><th>What it provides</th><th>Analogy</th></tr></thead>
+<tbody>
+<tr><td><strong>Tools</strong></td><td>Actions Claude can call (create issue, send message)</td><td>Same as Module 5 tool use, but server-defined</td></tr>
+<tr><td><strong>Resources</strong></td><td>Data the client can read (document contents, lists)</td><td>Like a read-only API endpoint</td></tr>
+<tr><td><strong>Prompts</strong></td><td>Pre-built prompt templates for common tasks</td><td>Tested recipes for the server&#x27;s domain</td></tr>
+</tbody>
+</table></div>
+
+<h3>Common Questions</h3>
+
+<p><strong>Who creates MCP servers?</strong> Anyone &#x2014; but service providers often create official implementations. AWS, GitHub, and others maintain MCP servers for their platforms.</p>
+
+<p><strong>MCP vs direct API calls?</strong> MCP eliminates the need to author tool schemas and implement tool functions yourself. The server handles both.</p>
+
+<p><strong>MCP vs tool use?</strong> They are complementary. Tool use is the mechanism (Claude calls a function); MCP determines who maintains that function (the server, not you).</p>
+
+<h3>MCP vs Manual Tool Use</h3>
+<div class="table-wrap"><table>
+<thead><tr><th></th><th>Manual tool use (Module 5)</th><th>MCP</th></tr></thead>
+<tbody>
+<tr><td>Tool schemas</td><td>You write them</td><td>Server provides them</td></tr>
+<tr><td>Tool functions</td><td>You implement them</td><td>Server executes them</td></tr>
+<tr><td>Maintenance</td><td>You maintain them</td><td>Server maintainer handles updates</td></tr>
+<tr><td>Flexibility</td><td>Full control</td><td>Limited to what server exposes</td></tr>
+</tbody>
+</table></div>
+
+<div class="callout callout-matters">
+<div class="callout-icon">&#x1F4A1;</div>
+<div class="callout-content">
+<div class="callout-label">Why This Matters</div>
+<div class="callout-text">MCP is what makes tool use scale. Building one or two custom tools is manageable; integrating with ten services is not. MCP shifts the integration burden to server maintainers who specialize in their service, letting you focus on your application logic rather than writing and updating tool schemas for every external API.</div>
+</div>
+</div>
+</div>`
+  },
+
+  m8l2: {
+    module: 8, title: 'MCP Clients',
+    tag: 'Module 8 · Lesson 2', tagClass: 'tag-m8',
+    subtitle: 'The MCP client sits between your server and the MCP server, relaying tool lists and executing tool calls through a standardized message protocol.',
+    content: `
+<div class="content-body">
+<h3>What the Client Does</h3>
+<p>The MCP client is the communication interface between your application and an MCP server. It handles two things: discovering what tools the server offers, and executing those tools when Claude requests them.</p>
+
+<h3>Transport Agnostic</h3>
+<p>MCP clients and servers can communicate over multiple protocols &#x2014; standard I/O (stdio), HTTP, or WebSockets. The most common setup is stdio, where client and server run on the same machine and communicate through standard input/output.</p>
+
+<h3>The Four Message Types</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>Message</th><th>Direction</th><th>Purpose</th></tr></thead>
+<tbody>
+<tr><td><code>list_tools</code> request</td><td>Client &#x2192; Server</td><td>Ask what tools are available</td></tr>
+<tr><td><code>list_tools</code> result</td><td>Server &#x2192; Client</td><td>Return the tool list</td></tr>
+<tr><td><code>call_tool</code> request</td><td>Client &#x2192; Server</td><td>Execute a specific tool with arguments</td></tr>
+<tr><td><code>call_tool</code> result</td><td>Server &#x2192; Client</td><td>Return the tool execution result</td></tr>
+</tbody>
+</table></div>
+
+<h3>Full Request Flow</h3>
+<div class="code-block">
+<div class="code-header"><span class="code-lang">flow</span></div>
+<pre> 1. User asks question
+ 2. Your server asks MCP client for tool list
+ 3. MCP client sends list_tools request to MCP server
+ 4. MCP server responds with available tools
+ 5. Your server sends query + tools to Claude
+ 6. Claude requests a tool call
+ 7. Your server asks MCP client to execute tool
+ 8. MCP client sends call_tool request to MCP server
+ 9. MCP server executes tool (e.g., GitHub API call)
+10. Result flows back: MCP server &#x2192; client &#x2192; server &#x2192; Claude &#x2192; user</pre>
+</div>
+
+<h3>How It Connects to Module 5</h3>
+<p>The flow is identical to the tool use loop from Module 5. The only difference is <em>where</em> the tools come from and <em>who</em> executes them:</p>
+
+<div class="table-wrap"><table>
+<thead><tr><th></th><th>Module 5 (manual)</th><th>Module 8 (MCP)</th></tr></thead>
+<tbody>
+<tr><td>Tool definitions</td><td>You write JSON schemas</td><td>MCP client fetches from server</td></tr>
+<tr><td>Tool execution</td><td>Your run_tool function</td><td>MCP client delegates to server</td></tr>
+<tr><td>Conversation loop</td><td>Same while loop</td><td>Same while loop</td></tr>
+</tbody>
+</table></div>
+
+<div class="insight">
+<div class="insight-label">Same loop, different plumbing</div>
+<div class="insight-text">If you built the tool use system in Module 5, you already understand the architecture. MCP replaces two pieces &#x2014; where you get tool schemas and where tool calls execute &#x2014; but the conversation loop with Claude stays exactly the same.</div>
+</div>
+
+<div class="callout callout-matters">
+<div class="callout-icon">&#x1F4A1;</div>
+<div class="callout-content">
+<div class="callout-label">Why This Matters</div>
+<div class="callout-text">The MCP client is a thin layer, but it is the critical connection point. Your application never talks to the MCP server directly &#x2014; the client handles protocol details, message formatting, and result parsing. Understanding the four message types and the 10-step flow is enough to work with any MCP server, regardless of what service it wraps.</div>
+</div>
+</div>
+</div>`
+  },
+
+  m8l3: {
+    module: 8, title: 'Project Setup',
+    tag: 'Module 8 · Lesson 3', tagClass: 'tag-m8',
+    subtitle: 'A CLI chatbot project that implements both an MCP client and server &#x2014; building both sides to understand how they connect.',
+    content: `
+<div class="content-body">
+<h3>What You Are Building</h3>
+<p>A command-line chatbot that uses MCP to read and edit a collection of in-memory documents. The project has three components:</p>
+
+<div class="table-wrap"><table>
+<thead><tr><th>Component</th><th>Role</th></tr></thead>
+<tbody>
+<tr><td><strong>MCP server</strong></td><td>Exposes 2 tools: read document and update document</td></tr>
+<tr><td><strong>MCP client</strong></td><td>Connects to the server, relays tool lists and executes calls</td></tr>
+<tr><td><strong>Document collection</strong></td><td>Fake documents stored in memory (not files on disk)</td></tr>
+</tbody>
+</table></div>
+
+<div class="insight">
+<div class="insight-label">Educational setup</div>
+<div class="insight-text">In real projects you typically implement either a client <em>or</em> a server, not both. This project builds both sides so you can see the full round-trip from tool definition to tool execution.</div>
+</div>
+
+<h3>Setup Process</h3>
+<div class="code-block">
+<div class="code-header"><span class="code-lang">bash</span></div>
+<pre># 1. Download and extract starter code
+unzip CLI_project.zip
+cd CLI_project
+
+# 2. Open in your editor and follow readme.md
+
+# 3. Add your API key
+echo &#x27;ANTHROPIC_API_KEY="sk-ant-..."&#x27; > .env
+
+# 4. Install dependencies
+pip install -r requirements.txt   # or: uv sync
+
+# 5. Run the project
+python main.py                    # or: uv run main.py
+
+# 6. Test with a chat prompt
+&gt; Hello, what can you do?</pre>
+</div>
+
+<h3>What to Expect</h3>
+<p>After setup, you have a working chat interface that responds to basic queries. No MCP features are connected yet &#x2014; the remaining lessons add tools, resources, and prompts one at a time.</p>
+
+<h3>Project File Structure</h3>
+<div class="code-block">
+<div class="code-header"><span class="code-lang">text</span></div>
+<pre>CLI_project/
+  main.py          # Chat loop + Claude integration
+  client.py        # MCP client (you will build out)
+  server.py        # MCP server (you will build out)
+  documents.py     # In-memory document collection
+  .env             # API key (git-ignored)
+  readme.md        # Setup directions</pre>
+</div>
+
+<div class="callout callout-matters">
+<div class="callout-icon">&#x1F4A1;</div>
+<div class="callout-content">
+<div class="callout-label">Why This Matters</div>
+<div class="callout-text">This project is the hands-on foundation for the rest of Module 8. Each subsequent lesson adds a specific MCP capability &#x2014; server tools, the inspector, client implementation, resources, and prompts &#x2014; building on this scaffolding. Getting the setup right means every following lesson slots in cleanly.</div>
+</div>
+</div>
+</div>`
+  },
+
+  m8l4: {
+    module: 8, title: 'Defining Tools with MCP',
+    tag: 'Module 8 · Lesson 4', tagClass: 'tag-m8',
+    subtitle: 'The MCP Python SDK auto-generates JSON tool schemas from decorated Python functions &#x2014; no manual schema writing required.',
+    content: `
+<div class="content-body">
+<h3>The Key Advantage</h3>
+<p>In Module 5, you wrote JSON schemas by hand for every tool. With the MCP Python SDK, you decorate a Python function and the SDK generates the schema automatically from the function signature, type hints, and Field descriptions.</p>
+
+<h3>Implementation Pattern</h3>
+<div class="code-block">
+<div class="code-header"><span class="code-lang">python</span></div>
+<pre>from pydantic import Field
+from mcp.server import Server
+
+mcp = Server("doc-server")
+
+@mcp.tool(name="read_doc_contents", description="Read the contents of a document by its ID")
+async def read_doc_contents(
+    doc_id: str = Field(description="The unique identifier of the document to read")
+) -> str:
+    if doc_id not in docs:
+        raise ValueError(f"Document {doc_id} not found")
+    return docs[doc_id]
+
+
+@mcp.tool(name="edit_document", description="Edit a document by replacing old text with new text")
+async def edit_document(
+    doc_id: str = Field(description="The document ID to edit"),
+    old_string: str = Field(description="The exact text to find and replace"),
+    new_string: str = Field(description="The replacement text")
+) -> str:
+    if doc_id not in docs:
+        raise ValueError(f"Document {doc_id} not found")
+    docs[doc_id] = docs[doc_id].replace(old_string, new_string)
+    return f"Document {doc_id} updated successfully"</pre>
+</div>
+
+<h3>How It Maps</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>Python element</th><th>Generated schema field</th></tr></thead>
+<tbody>
+<tr><td><code>@mcp.tool(name=...)</code></td><td>Tool name</td></tr>
+<tr><td><code>@mcp.tool(description=...)</code></td><td>Tool description</td></tr>
+<tr><td>Function parameters + type hints</td><td><code>input_schema</code> properties + types</td></tr>
+<tr><td><code>Field(description=...)</code></td><td>Parameter descriptions in schema</td></tr>
+<tr><td><code>raise ValueError</code></td><td>Error message returned to Claude</td></tr>
+</tbody>
+</table></div>
+
+<h3>Module 5 vs Module 8: Defining the Same Tool</h3>
+<div class="code-block">
+<div class="code-header"><span class="code-lang">python</span></div>
+<pre># Module 5: Manual JSON schema (30+ lines)
+read_doc_schema = ToolParam(
+    name="read_doc_contents",
+    description="Read the contents of a document by its ID",
+    input_schema={
+        "type": "object",
+        "properties": {
+            "doc_id": {
+                "type": "string",
+                "description": "The unique identifier of the document"
+            }
+        },
+        "required": ["doc_id"]
+    }
+)
+
+# Module 8: MCP decorator (5 lines)
+@mcp.tool(name="read_doc_contents", description="Read the contents of a document by its ID")
+async def read_doc_contents(
+    doc_id: str = Field(description="The unique identifier of the document")
+) -> str:
+    return docs[doc_id]</pre>
+</div>
+
+<h3>Error Handling</h3>
+<p>Same principle as Module 5: validate inputs early and raise errors with meaningful messages. Claude sees the error text and can retry with corrected parameters. The pattern is identical &#x2014; check if the resource exists, raise <code>ValueError</code> if not.</p>
+
+<div class="insight">
+<div class="insight-label">Schema + function in one place</div>
+<div class="insight-text">With manual tool use, the schema and the function live in separate places and can drift apart. With MCP decorators, they are the same code &#x2014; the function signature <em>is</em> the schema. Change a parameter and the schema updates automatically.</div>
+</div>
+
+<div class="callout callout-matters">
+<div class="callout-icon">&#x1F4A1;</div>
+<div class="callout-content">
+<div class="callout-label">Why This Matters</div>
+<div class="callout-text">The decorator pattern eliminates the most tedious part of tool development: writing and maintaining JSON schemas. For two simple tools, the savings are modest. For a server exposing ten or twenty tools across a complex service, the reduction in boilerplate is significant &#x2014; and schema-function drift becomes impossible.</div>
+</div>
+</div>
+</div>`
+  },
+
+  m8l5: {
+    module: 8, title: 'The Server Inspector',
+    tag: 'Module 8 · Lesson 5', tagClass: 'tag-m8',
+    subtitle: 'An in-browser debugger that lets you test MCP server tools manually &#x2014; without connecting a client or application.',
+    content: `
+<div class="content-body">
+<h3>What the Inspector Does</h3>
+<p>The MCP Inspector is a browser-based tool for testing your MCP server in isolation. You connect to the server, see its tools listed, fill in parameters, click "Run Tool," and verify the output &#x2014; all without writing a client or integrating with Claude.</p>
+
+<h3>Launching the Inspector</h3>
+<div class="code-block">
+<div class="code-header"><span class="code-lang">bash</span></div>
+<pre># Start the inspector with your server file
+mcp dev server.py
+
+# Opens on a local port &#x2014; navigate to the URL in your browser</pre>
+</div>
+
+<h3>Testing Workflow</h3>
+<div class="flow">
+  <div class="flow-step">Connect</div><div class="flow-arrow">&#x2192;</div>
+  <div class="flow-step">Select tool</div><div class="flow-arrow">&#x2192;</div>
+  <div class="flow-step">Enter params</div><div class="flow-arrow">&#x2192;</div>
+  <div class="flow-step">Run tool</div><div class="flow-arrow">&#x2192;</div>
+  <div class="flow-step">Verify output</div>
+</div>
+
+<h3>Inspector Interface</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>Section</th><th>What it shows</th></tr></thead>
+<tbody>
+<tr><td><strong>Left sidebar</strong></td><td>Connect button to establish server connection</td></tr>
+<tr><td><strong>Top menu</strong></td><td>Resources, Prompts, and Tools tabs</td></tr>
+<tr><td><strong>Tools list</strong></td><td>All available tools from your server</td></tr>
+<tr><td><strong>Right panel</strong></td><td>Parameter input form + output display for selected tool</td></tr>
+</tbody>
+</table></div>
+
+<h3>Example: Testing Document Tools</h3>
+<div class="code-block">
+<div class="code-header"><span class="code-lang">test sequence</span></div>
+<pre># 1. Test read operation
+Tool: read_doc_contents
+Input: doc_id = "doc_001"
+Expected: Document content returned
+
+# 2. Test edit operation
+Tool: edit_document
+Input: doc_id = "doc_001", old_string = "draft", new_string = "final"
+Expected: Success confirmation
+
+# 3. Verify edit worked
+Tool: read_doc_contents
+Input: doc_id = "doc_001"
+Expected: Content now shows "final" instead of "draft"
+
+# 4. Test error handling
+Tool: read_doc_contents
+Input: doc_id = "nonexistent"
+Expected: ValueError message</pre>
+</div>
+
+<div class="insight">
+<div class="insight-label">Test before you integrate</div>
+<div class="insight-text">The inspector catches server bugs before they become client-side mysteries. If a tool fails in the inspector, it will fail when Claude calls it too &#x2014; but the inspector gives you direct parameter control and immediate feedback, which is much faster to debug than tracing through the full MCP message chain.</div>
+</div>
+
+<div class="callout callout-matters">
+<div class="callout-icon">&#x1F4A1;</div>
+<div class="callout-content">
+<div class="callout-label">Why This Matters</div>
+<div class="callout-text">The inspector is the fastest feedback loop in MCP development. Testing through the full client-server-Claude chain means waiting for API calls, parsing multi-block responses, and guessing where failures occurred. The inspector eliminates all of that: you call a tool, you see what happened. Use it to validate every tool before moving to client integration.</div>
+</div>
+</div>
+</div>`
+  },
+
+  m8l6: {
+    module: 8, title: 'Implementing a Client',
+    tag: 'Module 8 · Lesson 6', tagClass: 'tag-m8',
+    subtitle: 'A wrapper class around the MCP client session that exposes two functions: list the server&#x27;s tools and execute them.',
+    content: `
+<div class="content-body">
+<h3>What the Client Class Does</h3>
+<p>The MCP client is a thin wrapper around the SDK&#x27;s client session. It manages the connection lifecycle (setup and cleanup) and exposes two key methods that the rest of your application calls.</p>
+
+<h3>The Two Core Functions</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>Method</th><th>SDK call</th><th>Purpose</th></tr></thead>
+<tbody>
+<tr><td><code>list_tools()</code></td><td><code>await self.session.list_tools()</code></td><td>Get tool definitions to send to Claude</td></tr>
+<tr><td><code>call_tool(name, input)</code></td><td><code>await self.session.call_tool(name, input)</code></td><td>Execute a tool when Claude requests it</td></tr>
+</tbody>
+</table></div>
+
+<h3>Implementation</h3>
+<div class="code-block">
+<div class="code-header"><span class="code-lang">python</span></div>
+<pre>from mcp import ClientSession, StdioServerParameters
+from mcp.client.stdio import stdio_client
+
+class MCPClient:
+    def __init__(self):
+        self.session = None
+
+    async def connect(self, server_script: str):
+        """Connect to an MCP server via stdio"""
+        server_params = StdioServerParameters(
+            command="python",
+            args=[server_script]
+        )
+        # stdio_client returns transport objects for the session
+        transport = await stdio_client(server_params)
+        self.session = ClientSession(*transport)
+        await self.session.initialize()
+
+    async def list_tools(self):
+        """Get available tools from the server"""
+        result = await self.session.list_tools()
+        return result.tools
+
+    async def call_tool(self, tool_name: str, tool_input: dict):
+        """Execute a tool on the server"""
+        result = await self.session.call_tool(tool_name, tool_input)
+        return result
+
+    async def cleanup(self):
+        """Close the session and free resources"""
+        if self.session:
+            await self.session.close()</pre>
+</div>
+
+<h3>How It Fits the Architecture</h3>
+<div class="flow">
+  <div class="flow-step">main.py</div><div class="flow-arrow">&#x2192;</div>
+  <div class="flow-step">client.list_tools()</div><div class="flow-arrow">&#x2192;</div>
+  <div class="flow-step">Send tools to Claude</div>
+</div>
+<div class="flow" style="margin-top:4px">
+  <div class="flow-step">Claude requests tool</div><div class="flow-arrow">&#x2192;</div>
+  <div class="flow-step">client.call_tool()</div><div class="flow-arrow">&#x2192;</div>
+  <div class="flow-step">Server executes</div>
+</div>
+
+<p>Your main application code never touches the session directly. It calls <code>list_tools()</code> to get tool definitions before sending them to Claude, and <code>call_tool()</code> to execute whatever Claude requests.</p>
+
+<h3>Why Wrap the Session</h3>
+<p>The client session from the MCP SDK requires explicit resource cleanup when closed. Wrapping it in a class with <code>connect()</code> and <code>cleanup()</code> methods ensures resources are properly managed and gives the rest of your codebase a clean interface &#x2014; two methods instead of raw session internals.</p>
+
+<h3>Testing the Client</h3>
+<div class="code-block">
+<div class="code-header"><span class="code-lang">python</span></div>
+<pre># Run client.py directly to verify server connection
+client = MCPClient()
+await client.connect("server.py")
+
+tools = await client.list_tools()
+print(f"Available tools: {[t.name for t in tools]}")
+# Output: Available tools: ["read_doc_contents", "edit_document"]
+
+await client.cleanup()</pre>
+</div>
+
+<div class="insight">
+<div class="insight-label">Two methods, full MCP access</div>
+<div class="insight-text">The entire MCP client boils down to <code>list_tools()</code> and <code>call_tool()</code>. Everything else &#x2014; connection management, session initialization, transport protocol &#x2014; is setup that runs once. The day-to-day integration surface is just those two calls.</div>
+</div>
+
+<div class="callout callout-matters">
+<div class="callout-icon">&#x1F4A1;</div>
+<div class="callout-content">
+<div class="callout-label">Why This Matters</div>
+<div class="callout-text">The client is the bridge between your application logic and the MCP server. By reducing the interface to two methods, it keeps your main code clean: fetch tools, send them to Claude, execute what Claude asks for. The wrapper pattern also makes it easy to swap MCP servers &#x2014; change the server script path and the same two methods connect to a completely different set of tools.</div>
+</div>
+</div>
+</div>`
+  },
+
+  m8l7: {
+    module: 8, title: 'Defining Resources',
+    tag: 'Module 8 · Lesson 7', tagClass: 'tag-m8',
+    subtitle: 'Resources let MCP servers expose data for reading &#x2014; like a read-only API endpoint that clients can fetch without Claude deciding to call a tool.',
+    content: `
+<div class="content-body">
+<h3>Resources vs Tools</h3>
+<p>Tools are <em>reactive</em> &#x2014; Claude decides when to call them. Resources are <em>proactive</em> &#x2014; the client fetches data directly when it needs context, without waiting for Claude to request it.</p>
+
+<div class="table-wrap"><table>
+<thead><tr><th></th><th>Tools</th><th>Resources</th></tr></thead>
+<tbody>
+<tr><td>Triggered by</td><td>Claude decides to call</td><td>Client fetches directly</td></tr>
+<tr><td>Direction</td><td>Claude &#x2192; server</td><td>Client &#x2192; server</td></tr>
+<tr><td>Use case</td><td>Actions (edit, create, delete)</td><td>Data retrieval (read, list)</td></tr>
+<tr><td>Example</td><td>Edit a document</td><td>Get document contents for prompt context</td></tr>
+</tbody>
+</table></div>
+
+<h3>Two Resource Types</h3>
+
+<p><strong>Direct resources</strong> have a fixed URI and always return the same kind of data:</p>
+<div class="code-block">
+<div class="code-header"><span class="code-lang">python</span></div>
+<pre>@mcp.resource(uri="docs://documents", mime_type="application/json")
+async def list_documents():
+    """Return a list of all available document IDs"""
+    return list(docs.keys())</pre>
+</div>
+
+<p><strong>Templated resources</strong> have a parameterized URI &#x2014; the SDK parses the parameter and passes it as a keyword argument:</p>
+<div class="code-block">
+<div class="code-header"><span class="code-lang">python</span></div>
+<pre>@mcp.resource(uri="docs://documents/{doc_id}", mime_type="text/plain")
+async def get_document(doc_id: str):
+    """Return the contents of a specific document"""
+    if doc_id not in docs:
+        raise ValueError(f"Document {doc_id} not found")
+    return docs[doc_id]</pre>
+</div>
+
+<h3>URI Structure</h3>
+<p>Each resource has a URI that acts as its address. The scheme (<code>docs://</code>) is custom &#x2014; you define it. Templated URIs use <code>{param}</code> syntax, and the SDK automatically extracts the parameter value from the request and passes it to your function.</p>
+
+<h3>MIME Types</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>MIME type</th><th>Meaning</th><th>Client handling</th></tr></thead>
+<tbody>
+<tr><td><code>application/json</code></td><td>Structured data</td><td>Client parses with <code>json.loads()</code></td></tr>
+<tr><td><code>text/plain</code></td><td>Plain text</td><td>Client uses raw string</td></tr>
+</tbody>
+</table></div>
+
+<p>MIME types are a hint to the client about how to parse the response. The SDK serializes all return values to strings automatically; the client is responsible for deserialization.</p>
+
+<h3>Testing in the Inspector</h3>
+<p>The MCP Inspector lists direct and templated resources separately. You can call each one, verify the output, and confirm the MIME type before integrating with the client.</p>
+
+<div class="insight">
+<div class="insight-label">Resources feed context, tools take action</div>
+<div class="insight-text">Think of resources as the data layer for your prompts. When a user mentions a document, the client fetches its contents via a resource and includes them in the prompt &#x2014; before Claude even sees the message. Tools come in later, when Claude needs to <em>do</em> something with that data.</div>
+</div>
+
+<div class="callout callout-matters">
+<div class="callout-icon">&#x1F4A1;</div>
+<div class="callout-content">
+<div class="callout-label">Why This Matters</div>
+<div class="callout-text">Resources complete the MCP server&#x27;s data story. Tools let Claude act on data, but resources let your application <em>preload</em> data into the conversation. This means Claude starts with the right context rather than needing to call a tool first just to read something &#x2014; fewer round trips, faster responses, and cleaner conversation flow.</div>
+</div>
+</div>
+</div>`
+  },
+
+  m8l8: {
+    module: 8, title: 'Accessing Resources',
+    tag: 'Module 8 · Lesson 8', tagClass: 'tag-m8',
+    subtitle: 'The client-side function that reads resources from the MCP server, checks the MIME type, and parses the response.',
+    content: `
+<div class="content-body">
+<h3>Adding a Resource Reader to the Client</h3>
+<p>The previous lesson defined resources on the server. Now the client needs a method to request and parse them. This is one function added to the MCPClient class.</p>
+
+<h3>Implementation</h3>
+<div class="code-block">
+<div class="code-header"><span class="code-lang">python</span></div>
+<pre>import json
+from pydantic import AnyUrl
+
+class MCPClient:
+    # ... existing connect, list_tools, call_tool, cleanup ...
+
+    async def read_resource(self, uri: str):
+        """Read a resource from the MCP server and parse by MIME type"""
+        result = await self.session.read_resource(AnyUrl(uri))
+        resource = result.contents[0]
+
+        if resource.mime_type == "application/json":
+            return json.loads(resource.text)
+        else:
+            return resource.text</pre>
+</div>
+
+<h3>How It Works</h3>
+<div class="flow">
+  <div class="flow-step">Client calls read_resource(uri)</div><div class="flow-arrow">&#x2192;</div>
+  <div class="flow-step">Server matches URI to handler</div><div class="flow-arrow">&#x2192;</div>
+  <div class="flow-step">Server returns data + MIME type</div>
+</div>
+
+<p>The SDK wraps the URI string in an <code>AnyUrl</code> object for validation. The server response comes back as a <code>contents</code> list; the first element contains the data and its MIME type metadata.</p>
+
+<h3>Parsing Logic</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>MIME type</th><th>Client action</th><th>Returns</th></tr></thead>
+<tbody>
+<tr><td><code>application/json</code></td><td><code>json.loads(resource.text)</code></td><td>Python dict/list</td></tr>
+<tr><td>Anything else</td><td>Use <code>resource.text</code> directly</td><td>Plain string</td></tr>
+</tbody>
+</table></div>
+
+<p>The SDK serializes all server return values to strings, so the client is always responsible for deserialization. The MIME type tells you <em>how</em> to deserialize.</p>
+
+<h3>Using Resources in the Application</h3>
+<div class="code-block">
+<div class="code-header"><span class="code-lang">python</span></div>
+<pre># Fetch document list to show available docs
+doc_list = await client.read_resource("docs://documents")
+# Returns: ["doc_001", "doc_002", "doc_003"]
+
+# Fetch specific document content for prompt context
+doc_text = await client.read_resource("docs://documents/doc_001")
+# Returns: "This is the content of document 001..."
+
+# Include in Claude prompt as context
+messages = [{
+    "role": "user",
+    "content": f"Based on this document:\n{doc_text}\nSummarize the key points."
+}]</pre>
+</div>
+
+<div class="insight">
+<div class="insight-label">Resources bypass the tool loop</div>
+<div class="insight-text">When your application fetches a resource, it goes directly from client to server and back &#x2014; no Claude involvement. The data arrives before Claude sees the message, so it can be injected as prompt context. Tools, by contrast, require Claude to request them and wait for results mid-conversation.</div>
+</div>
+
+<div class="callout callout-matters">
+<div class="callout-icon">&#x1F4A1;</div>
+<div class="callout-content">
+<div class="callout-label">Why This Matters</div>
+<div class="callout-text">With <code>read_resource()</code>, the MCP client now has three capabilities: list tools, call tools, and read resources. This covers the full data flow &#x2014; discover what the server offers, preload context for Claude, and execute actions when Claude requests them. The three methods together are the complete client interface for most MCP applications.</div>
+</div>
+</div>
+</div>`
+  },
+
+  m8l9: {
+    module: 8, title: 'Defining Prompts',
+    tag: 'Module 8 · Lesson 9', tagClass: 'tag-m8',
+    subtitle: 'MCP servers can expose pre-built, tested prompt templates that client applications invoke like slash commands.',
+    content: `
+<div class="content-body">
+<h3>What MCP Prompts Are</h3>
+<p>MCP prompts are server-defined message templates for specialized tasks. Instead of users writing ad-hoc prompts, the server author creates high-quality, pre-tested prompts tailored to the server&#x27;s domain &#x2014; then clients invoke them by name.</p>
+
+<h3>Server-Side Implementation</h3>
+<div class="code-block">
+<div class="code-header"><span class="code-lang">python</span></div>
+<pre>from mcp.server import Server
+from mcp.types import base
+
+mcp = Server("doc-server")
+
+@mcp.prompt(
+    name="format_document",
+    description="Reformat a document to clean markdown"
+)
+async def format_document(document_id: str):
+    """Returns messages that instruct Claude to read, reformat, and save a document"""
+    return [
+        base.UserMessage(
+            content=f"Read document {document_id} using the read_doc_contents tool. "
+                    f"Reformat the content to clean, well-structured markdown. "
+                    f"Then save the changes using the edit_document tool."
+        )
+    ]</pre>
+</div>
+
+<h3>How Prompts Differ from Tools and Resources</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>Component</th><th>Returns</th><th>Used by</th></tr></thead>
+<tbody>
+<tr><td><strong>Tools</strong></td><td>Action results (data, confirmations)</td><td>Claude calls during conversation</td></tr>
+<tr><td><strong>Resources</strong></td><td>Raw data (document text, lists)</td><td>Client preloads into prompt context</td></tr>
+<tr><td><strong>Prompts</strong></td><td>Pre-built messages array</td><td>Client feeds directly to Claude as input</td></tr>
+</tbody>
+</table></div>
+
+<h3>What the Function Returns</h3>
+<p>A prompt function returns a list of message objects (<code>base.UserMessage</code>, <code>base.AssistantMessage</code>) that can be sent directly to Claude. The function interpolates its arguments into the prompt text, so each invocation produces a customized instruction set.</p>
+
+<h3>Client-Side Experience</h3>
+<p>In a client application, prompts appear as autocomplete options &#x2014; like slash commands. The user selects a prompt, provides required parameters (e.g., a document ID), and the client fetches the pre-built messages and sends them to Claude.</p>
+
+<div class="flow">
+  <div class="flow-step">User picks /format_document</div><div class="flow-arrow">&#x2192;</div>
+  <div class="flow-step">Client asks for doc_id</div><div class="flow-arrow">&#x2192;</div>
+  <div class="flow-step">Client calls get_prompt</div><div class="flow-arrow">&#x2192;</div>
+  <div class="flow-step">Messages sent to Claude</div>
+</div>
+
+<h3>Why Server Authors Write Prompts</h3>
+<p>The server author knows the domain best. A document server author knows which tool names to reference, what formatting instructions work reliably, and what edge cases to handle. Encoding that expertise in a prompt template means every client application benefits from it without reinventing the workflow.</p>
+
+<div class="insight">
+<div class="insight-label">Prompts encode expertise</div>
+<div class="insight-text">A prompt is not just text &#x2014; it is a tested workflow. The format_document prompt knows to read first, reformat second, and save third. That sequencing was figured out and validated by the server author, so client developers don&#x27;t have to.</div>
+</div>
+
+<div class="callout callout-matters">
+<div class="callout-icon">&#x1F4A1;</div>
+<div class="callout-content">
+<div class="callout-label">Why This Matters</div>
+<div class="callout-text">Prompts complete the MCP server&#x27;s three components: tools for actions, resources for data, and prompts for workflows. With all three, a server doesn&#x27;t just expose capabilities &#x2014; it packages the best way to use them. Client applications get not just what the server can do, but how to ask for it effectively.</div>
+</div>
+</div>
+</div>`
+  },
+
+  m8l10: {
+    module: 8, title: 'Prompts in the Client',
+    tag: 'Module 8 · Lesson 10', tagClass: 'tag-m8',
+    subtitle: 'Two client methods &#x2014; list_prompts and get_prompt &#x2014; complete the MCP client interface. Arguments flow from client to server to Claude.',
+    content: `
+<div class="content-body">
+<h3>Two New Client Methods</h3>
+<div class="code-block">
+<div class="code-header"><span class="code-lang">python</span></div>
+<pre>class MCPClient:
+    # ... existing connect, list_tools, call_tool, read_resource, cleanup ...
+
+    async def list_prompts(self):
+        """Get available prompt templates from the server"""
+        result = await self.session.list_prompts()
+        return result.prompts
+
+    async def get_prompt(self, prompt_name: str, arguments: dict):
+        """Fetch a prompt template with interpolated arguments"""
+        result = await self.session.get_prompt(prompt_name, arguments)
+        return result.messages</pre>
+</div>
+
+<h3>The Argument Flow</h3>
+<div class="flow">
+  <div class="flow-step">Client calls get_prompt</div><div class="flow-arrow">&#x2192;</div>
+  <div class="flow-step">Server receives arguments</div><div class="flow-arrow">&#x2192;</div>
+  <div class="flow-step">Prompt function interpolates</div><div class="flow-arrow">&#x2192;</div>
+  <div class="flow-step">Messages returned to client</div>
+</div>
+
+<p>Arguments passed to <code>get_prompt()</code> arrive as keyword arguments in the server&#x27;s prompt function. The function interpolates them into the prompt text and returns a messages array ready to feed directly to Claude.</p>
+
+<h3>End-to-End Example</h3>
+<div class="code-block">
+<div class="code-header"><span class="code-lang">python</span></div>
+<pre># 1. Discover available prompts
+prompts = await client.list_prompts()
+# [Prompt(name="format_document", description="Reformat a document to clean markdown")]
+
+# 2. Fetch a specific prompt with arguments
+messages = await client.get_prompt(
+    "format_document",
+    {"document_id": "doc_001"}
+)
+# Returns: [UserMessage(content="Read document doc_001 using the read_doc_contents tool...")]
+
+# 3. Send directly to Claude
+response = client_anthropic.messages.create(
+    model=model,
+    max_tokens=2000,
+    messages=[{"role": m.role, "content": m.content} for m in messages],
+    tools=tools
+)</pre>
+</div>
+
+<h3>The Complete MCP Client Interface</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>Method</th><th>Server component</th><th>Purpose</th></tr></thead>
+<tbody>
+<tr><td><code>list_tools()</code></td><td>Tools</td><td>Discover available actions</td></tr>
+<tr><td><code>call_tool()</code></td><td>Tools</td><td>Execute actions Claude requests</td></tr>
+<tr><td><code>read_resource()</code></td><td>Resources</td><td>Preload data into prompt context</td></tr>
+<tr><td><code>list_prompts()</code></td><td>Prompts</td><td>Discover available workflows</td></tr>
+<tr><td><code>get_prompt()</code></td><td>Prompts</td><td>Fetch pre-built message templates</td></tr>
+</tbody>
+</table></div>
+
+<div class="insight">
+<div class="insight-label">Five methods, three server components</div>
+<div class="insight-text">The full MCP client is five async methods mapping to three server components. Tools get two methods (discover + execute), resources get one (read), and prompts get two (discover + fetch). This is the entire surface area for interacting with any MCP server.</div>
+</div>
+
+<div class="callout callout-matters">
+<div class="callout-icon">&#x1F4A1;</div>
+<div class="callout-content">
+<div class="callout-label">Why This Matters</div>
+<div class="callout-text">This lesson completes both the MCP client and Module 8. The client now covers every capability an MCP server can expose: tools for actions, resources for data, and prompts for workflows. With these five methods, your application can connect to any MCP server and use everything it offers &#x2014; regardless of what service it wraps.</div>
+</div>
+</div>
+</div>`
+  },
+
+  m8l11: {
+    module: 8, title: 'MCP Review',
+    tag: 'Module 8 · Review', tagClass: 'tag-m8',
+    subtitle: 'The complete MCP mental model &#x2014; three server components, five client methods, and how they map to the tool use patterns from Module 5.',
+    content: `
+<div class="content-body">
+<h3>The MCP Architecture at a Glance</h3>
+<div class="flow">
+  <div class="flow-step">Your app</div><div class="flow-arrow">&#x2192;</div>
+  <div class="flow-step">MCP client (5 methods)</div><div class="flow-arrow">&#x2192;</div>
+  <div class="flow-step">MCP server (3 components)</div><div class="flow-arrow">&#x2192;</div>
+  <div class="flow-step">External service</div>
+</div>
+
+<h3>Server: Three Components</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>Component</th><th>Decorator</th><th>Purpose</th><th>Triggered by</th></tr></thead>
+<tbody>
+<tr><td><strong>Tools</strong></td><td><code>@mcp.tool</code></td><td>Actions (read, edit, create)</td><td>Claude decides to call</td></tr>
+<tr><td><strong>Resources</strong></td><td><code>@mcp.resource</code></td><td>Data retrieval (document contents, lists)</td><td>Client fetches directly</td></tr>
+<tr><td><strong>Prompts</strong></td><td><code>@mcp.prompt</code></td><td>Pre-built workflow templates</td><td>User selects (slash commands)</td></tr>
+</tbody>
+</table></div>
+
+<h3>Client: Five Methods</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>Method</th><th>Maps to</th><th>When to use</th></tr></thead>
+<tbody>
+<tr><td><code>list_tools()</code></td><td>Tools</td><td>On connect &#x2014; get tool schemas for Claude</td></tr>
+<tr><td><code>call_tool(name, input)</code></td><td>Tools</td><td>When Claude requests a tool execution</td></tr>
+<tr><td><code>read_resource(uri)</code></td><td>Resources</td><td>Before sending prompt &#x2014; preload context</td></tr>
+<tr><td><code>list_prompts()</code></td><td>Prompts</td><td>Show available workflows to user</td></tr>
+<tr><td><code>get_prompt(name, args)</code></td><td>Prompts</td><td>Fetch messages for a selected workflow</td></tr>
+</tbody>
+</table></div>
+
+<h3>Module 5 &#x2192; Module 8: What Changed</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>Concern</th><th>Module 5 (manual)</th><th>Module 8 (MCP)</th></tr></thead>
+<tbody>
+<tr><td>Tool schemas</td><td>Hand-written JSON</td><td>Auto-generated from <code>@mcp.tool</code> decorators</td></tr>
+<tr><td>Tool execution</td><td>Your <code>run_tool()</code> dispatcher</td><td>MCP server handles it</td></tr>
+<tr><td>Data preloading</td><td>Not available</td><td>Resources via <code>read_resource()</code></td></tr>
+<tr><td>Workflow templates</td><td>Not available</td><td>Prompts via <code>get_prompt()</code></td></tr>
+<tr><td>Conversation loop</td><td><code>while stop_reason == "tool_use"</code></td><td>Identical loop</td></tr>
+<tr><td>Testing</td><td>Run full app</td><td>MCP Inspector for isolated testing</td></tr>
+</tbody>
+</table></div>
+
+<h3>Development Workflow</h3>
+<div class="code-block">
+<div class="code-header"><span class="code-lang">sequence</span></div>
+<pre>1. Define tools      &#x2192; @mcp.tool decorators in server.py
+2. Define resources   &#x2192; @mcp.resource decorators in server.py
+3. Define prompts     &#x2192; @mcp.prompt decorators in server.py
+4. Test with Inspector &#x2192; mcp dev server.py
+5. Build client       &#x2192; 5 async methods in client.py
+6. Integrate          &#x2192; Connect client to your app + Claude loop</pre>
+</div>
+
+<h3>Key Decisions</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>If you need</th><th>Use</th></tr></thead>
+<tbody>
+<tr><td>Claude to perform an action</td><td>Tool</td></tr>
+<tr><td>Data injected before Claude sees the message</td><td>Resource</td></tr>
+<tr><td>A tested, reusable workflow</td><td>Prompt</td></tr>
+<tr><td>Full control over tool implementation</td><td>Manual tool use (Module 5)</td></tr>
+<tr><td>Scalable integrations with less maintenance</td><td>MCP server</td></tr>
+</tbody>
+</table></div>
+
+<div class="callout callout-matters">
+<div class="callout-icon">&#x1F4A1;</div>
+<div class="callout-content">
+<div class="callout-label">The One-Line Summary</div>
+<div class="callout-text">MCP is tool use (Module 5) with the maintenance burden shifted to dedicated servers. The conversation loop is identical; the difference is who writes and maintains the tools, who provides the data, and who designs the prompts. For one integration, manual tool use is fine. For ten, MCP is how you scale.</div>
+</div>
+</div>
+</div>`
+  },
+
+  m9l1: {
+    module: 9, title: 'Anthropic Apps',
+    tag: 'Module 9 · Lesson 1', tagClass: 'tag-m9',
+    subtitle: 'Two deployed applications from Anthropic &#x2014; Claude Code and Computer Use &#x2014; that demonstrate how agents work in practice.',
+    content: `
+<div class="content-body">
+<h3>Two Apps, Two Agent Patterns</h3>
+<p>Anthropic ships two applications that put the concepts from earlier modules into production form. Both are real examples of agent architecture, not just demos.</p>
+
+<div class="table-wrap"><table>
+<thead><tr><th>App</th><th>What it is</th><th>Agent pattern it demonstrates</th></tr></thead>
+<tbody>
+<tr><td><strong>Claude Code</strong></td><td>Terminal-based coding assistant</td><td>Tool-using agent with file system access, web fetching, terminal commands, and MCP client</td></tr>
+<tr><td><strong>Computer Use</strong></td><td>Visual computer interaction</td><td>Screenshot-observe-act loop &#x2014; Claude sees the screen and controls mouse/keyboard</td></tr>
+</tbody>
+</table></div>
+
+<h3>Claude Code</h3>
+<p>A terminal program that acts as a collaborative software engineer. It reads, searches, and edits files, runs terminal commands, fetches web content, and connects to MCP servers for additional capabilities. It is the most complete example of an agent built on Claude.</p>
+
+<p>Core capabilities: project setup, feature design, code writing, testing, deployment, error fixing, and Git operations.</p>
+
+<h3>Computer Use</h3>
+<p>A toolset that lets Claude interact with computer interfaces by observing screenshots and performing mouse/keyboard actions. It runs in an isolated Docker container and is primarily used for automated QA testing and repetitive UI tasks.</p>
+
+<h3>Why These Apps Matter for This Course</h3>
+<p>Every concept from the previous modules appears in these applications: tool use (Module 5), MCP integration (Module 8), the conversation loop, multi-block messages, and tool chaining. Studying how these apps work connects the API building blocks to real production systems.</p>
+
+<div class="callout callout-matters">
+<div class="callout-icon">&#x1F4A1;</div>
+<div class="callout-content">
+<div class="callout-label">Why This Matters</div>
+<div class="callout-text">Claude Code and Computer Use are not separate products &#x2014; they are the course concepts assembled into working agents. Claude Code shows what a tool-using agent looks like at scale (file ops + terminal + web + MCP). Computer Use shows what happens when the tool is a computing environment itself. Understanding these apps is understanding how to build agents.</div>
+</div>
+</div>
+</div>`
+  },
+
+  m9l2: {
+    module: 9, title: 'Claude Code Setup',
+    tag: 'Module 9 · Lesson 2', tagClass: 'tag-m9',
+    subtitle: 'Install Claude Code, launch it in your terminal, and understand its core capabilities &#x2014; file ops, web fetching, terminal access, and MCP client.',
+    content: `
+<div class="content-body">
+<h3>What Claude Code Is</h3>
+<p>A terminal-based coding assistant that runs in your command line. It searches, reads, and edits files, runs terminal commands, fetches web content, and connects to MCP servers for additional tools.</p>
+
+<h3>Setup</h3>
+<div class="code-block">
+<div class="code-header"><span class="code-lang">bash</span></div>
+<pre># 1. Prerequisite: Node.js installed
+npm help              # Verify Node.js is available
+
+# 2. Install Claude Code
+npm install -g @anthropic-ai/claude-code
+
+# 3. Launch and authenticate
+claude                # Opens login flow to Anthropic account</pre>
+</div>
+
+<p>Full setup guide: <code>docs.anthropic.com</code></p>
+
+<h3>Core Capabilities</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>Capability</th><th>What it does</th><th>Course connection</th></tr></thead>
+<tbody>
+<tr><td><strong>File operations</strong></td><td>Search, read, edit, create files</td><td>Text Edit Tool (Module 5)</td></tr>
+<tr><td><strong>Terminal access</strong></td><td>Run shell commands</td><td>Tool use with system access</td></tr>
+<tr><td><strong>Web fetching</strong></td><td>Retrieve content from URLs</td><td>Web Search Tool (Module 5)</td></tr>
+<tr><td><strong>MCP client</strong></td><td>Connect to MCP servers for additional tools</td><td>MCP module (Module 8)</td></tr>
+</tbody>
+</table></div>
+
+<h3>The MCP Connection</h3>
+<p>Claude Code has an embedded MCP client. This means it can consume tools from any MCP server, extending its capabilities beyond built-in file and terminal operations. The same client-server pattern from Module 8 applies &#x2014; Claude Code just has it built in.</p>
+
+<div class="callout callout-matters">
+<div class="callout-icon">&#x1F4A1;</div>
+<div class="callout-content">
+<div class="callout-label">Why This Matters</div>
+<div class="callout-text">Claude Code is the most tangible example of everything the course has built toward. File editing uses the same tool use pattern from Module 5. MCP integration is the same client from Module 8. The terminal is just another tool. Setting it up gives you a working agent to study and extend.</div>
+</div>
+</div>
+</div>`
+  },
+
+  m9l3: {
+    module: 9, title: 'Claude Code in Action',
+    tag: 'Module 9 · Lesson 3', tagClass: 'tag-m9',
+    subtitle: 'Treat Claude Code as a collaborative engineer, not a code generator. Init, memory, and two prompting strategies that get significantly better results.',
+    content: `
+<div class="content-body">
+<h3>The Mental Model</h3>
+<p>Claude Code is an effort multiplier. More detailed instructions produce significantly better results. Treat it as a collaborative software engineer &#x2014; it can set up projects, design features, write code, run tests, deploy, and fix production errors.</p>
+
+<h3>Getting Started on a Project</h3>
+<div class="code-block">
+<div class="code-header"><span class="code-lang">bash</span></div>
+<pre># Launch Claude Code in your project directory
+claude
+
+# Ask it to bootstrap from the README
+> Read the README and follow the setup directions
+
+# Initialize context &#x2014; Claude scans the codebase
+/init</pre>
+</div>
+
+<p>The <code>/init</code> command scans the codebase for architecture and coding style, then creates a <code>claude.md</code> file. This file is automatically included as context in every future request, so Claude understands the project without re-reading files.</p>
+
+<h3>Memory System</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>Memory type</th><th>Scope</th><th>How to use</th></tr></thead>
+<tbody>
+<tr><td><strong>Project memory</strong></td><td>Shared with team (committed)</td><td><code>claude.md</code> via <code>/init</code></td></tr>
+<tr><td><strong>Local memory</strong></td><td>Your machine only</td><td>Local config files</td></tr>
+<tr><td><strong>User memory</strong></td><td>Follows your account</td><td>Personal preferences</td></tr>
+</tbody>
+</table></div>
+
+<p>Use the <code>#</code> symbol to add specific notes to memory during a session. You can also manually edit <code>claude.md</code> or rerun <code>/init</code> to refresh it.</p>
+
+<h3>Prompting Strategy 1: Three-Step Workflow</h3>
+<div class="code-block">
+<div class="code-header"><span class="code-lang">sequence</span></div>
+<pre>Step 1: "Read src/auth.py and src/middleware.py &#x2014; analyze the auth flow"
+Step 2: "I want to add OAuth support. Plan the solution but don&#x27;t write code yet"
+Step 3: "Implement the plan"</pre>
+</div>
+
+<p>This separates understanding, planning, and execution. Each step gives Claude focused context instead of a sprawling request.</p>
+
+<h3>Prompting Strategy 2: Test-Driven Development</h3>
+<div class="code-block">
+<div class="code-header"><span class="code-lang">sequence</span></div>
+<pre>Step 1: "Here are the relevant files: [list]. Suggest tests for adding rate limiting"
+Step 2: Review suggested tests, pick the ones you want
+Step 3: "Write code until all selected tests pass"</pre>
+</div>
+
+<p>Tests become the specification. Claude writes code to satisfy them, and you know when it is done because the tests pass.</p>
+
+<h3>Git Integration</h3>
+<p>Claude Code handles Git operations directly &#x2014; staging files, writing commit messages, and committing changes. This keeps the workflow inside the terminal without switching tools.</p>
+
+<div class="callout callout-matters">
+<div class="callout-icon">&#x1F4A1;</div>
+<div class="callout-content">
+<div class="callout-label">Why This Matters</div>
+<div class="callout-text">The two prompting strategies reflect a core principle: break complex requests into focused steps. This is the same chaining workflow pattern from the Agents and Workflows module, applied to a real tool. The three-step approach chains understanding &#x2192; planning &#x2192; execution. The TDD approach chains specification &#x2192; implementation &#x2192; verification. Both outperform a single &#x201C;build me X&#x201D; prompt.</div>
+</div>
+</div>
+</div>`
+  },
+
+  m9l4: {
+    module: 9, title: 'Enhancements with MCP Servers',
+    tag: 'Module 9 · Lesson 4', tagClass: 'tag-m9',
+    subtitle: 'One command connects Claude Code to any MCP server &#x2014; adding new capabilities at runtime without modifying the core tool.',
+    content: `
+<div class="content-body">
+<h3>Claude Code Has a Built-In MCP Client</h3>
+<p>Claude Code already includes an MCP client (covered in Module 8). This means any MCP server you build or find can be plugged into Claude Code with a single terminal command, giving it new tools instantly.</p>
+
+<h3>Adding an MCP Server</h3>
+<div class="code-block">
+<div class="code-header"><span class="code-lang">bash</span></div>
+<pre># Syntax
+claude mcp add [server-name] [startup-command]
+
+# Example: document processing server
+claude mcp add doc-processor -- uv run main.py
+
+# Restart Claude Code to pick up new tools
+claude</pre>
+</div>
+
+<p>After restarting, Claude Code can use every tool the server exposes &#x2014; no code changes, no schema writing, no new routing logic.</p>
+
+<h3>What This Looks Like in Practice</h3>
+<div class="flow">
+  <div class="flow-step">Build MCP server with tools</div><div class="flow-arrow">&#x2192;</div>
+  <div class="flow-step">claude mcp add</div><div class="flow-arrow">&#x2192;</div>
+  <div class="flow-step">Restart Claude Code</div><div class="flow-arrow">&#x2192;</div>
+  <div class="flow-step">New capabilities available</div>
+</div>
+
+<h3>Common MCP Server Use Cases</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>Server</th><th>What it adds</th></tr></thead>
+<tbody>
+<tr><td><strong>Document processor</strong></td><td>Read PDFs and Word files, convert to markdown</td></tr>
+<tr><td><strong>Sentry</strong></td><td>Monitor production errors in real time</td></tr>
+<tr><td><strong>Jira</strong></td><td>Create/update tickets, check sprint status</td></tr>
+<tr><td><strong>Slack</strong></td><td>Send messages, read channels, search history</td></tr>
+<tr><td><strong>Custom workflow tools</strong></td><td>Anything specific to your team or project</td></tr>
+</tbody>
+</table></div>
+
+<h3>The Pattern</h3>
+<p>This is the same MCP architecture from Module 8, but with Claude Code as the host application instead of a custom chatbot. The server defines tools with <code>@mcp.tool</code> decorators, Claude Code discovers them via <code>list_tools()</code>, and executes them via <code>call_tool()</code> when needed. Nothing new &#x2014; just a different client.</p>
+
+<div class="insight">
+<div class="insight-label">Dynamic capability expansion</div>
+<div class="insight-text">MCP servers are modular. Each one adds a set of tools without touching the others. You can connect five servers simultaneously &#x2014; one for docs, one for monitoring, one for project management &#x2014; and Claude Code sees all their tools in a single unified list.</div>
+</div>
+
+<div class="callout callout-matters">
+<div class="callout-icon">&#x1F4A1;</div>
+<div class="callout-content">
+<div class="callout-label">Why This Matters</div>
+<div class="callout-text">Without MCP, adding a new capability to Claude Code means modifying its source. With MCP, you write a standalone server and plug it in. This is the same shift Module 8 described &#x2014; moving integration burden out of the application &#x2014; applied to a real production tool. It turns Claude Code from a fixed-capability assistant into an extensible platform.</div>
+</div>
+</div>
+</div>`
+  },
+
+  m10l1: {
+    module: 10, title: 'Agents and Workflows',
+    tag: 'Module 10 · Lesson 1', tagClass: 'tag-m10',
+    subtitle: 'The decision rule: use workflows when you know the steps, agents when you don&#x27;t. Both are multi-call strategies built on the same tool use foundation.',
+    content: `
+<div class="content-body">
+<h3>When One Request Isn&#x27;t Enough</h3>
+<p>Some tasks cannot be completed in a single Claude request. When that happens, you need a strategy for orchestrating multiple calls. The course presents two: workflows and agents.</p>
+
+<h3>The Decision Rule</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>Use</th><th>When</th></tr></thead>
+<tbody>
+<tr><td><strong>Workflows</strong></td><td>You know the exact steps in advance</td></tr>
+<tr><td><strong>Agents</strong></td><td>The steps are unclear and need to be figured out dynamically</td></tr>
+</tbody>
+</table></div>
+
+<h3>Workflows</h3>
+<p>A series of predetermined calls to Claude, each handling a specific subtask. You write the orchestration code; Claude handles each step.</p>
+
+<div class="code-block">
+<div class="code-header"><span class="code-lang">example</span></div>
+<pre># Image to 3D model converter (evaluator-optimizer pattern)
+Step 1: Claude describes the uploaded image in detail
+Step 2: Claude generates a 3D model from the description (CADQuery)
+Step 3: Render the model
+Step 4: Claude compares the rendering to the original image
+Step 5: If inaccurate, repeat from Step 2 with feedback</pre>
+</div>
+
+<p>This follows the <strong>evaluator-optimizer pattern</strong>: a producer generates output, an evaluator assesses quality, and the loop continues until the evaluator accepts.</p>
+
+<h3>Agents</h3>
+<p>An AI system that dynamically creates its own plan using provided tools. You give it abstract tools and a goal; it figures out the steps.</p>
+
+<h3>Key Differences</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>Dimension</th><th>Workflows</th><th>Agents</th></tr></thead>
+<tbody>
+<tr><td>Steps</td><td>Predetermined by developer</td><td>Dynamically planned by Claude</td></tr>
+<tr><td>Testing</td><td>Easier &#x2014; known execution path</td><td>Harder &#x2014; unpredictable path</td></tr>
+<tr><td>Success rate</td><td>Higher (structured)</td><td>Lower (delegated complexity)</td></tr>
+<tr><td>Flexibility</td><td>Fixed to defined steps</td><td>Adapts to varied tasks</td></tr>
+<tr><td>User input</td><td>Specific inputs required</td><td>Agent creates own inputs from query</td></tr>
+</tbody>
+</table></div>
+
+<div class="insight">
+<div class="insight-label">Workflows are implementation patterns, not magic</div>
+<div class="insight-text">Identifying a workflow pattern (chaining, parallelization, routing) does not implement it. You still need to write the code that orchestrates the calls. The pattern tells you what shape the orchestration should take.</div>
+</div>
+
+<div class="callout callout-matters">
+<div class="callout-icon">&#x1F4A1;</div>
+<div class="callout-content">
+<div class="callout-label">Why This Matters</div>
+<div class="callout-text">The course recommendation is clear: prioritize workflows for reliability, use agents only when flexibility is truly required. Users want products that work 100% of the time over impressive agents that fail unpredictably. Solve problems reliably first, innovate second.</div>
+</div>
+</div>
+</div>`
+  },
+
+  m10l2: {
+    module: 10, title: 'Parallelization Workflows',
+    tag: 'Module 10 · Lesson 2', tagClass: 'tag-m10',
+    subtitle: 'Split one complex task into simultaneous subtasks, run them in parallel, then aggregate the results into a single answer.',
+    content: `
+<div class="content-body">
+<h3>The Pattern</h3>
+<div class="flow">
+  <div class="flow-step">Input</div><div class="flow-arrow">&#x2192;</div>
+  <div class="flow-step">Parallel subtasks</div><div class="flow-arrow">&#x2192;</div>
+  <div class="flow-step">Aggregator</div><div class="flow-arrow">&#x2192;</div>
+  <div class="flow-step">Final output</div>
+</div>
+
+<p>Instead of one massive prompt that asks Claude to juggle many considerations at once, decompose the task into focused subtasks that run simultaneously. A final aggregation step synthesizes the results.</p>
+
+<h3>Example: Material Selection</h3>
+<div class="code-block">
+<div class="code-header"><span class="code-lang">approach comparison</span></div>
+<pre># Single prompt (worse)
+"Evaluate metal, polymer, ceramic, and composite for this part.
+ Consider cost, durability, weight, thermal resistance, and
+ manufacturing complexity. Recommend the best option."
+
+# Parallelization workflow (better)
+Subtask 1: "Evaluate METAL for this part. Consider cost, durability..."
+Subtask 2: "Evaluate POLYMER for this part. Consider cost, durability..."
+Subtask 3: "Evaluate CERAMIC for this part. Consider cost, durability..."
+Subtask 4: "Evaluate COMPOSITE for this part. Consider cost, durability..."
+Aggregator: "Given these four evaluations, recommend the best option."</pre>
+</div>
+
+<h3>Why This Works Better</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>Benefit</th><th>Explanation</th></tr></thead>
+<tbody>
+<tr><td><strong>Focus</strong></td><td>Each subtask handles one analysis instead of juggling four</td></tr>
+<tr><td><strong>Modularity</strong></td><td>Individual prompts can be improved and evaluated separately</td></tr>
+<tr><td><strong>Scalability</strong></td><td>Adding a fifth material means adding one subtask &#x2014; nothing else changes</td></tr>
+<tr><td><strong>Quality</strong></td><td>Reduces confusion from overly complex single prompts</td></tr>
+</tbody>
+</table></div>
+
+<h3>Implementation Shape</h3>
+<div class="code-block">
+<div class="code-header"><span class="code-lang">python</span></div>
+<pre>import asyncio
+
+async def evaluate_material(material, part_spec):
+    """One focused Claude call per material"""
+    prompt = f"Evaluate {material} for: {part_spec}. Consider cost, durability, weight..."
+    return await call_claude(prompt)
+
+async def parallelization_workflow(part_spec):
+    materials = ["metal", "polymer", "ceramic", "composite"]
+
+    # Run all evaluations simultaneously
+    results = await asyncio.gather(
+        *[evaluate_material(m, part_spec) for m in materials]
+    )
+
+    # Aggregate
+    combined = "\n".join(f"{m}: {r}" for m, r in zip(materials, results))
+    return await call_claude(f"Given these evaluations:\n{combined}\nRecommend the best.")</pre>
+</div>
+
+<div class="callout callout-matters">
+<div class="callout-icon">&#x1F4A1;</div>
+<div class="callout-content">
+<div class="callout-label">Why This Matters</div>
+<div class="callout-text">Parallelization is the workflow pattern to reach for when a task naturally decomposes into independent analyses. The key test: can each subtask run without knowing the result of the others? If yes, parallelize. Each subtask gets Claude&#x27;s full attention, and the aggregator makes the final decision with complete information from all analyses.</div>
+</div>
+</div>
+</div>`
+  },
+
+  m10l3: {
+    module: 10, title: 'Chaining Workflows',
+    tag: 'Module 10 · Lesson 3', tagClass: 'tag-m10',
+    subtitle: 'Break a large task into sequential steps where each Claude call focuses on one thing. Essential when constraint-heavy prompts fail in a single pass.',
+    content: `
+<div class="content-body">
+<h3>The Pattern</h3>
+<div class="flow">
+  <div class="flow-step">Step 1</div><div class="flow-arrow">&#x2192;</div>
+  <div class="flow-step">Step 2</div><div class="flow-arrow">&#x2192;</div>
+  <div class="flow-step">Step 3</div><div class="flow-arrow">&#x2192;</div>
+  <div class="flow-step">&#x2026;</div><div class="flow-arrow">&#x2192;</div>
+  <div class="flow-step">Final output</div>
+</div>
+
+<p>Instead of one massive prompt with many requirements, split the task into separate Claude calls. Each focuses on one specific subtask, and the output of one step feeds into the next.</p>
+
+<h3>When You Need Chaining</h3>
+<p>The primary signal: Claude consistently ignores constraints in complex prompts despite repeating them. This is common with long prompts containing many &#x201C;don&#x27;t do X&#x201D; requirements.</p>
+
+<div class="code-block">
+<div class="code-header"><span class="code-lang">problem scenario</span></div>
+<pre># Single prompt with many constraints
+"Write a social media script about AI trends.
+ Don&#x27;t mention specific companies. No emojis.
+ Professional tone. Under 60 seconds. Include statistics.
+ Don&#x27;t use jargon. End with a question."
+
+# Result: Claude violates 1-2 constraints regardless of repetition</pre>
+</div>
+
+<h3>The Solution: Two-Step Chain</h3>
+<div class="code-block">
+<div class="code-header"><span class="code-lang">python</span></div>
+<pre># Step 1: Generate initial output (accept imperfect result)
+draft = await call_claude(
+    "Write a social media script about AI trends..."  # all constraints
+)
+
+# Step 2: Fix violations in a focused follow-up
+final = await call_claude(
+    f"Review this script and fix these specific violations:\n"
+    f"- Remove any company names\n"
+    f"- Remove any emojis\n"
+    f"- Ensure it ends with a question\n"
+    f"Script:\n{draft}"
+)</pre>
+</div>
+
+<h3>Longer Chains</h3>
+<p>Chaining scales beyond two steps. A social media video pipeline might look like this:</p>
+
+<div class="code-block">
+<div class="code-header"><span class="code-lang">sequence</span></div>
+<pre>Step 1: Search trending topics
+Step 2: Claude selects the most interesting topic
+Step 3: Claude researches the topic
+Step 4: Claude writes the script
+Step 5: Generate video from script
+Step 6: Post to social media</pre>
+</div>
+
+<p>Each step gets Claude&#x27;s full attention on one task. The alternative &#x2014; cramming all of this into one prompt &#x2014; would produce worse results at every step.</p>
+
+<h3>Chaining vs Parallelization</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>Pattern</th><th>Structure</th><th>Use when</th></tr></thead>
+<tbody>
+<tr><td><strong>Parallelization</strong></td><td>Fan out, then aggregate</td><td>Subtasks are independent</td></tr>
+<tr><td><strong>Chaining</strong></td><td>Sequential pipeline</td><td>Each step depends on the previous</td></tr>
+</tbody>
+</table></div>
+
+<div class="callout callout-matters">
+<div class="callout-icon">&#x1F4A1;</div>
+<div class="callout-content">
+<div class="callout-label">Why This Matters</div>
+<div class="callout-text">Chaining is the simplest workflow pattern and often the first one you need. The critical insight: even a simple two-step chain (generate, then fix) can solve constraint violations that no amount of prompt engineering fixes in a single pass. When you find yourself repeating constraints in a prompt and Claude still ignores some, that is the signal to chain.</div>
+</div>
+</div>
+</div>`
+  },
+
+  m10l4: {
+    module: 10, title: 'Routing Workflows',
+    tag: 'Module 10 · Lesson 4', tagClass: 'tag-m10',
+    subtitle: 'A classification step at the front selects the right processing pipeline &#x2014; different topics get different prompts, tools, and tone.',
+    content: `
+<div class="content-body">
+<h3>The Pattern</h3>
+<div class="flow">
+  <div class="flow-step">User input</div><div class="flow-arrow">&#x2192;</div>
+  <div class="flow-step">Classifier</div><div class="flow-arrow">&#x2192;</div>
+  <div class="flow-step">Specialized pipeline</div><div class="flow-arrow">&#x2192;</div>
+  <div class="flow-step">Output</div>
+</div>
+
+<p>The first Claude call categorizes the input into a predefined genre or type. Based on that classification, the system routes to a specialized pipeline with its own prompts, tools, and constraints.</p>
+
+<h3>Example: Video Script Generator</h3>
+<div class="code-block">
+<div class="code-header"><span class="code-lang">python</span></div>
+<pre># Step 1: Classify the topic
+category = await call_claude(
+    f"Classify this topic into exactly one category: "
+    f"educational, entertainment, news, tutorial.\n"
+    f"Topic: {user_topic}\n"
+    f"Respond with the category name only."
+)
+
+# Step 2: Route to specialized pipeline
+pipelines = {
+    "educational": educational_prompt,   # definitions, explanations, structured
+    "entertainment": entertainment_prompt, # trendy language, engaging hooks
+    "news": news_prompt,                  # factual, citations, balanced
+    "tutorial": tutorial_prompt,          # step-by-step, code examples
+}
+
+script = await call_claude(pipelines[category].format(topic=user_topic))</pre>
+</div>
+
+<h3>Why Not One Prompt?</h3>
+<p>A single prompt that handles all topic types must juggle competing requirements: be educational <em>and</em> entertaining <em>and</em> factual <em>and</em> step-by-step. Each specialized pipeline can be optimized and evaluated independently for its specific use case.</p>
+
+<h3>Routing vs Other Patterns</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>Pattern</th><th>Structure</th><th>Key question</th></tr></thead>
+<tbody>
+<tr><td><strong>Parallelization</strong></td><td>Fan out &#x2192; aggregate</td><td>Are subtasks independent?</td></tr>
+<tr><td><strong>Chaining</strong></td><td>Step &#x2192; step &#x2192; step</td><td>Does each step depend on the previous?</td></tr>
+<tr><td><strong>Routing</strong></td><td>Classify &#x2192; branch</td><td>Does the input type change how you process it?</td></tr>
+</tbody>
+</table></div>
+
+<div class="insight">
+<div class="insight-label">Routing is a multiplier for the other patterns</div>
+<div class="insight-text">Each branch after the routing step can itself be a chain, a parallelization, or even an agent. Routing decides which strategy to use; the other patterns execute it. A video pipeline might route educational topics to a chaining workflow and entertainment topics to a parallelization workflow.</div>
+</div>
+
+<div class="callout callout-matters">
+<div class="callout-icon">&#x1F4A1;</div>
+<div class="callout-content">
+<div class="callout-label">Why This Matters</div>
+<div class="callout-text">Routing is the pattern to reach for when a single system must handle diverse input types that need fundamentally different treatment. The classifier is cheap (one short Claude call), but it unlocks the ability to maintain separate, specialized pipelines that each do one thing well instead of one generic pipeline that does everything poorly.</div>
+</div>
+</div>
+</div>`
+  },
+
+  m10l5: {
+    module: 10, title: 'Agents and Tools',
+    tag: 'Module 10 · Lesson 5', tagClass: 'tag-m10',
+    subtitle: 'Give agents abstract, composable tools instead of specialized ones. A small set of flexible tools enables more creative problem-solving than a large set of narrow ones.',
+    content: `
+<div class="content-body">
+<h3>When Agents Beat Workflows</h3>
+<p>Workflows require you to know the steps in advance. Agents are for when you don&#x27;t &#x2014; give them tools and a goal, and they figure out the plan dynamically.</p>
+
+<h3>The Tool Abstraction Principle</h3>
+<p>Provide generic, abstract tools rather than hyper-specialized ones. The agent combines them creatively to solve diverse problems.</p>
+
+<div class="code-block">
+<div class="code-header"><span class="code-lang">tool design comparison</span></div>
+<pre># Specialized tools (worse for agents)
+refactor_tool
+install_dependencies
+run_linter
+deploy_to_staging
+
+# Abstract tools (better for agents)
+bash          &#x2014; run any shell command
+web_fetch     &#x2014; retrieve any URL
+file_write    &#x2014; create or modify any file
+file_read     &#x2014; read any file</pre>
+</div>
+
+<p>Claude Code uses the abstract set. With just <code>bash</code>, <code>web_fetch</code>, and <code>file_write</code>, it can refactor code, install dependencies, run linters, <em>and</em> deploy &#x2014; plus things the developer never anticipated.</p>
+
+<h3>Tool Combination in Practice</h3>
+<p>The same three tools from Module 5 (<code>get_current_datetime</code>, <code>add_duration</code>, <code>set_reminder</code>) can solve a variety of time-related tasks through different combinations:</p>
+
+<div class="table-wrap"><table>
+<thead><tr><th>User request</th><th>Tools used</th></tr></thead>
+<tbody>
+<tr><td>&#x201C;What time is it?&#x201D;</td><td>get_current_datetime</td></tr>
+<tr><td>&#x201C;What day is 90 days from now?&#x201D;</td><td>get_current_datetime &#x2192; add_duration</td></tr>
+<tr><td>&#x201C;Remind me in 2 hours&#x201D;</td><td>get_current_datetime &#x2192; add_duration &#x2192; set_reminder</td></tr>
+<tr><td>&#x201C;Remind me next Tuesday at 3pm&#x201D;</td><td>get_current_datetime &#x2192; set_reminder</td></tr>
+</tbody>
+</table></div>
+
+<p>The developer didn&#x27;t hardcode these paths. The agent figured out which tools to combine based on the request.</p>
+
+<h3>Agent Behavior</h3>
+<p>Agents can request additional information when the query is ambiguous, combine tools in unexpected ways, and work best with a small set of flexible tools. The key design choice: can each tool be useful in combinations the developer didn&#x27;t anticipate?</p>
+
+<div class="callout callout-matters">
+<div class="callout-icon">&#x1F4A1;</div>
+<div class="callout-content">
+<div class="callout-label">Why This Matters</div>
+<div class="callout-text">The tool abstraction principle is why Claude Code works with just a handful of tools. Abstract tools compose; specialized tools don&#x27;t. If you build an agent with 20 narrow tools, you get 20 fixed capabilities. If you build it with 4 abstract tools, you get an open-ended number of capabilities based on how those tools combine. Design for composition, not enumeration.</div>
+</div>
+</div>
+</div>`
+  },
+
+  m10l6: {
+    module: 10, title: 'Environment Inspection',
+    tag: 'Module 10 · Lesson 6', tagClass: 'tag-m10',
+    subtitle: 'After every action, agents need to observe what changed. Tool results alone aren&#x27;t enough &#x2014; agents must inspect the environment to gauge progress and catch errors.',
+    content: `
+<div class="content-body">
+<h3>The Problem</h3>
+<p>When an agent calls a tool, the tool result tells it what the tool returned. But it doesn&#x27;t tell the agent what the <em>environment</em> looks like now. A button click might have opened a modal, navigated to a new page, or triggered an error &#x2014; the agent can&#x27;t predict which one.</p>
+
+<h3>The Pattern: Act, Then Observe</h3>
+<div class="flow">
+  <div class="flow-step">Take action</div><div class="flow-arrow">&#x2192;</div>
+  <div class="flow-step">Inspect environment</div><div class="flow-arrow">&#x2192;</div>
+  <div class="flow-step">Decide next step</div><div class="flow-arrow">&#x2192;</div>
+  <div class="flow-step">Repeat</div>
+</div>
+
+<h3>Examples Across Agent Types</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>Agent type</th><th>Action</th><th>Inspection method</th></tr></thead>
+<tbody>
+<tr><td><strong>Computer Use</strong></td><td>Click a button</td><td>Take screenshot to see what changed</td></tr>
+<tr><td><strong>Computer Use</strong></td><td>Type in a form</td><td>Screenshot to verify text appeared correctly</td></tr>
+<tr><td><strong>Code editing</strong></td><td>Modify a file</td><td>Read file contents before and after</td></tr>
+<tr><td><strong>Video creation</strong></td><td>Generate captions</td><td>Run Whisper CPP to verify dialogue placement</td></tr>
+<tr><td><strong>Video creation</strong></td><td>Render video</td><td>Extract screenshots with FFmpeg to inspect visuals</td></tr>
+</tbody>
+</table></div>
+
+<h3>Computer Use: Screenshot After Every Action</h3>
+<p>Computer Use takes a screenshot after every single action (typing, clicking, scrolling). This is because Claude cannot predict the exact result of interacting with a UI. A click on &#x201C;Submit&#x201D; might show a success message, a validation error, or a loading spinner &#x2014; the screenshot tells Claude which one actually happened.</p>
+
+<h3>Code Editing: Read Before You Write</h3>
+<p>Before modifying a file, agents must read its current contents to understand the existing state. This prevents overwriting changes, ensures the edit target exists, and gives the agent context for making correct modifications.</p>
+
+<div class="callout callout-matters">
+<div class="callout-icon">&#x1F4A1;</div>
+<div class="callout-content">
+<div class="callout-label">Why This Matters</div>
+<div class="callout-text">Environment inspection is what separates a working agent from a blind one. Without it, agents execute actions and hope for the best. With it, they can detect errors, adapt to unexpected states, and verify that each step actually achieved its goal before moving to the next. Every robust agent &#x2014; Computer Use, Claude Code, custom builds &#x2014; inspects after acting.</div>
+</div>
+</div>
+</div>`
+  },
+
+  m10l7: {
+    module: 10, title: 'Workflows vs Agents',
+    tag: 'Module 10 · Review', tagClass: 'tag-m10',
+    subtitle: 'The complete decision framework: four workflow patterns, one agent pattern, and a clear recommendation for when to use each.',
+    content: `
+<div class="content-body">
+<h3>The Complete Pattern Catalog</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>Pattern</th><th>Shape</th><th>Use when</th></tr></thead>
+<tbody>
+<tr><td><strong>Parallelization</strong></td><td>Fan out &#x2192; aggregate</td><td>Subtasks are independent</td></tr>
+<tr><td><strong>Chaining</strong></td><td>Step &#x2192; step &#x2192; step</td><td>Each step depends on the previous</td></tr>
+<tr><td><strong>Routing</strong></td><td>Classify &#x2192; branch</td><td>Input type changes how you process it</td></tr>
+<tr><td><strong>Evaluator-optimizer</strong></td><td>Produce &#x2192; evaluate &#x2192; loop</td><td>Output quality needs iterative refinement</td></tr>
+<tr><td><strong>Agent</strong></td><td>Goal + tools &#x2192; dynamic plan</td><td>Steps are unknown in advance</td></tr>
+</tbody>
+</table></div>
+
+<h3>The Recommendation</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>Dimension</th><th>Workflows</th><th>Agents</th></tr></thead>
+<tbody>
+<tr><td>Steps</td><td>Predetermined</td><td>Dynamically planned</td></tr>
+<tr><td>Testing</td><td>Easy &#x2014; known execution path</td><td>Hard &#x2014; unpredictable path</td></tr>
+<tr><td>Success rate</td><td>Higher</td><td>Lower</td></tr>
+<tr><td>Flexibility</td><td>Fixed</td><td>Open-ended</td></tr>
+<tr><td>Tool design</td><td>Task-specific prompts</td><td>Abstract, composable tools</td></tr>
+<tr><td>Inspection</td><td>Check between steps</td><td>Check after every action</td></tr>
+</tbody>
+</table></div>
+
+<p><strong>Prioritize workflows.</strong> Use agents only when flexibility is truly required. Users want products that work 100% of the time over impressive agents that fail unpredictably.</p>
+
+<h3>Decision Flowchart</h3>
+<div class="code-block">
+<div class="code-header"><span class="code-lang">decision tree</span></div>
+<pre>Do you know the exact steps?
+  YES &#x2192; Are the steps independent?
+            YES &#x2192; Parallelization
+            NO  &#x2192; Does input type change processing?
+                      YES &#x2192; Routing (then chain/parallelize within branches)
+                      NO  &#x2192; Chaining
+  NO  &#x2192; Can you define a quality check?
+            YES &#x2192; Evaluator-optimizer loop
+            NO  &#x2192; Agent with abstract tools + environment inspection</pre>
+</div>
+
+<h3>How The Course Connects</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>This module&#x27;s concept</th><th>Built on</th></tr></thead>
+<tbody>
+<tr><td>All workflow patterns</td><td>Multi-call orchestration (Module 2 conversation loop)</td></tr>
+<tr><td>Agent tool use</td><td>Tool schemas + run_conversation loop (Module 5)</td></tr>
+<tr><td>Abstract tool design</td><td>Tool functions + chaining (Module 5)</td></tr>
+<tr><td>Environment inspection</td><td>Computer Use screenshots (Module 9)</td></tr>
+<tr><td>MCP as tool provider</td><td>MCP client/server architecture (Module 8)</td></tr>
+</tbody>
+</table></div>
+
+<div class="callout callout-matters">
+<div class="callout-icon">&#x1F4A1;</div>
+<div class="callout-content">
+<div class="callout-label">The Course in One Sentence</div>
+<div class="callout-text">Everything in this course builds toward one capability: making multiple Claude calls work together reliably. The API (Module 2) gives you the call. Tool use (Module 5) gives Claude actions. MCP (Module 8) scales those actions. Workflows and agents (this module) orchestrate them into systems that solve real problems. Reliability first, innovation second.</div>
+</div>
+</div>
+</div>`
+  },
+
 };
 
 // ── LESSON ORDER ──
@@ -4290,7 +6492,11 @@ const lessonOrder = [
   'm3l1','m3l2','m3l3','m3l4','m3l5','m3l6',
   'm4l1','m4l2','m4l3','m4l4','m4l5','m4l6',
   'm5l1','m5l2','m5l3','m5l4','m5l5','m5l6','m5l7','m5l8','m5l9','m5l10','m5l11','m5l12',
-  'm6l1','m6l2','m6l3','m6l4','m6l5','m6l6','m6l7'
+  'm6l1','m6l2','m6l3','m6l4','m6l5','m6l6','m6l7',
+  'm7l1','m7l2','m7l3','m7l4','m7l5','m7l6',
+  'm8l1','m8l2','m8l3','m8l4','m8l5','m8l6','m8l7','m8l8','m8l9','m8l10','m8l11',
+  'm9l1','m9l2','m9l3','m9l4',
+  'm10l1','m10l2','m10l3','m10l4','m10l5','m10l6','m10l7'
 ];
 
 const totalLessons = lessonOrder.length;
@@ -4402,6 +6608,7 @@ function copyCode(btn) {
 
 // Init nav buttons
 updateNavButtons();
+
 
 
 </script>
