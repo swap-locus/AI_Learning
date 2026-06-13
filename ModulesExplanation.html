@@ -141,6 +141,7 @@
   .mod-7 .module-number { background: rgba(224,160,64,0.15); color: #e0a040; }
   .mod-8 .module-number { background: rgba(176,126,232,0.15); color: #b07ee8; }
   .mod-9 .module-number { background: rgba(224,104,140,0.15); color: #e0688c; }
+  .mod-10 .module-number { background: rgba(80,184,216,0.15); color: #50b8d8; }
 
   .module-label {
     font-size: 12px;
@@ -190,6 +191,7 @@
   .mod-7 .lesson-item.active { border-left-color: #e0a040; }
   .mod-8 .lesson-item.active { border-left-color: #b07ee8; }
   .mod-9 .lesson-item.active { border-left-color: #e0688c; }
+  .mod-10 .lesson-item.active { border-left-color: #50b8d8; }
     width: 6px;
     height: 6px;
     border-radius: 50%;
@@ -310,6 +312,7 @@
   .tag-m7 { background: rgba(224,160,64,0.1); color: #e0a040; border: 1px solid rgba(224,160,64,0.2); }
   .tag-m8 { background: rgba(176,126,232,0.1); color: #b07ee8; border: 1px solid rgba(176,126,232,0.2); }
   .tag-m9 { background: rgba(224,104,140,0.1); color: #e0688c; border: 1px solid rgba(224,104,140,0.2); }
+  .tag-m10 { background: rgba(80,184,216,0.1); color: #50b8d8; border: 1px solid rgba(80,184,216,0.2); }
     font-family: 'DM Serif Display', serif;
     font-size: 38px;
     line-height: 1.15;
@@ -884,6 +887,24 @@
         <div class="lesson-item" onclick="showLesson('m9l4')" data-id="m9l4"><div class="lesson-dot"></div>Enhancements with MCP Servers</div>
       </div>
     </div>
+
+    <!-- Module 10 -->
+    <div class="module-group mod-10" data-module="10">
+      <div class="module-header" onclick="toggleModule(this)">
+        <div class="module-number">10</div>
+        <div class="module-label">Agents &#x26; Workflows</div>
+        <div class="module-chevron">&#x25B6;</div>
+      </div>
+      <div class="lesson-list">
+        <div class="lesson-item" onclick="showLesson('m10l1')" data-id="m10l1"><div class="lesson-dot"></div>Agents and Workflows</div>
+        <div class="lesson-item" onclick="showLesson('m10l2')" data-id="m10l2"><div class="lesson-dot"></div>Parallelization Workflows</div>
+        <div class="lesson-item" onclick="showLesson('m10l3')" data-id="m10l3"><div class="lesson-dot"></div>Chaining Workflows</div>
+        <div class="lesson-item" onclick="showLesson('m10l4')" data-id="m10l4"><div class="lesson-dot"></div>Routing Workflows</div>
+        <div class="lesson-item" onclick="showLesson('m10l5')" data-id="m10l5"><div class="lesson-dot"></div>Agents and Tools</div>
+        <div class="lesson-item" onclick="showLesson('m10l6')" data-id="m10l6"><div class="lesson-dot"></div>Environment Inspection</div>
+        <div class="lesson-item" onclick="showLesson('m10l7')" data-id="m10l7"><div class="lesson-dot"></div>Workflows vs Agents</div>
+      </div>
+    </div>
   </div>
 </nav>
 
@@ -950,6 +971,14 @@
     </div>
 
     <div class="module-cards fade-in" style="grid-template-columns: repeat(2, 1fr); margin-top:0">
+      <div class="module-card" style="border-color: rgba(80,184,216,0.25); cursor:pointer" onclick="showLesson('m10l1')">
+        <div class="card-num" style="color:#50b8d8">Module 10</div>
+        <div class="card-title">Agents &#x26; Workflows</div>
+        <div class="card-count">7 lessons</div>
+        <div class="card-lessons">
+          <div class="card-lesson-item">Intro &#x00b7; Parallel &#x00b7; Chain &#x00b7; Route &#x00b7; Tools &#x00b7; Inspect &#x00b7; Review</div>
+        </div>
+      </div>
       <div class="module-card" style="border-color: rgba(224,104,140,0.25); cursor:pointer" onclick="showLesson('m9l1')">
         <div class="card-num" style="color:#e0688c">Module 9</div>
         <div class="card-title">Anthropic Apps</div>
@@ -5995,6 +6024,465 @@ claude</pre>
 </div>`
   },
 
+  m10l1: {
+    module: 10, title: 'Agents and Workflows',
+    tag: 'Module 10 · Lesson 1', tagClass: 'tag-m10',
+    subtitle: 'The decision rule: use workflows when you know the steps, agents when you don&#x27;t. Both are multi-call strategies built on the same tool use foundation.',
+    content: `
+<div class="content-body">
+<h3>When One Request Isn&#x27;t Enough</h3>
+<p>Some tasks cannot be completed in a single Claude request. When that happens, you need a strategy for orchestrating multiple calls. The course presents two: workflows and agents.</p>
+
+<h3>The Decision Rule</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>Use</th><th>When</th></tr></thead>
+<tbody>
+<tr><td><strong>Workflows</strong></td><td>You know the exact steps in advance</td></tr>
+<tr><td><strong>Agents</strong></td><td>The steps are unclear and need to be figured out dynamically</td></tr>
+</tbody>
+</table></div>
+
+<h3>Workflows</h3>
+<p>A series of predetermined calls to Claude, each handling a specific subtask. You write the orchestration code; Claude handles each step.</p>
+
+<div class="code-block">
+<div class="code-header"><span class="code-lang">example</span></div>
+<pre># Image to 3D model converter (evaluator-optimizer pattern)
+Step 1: Claude describes the uploaded image in detail
+Step 2: Claude generates a 3D model from the description (CADQuery)
+Step 3: Render the model
+Step 4: Claude compares the rendering to the original image
+Step 5: If inaccurate, repeat from Step 2 with feedback</pre>
+</div>
+
+<p>This follows the <strong>evaluator-optimizer pattern</strong>: a producer generates output, an evaluator assesses quality, and the loop continues until the evaluator accepts.</p>
+
+<h3>Agents</h3>
+<p>An AI system that dynamically creates its own plan using provided tools. You give it abstract tools and a goal; it figures out the steps.</p>
+
+<h3>Key Differences</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>Dimension</th><th>Workflows</th><th>Agents</th></tr></thead>
+<tbody>
+<tr><td>Steps</td><td>Predetermined by developer</td><td>Dynamically planned by Claude</td></tr>
+<tr><td>Testing</td><td>Easier &#x2014; known execution path</td><td>Harder &#x2014; unpredictable path</td></tr>
+<tr><td>Success rate</td><td>Higher (structured)</td><td>Lower (delegated complexity)</td></tr>
+<tr><td>Flexibility</td><td>Fixed to defined steps</td><td>Adapts to varied tasks</td></tr>
+<tr><td>User input</td><td>Specific inputs required</td><td>Agent creates own inputs from query</td></tr>
+</tbody>
+</table></div>
+
+<div class="insight">
+<div class="insight-label">Workflows are implementation patterns, not magic</div>
+<div class="insight-text">Identifying a workflow pattern (chaining, parallelization, routing) does not implement it. You still need to write the code that orchestrates the calls. The pattern tells you what shape the orchestration should take.</div>
+</div>
+
+<div class="callout callout-matters">
+<div class="callout-icon">&#x1F4A1;</div>
+<div class="callout-content">
+<div class="callout-label">Why This Matters</div>
+<div class="callout-text">The course recommendation is clear: prioritize workflows for reliability, use agents only when flexibility is truly required. Users want products that work 100% of the time over impressive agents that fail unpredictably. Solve problems reliably first, innovate second.</div>
+</div>
+</div>
+</div>`
+  },
+
+  m10l2: {
+    module: 10, title: 'Parallelization Workflows',
+    tag: 'Module 10 · Lesson 2', tagClass: 'tag-m10',
+    subtitle: 'Split one complex task into simultaneous subtasks, run them in parallel, then aggregate the results into a single answer.',
+    content: `
+<div class="content-body">
+<h3>The Pattern</h3>
+<div class="flow">
+  <div class="flow-step">Input</div><div class="flow-arrow">&#x2192;</div>
+  <div class="flow-step">Parallel subtasks</div><div class="flow-arrow">&#x2192;</div>
+  <div class="flow-step">Aggregator</div><div class="flow-arrow">&#x2192;</div>
+  <div class="flow-step">Final output</div>
+</div>
+
+<p>Instead of one massive prompt that asks Claude to juggle many considerations at once, decompose the task into focused subtasks that run simultaneously. A final aggregation step synthesizes the results.</p>
+
+<h3>Example: Material Selection</h3>
+<div class="code-block">
+<div class="code-header"><span class="code-lang">approach comparison</span></div>
+<pre># Single prompt (worse)
+"Evaluate metal, polymer, ceramic, and composite for this part.
+ Consider cost, durability, weight, thermal resistance, and
+ manufacturing complexity. Recommend the best option."
+
+# Parallelization workflow (better)
+Subtask 1: "Evaluate METAL for this part. Consider cost, durability..."
+Subtask 2: "Evaluate POLYMER for this part. Consider cost, durability..."
+Subtask 3: "Evaluate CERAMIC for this part. Consider cost, durability..."
+Subtask 4: "Evaluate COMPOSITE for this part. Consider cost, durability..."
+Aggregator: "Given these four evaluations, recommend the best option."</pre>
+</div>
+
+<h3>Why This Works Better</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>Benefit</th><th>Explanation</th></tr></thead>
+<tbody>
+<tr><td><strong>Focus</strong></td><td>Each subtask handles one analysis instead of juggling four</td></tr>
+<tr><td><strong>Modularity</strong></td><td>Individual prompts can be improved and evaluated separately</td></tr>
+<tr><td><strong>Scalability</strong></td><td>Adding a fifth material means adding one subtask &#x2014; nothing else changes</td></tr>
+<tr><td><strong>Quality</strong></td><td>Reduces confusion from overly complex single prompts</td></tr>
+</tbody>
+</table></div>
+
+<h3>Implementation Shape</h3>
+<div class="code-block">
+<div class="code-header"><span class="code-lang">python</span></div>
+<pre>import asyncio
+
+async def evaluate_material(material, part_spec):
+    """One focused Claude call per material"""
+    prompt = f"Evaluate {material} for: {part_spec}. Consider cost, durability, weight..."
+    return await call_claude(prompt)
+
+async def parallelization_workflow(part_spec):
+    materials = ["metal", "polymer", "ceramic", "composite"]
+
+    # Run all evaluations simultaneously
+    results = await asyncio.gather(
+        *[evaluate_material(m, part_spec) for m in materials]
+    )
+
+    # Aggregate
+    combined = "\n".join(f"{m}: {r}" for m, r in zip(materials, results))
+    return await call_claude(f"Given these evaluations:\n{combined}\nRecommend the best.")</pre>
+</div>
+
+<div class="callout callout-matters">
+<div class="callout-icon">&#x1F4A1;</div>
+<div class="callout-content">
+<div class="callout-label">Why This Matters</div>
+<div class="callout-text">Parallelization is the workflow pattern to reach for when a task naturally decomposes into independent analyses. The key test: can each subtask run without knowing the result of the others? If yes, parallelize. Each subtask gets Claude&#x27;s full attention, and the aggregator makes the final decision with complete information from all analyses.</div>
+</div>
+</div>
+</div>`
+  },
+
+  m10l3: {
+    module: 10, title: 'Chaining Workflows',
+    tag: 'Module 10 · Lesson 3', tagClass: 'tag-m10',
+    subtitle: 'Break a large task into sequential steps where each Claude call focuses on one thing. Essential when constraint-heavy prompts fail in a single pass.',
+    content: `
+<div class="content-body">
+<h3>The Pattern</h3>
+<div class="flow">
+  <div class="flow-step">Step 1</div><div class="flow-arrow">&#x2192;</div>
+  <div class="flow-step">Step 2</div><div class="flow-arrow">&#x2192;</div>
+  <div class="flow-step">Step 3</div><div class="flow-arrow">&#x2192;</div>
+  <div class="flow-step">&#x2026;</div><div class="flow-arrow">&#x2192;</div>
+  <div class="flow-step">Final output</div>
+</div>
+
+<p>Instead of one massive prompt with many requirements, split the task into separate Claude calls. Each focuses on one specific subtask, and the output of one step feeds into the next.</p>
+
+<h3>When You Need Chaining</h3>
+<p>The primary signal: Claude consistently ignores constraints in complex prompts despite repeating them. This is common with long prompts containing many &#x201C;don&#x27;t do X&#x201D; requirements.</p>
+
+<div class="code-block">
+<div class="code-header"><span class="code-lang">problem scenario</span></div>
+<pre># Single prompt with many constraints
+"Write a social media script about AI trends.
+ Don&#x27;t mention specific companies. No emojis.
+ Professional tone. Under 60 seconds. Include statistics.
+ Don&#x27;t use jargon. End with a question."
+
+# Result: Claude violates 1-2 constraints regardless of repetition</pre>
+</div>
+
+<h3>The Solution: Two-Step Chain</h3>
+<div class="code-block">
+<div class="code-header"><span class="code-lang">python</span></div>
+<pre># Step 1: Generate initial output (accept imperfect result)
+draft = await call_claude(
+    "Write a social media script about AI trends..."  # all constraints
+)
+
+# Step 2: Fix violations in a focused follow-up
+final = await call_claude(
+    f"Review this script and fix these specific violations:\n"
+    f"- Remove any company names\n"
+    f"- Remove any emojis\n"
+    f"- Ensure it ends with a question\n"
+    f"Script:\n{draft}"
+)</pre>
+</div>
+
+<h3>Longer Chains</h3>
+<p>Chaining scales beyond two steps. A social media video pipeline might look like this:</p>
+
+<div class="code-block">
+<div class="code-header"><span class="code-lang">sequence</span></div>
+<pre>Step 1: Search trending topics
+Step 2: Claude selects the most interesting topic
+Step 3: Claude researches the topic
+Step 4: Claude writes the script
+Step 5: Generate video from script
+Step 6: Post to social media</pre>
+</div>
+
+<p>Each step gets Claude&#x27;s full attention on one task. The alternative &#x2014; cramming all of this into one prompt &#x2014; would produce worse results at every step.</p>
+
+<h3>Chaining vs Parallelization</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>Pattern</th><th>Structure</th><th>Use when</th></tr></thead>
+<tbody>
+<tr><td><strong>Parallelization</strong></td><td>Fan out, then aggregate</td><td>Subtasks are independent</td></tr>
+<tr><td><strong>Chaining</strong></td><td>Sequential pipeline</td><td>Each step depends on the previous</td></tr>
+</tbody>
+</table></div>
+
+<div class="callout callout-matters">
+<div class="callout-icon">&#x1F4A1;</div>
+<div class="callout-content">
+<div class="callout-label">Why This Matters</div>
+<div class="callout-text">Chaining is the simplest workflow pattern and often the first one you need. The critical insight: even a simple two-step chain (generate, then fix) can solve constraint violations that no amount of prompt engineering fixes in a single pass. When you find yourself repeating constraints in a prompt and Claude still ignores some, that is the signal to chain.</div>
+</div>
+</div>
+</div>`
+  },
+
+  m10l4: {
+    module: 10, title: 'Routing Workflows',
+    tag: 'Module 10 · Lesson 4', tagClass: 'tag-m10',
+    subtitle: 'A classification step at the front selects the right processing pipeline &#x2014; different topics get different prompts, tools, and tone.',
+    content: `
+<div class="content-body">
+<h3>The Pattern</h3>
+<div class="flow">
+  <div class="flow-step">User input</div><div class="flow-arrow">&#x2192;</div>
+  <div class="flow-step">Classifier</div><div class="flow-arrow">&#x2192;</div>
+  <div class="flow-step">Specialized pipeline</div><div class="flow-arrow">&#x2192;</div>
+  <div class="flow-step">Output</div>
+</div>
+
+<p>The first Claude call categorizes the input into a predefined genre or type. Based on that classification, the system routes to a specialized pipeline with its own prompts, tools, and constraints.</p>
+
+<h3>Example: Video Script Generator</h3>
+<div class="code-block">
+<div class="code-header"><span class="code-lang">python</span></div>
+<pre># Step 1: Classify the topic
+category = await call_claude(
+    f"Classify this topic into exactly one category: "
+    f"educational, entertainment, news, tutorial.\n"
+    f"Topic: {user_topic}\n"
+    f"Respond with the category name only."
+)
+
+# Step 2: Route to specialized pipeline
+pipelines = {
+    "educational": educational_prompt,   # definitions, explanations, structured
+    "entertainment": entertainment_prompt, # trendy language, engaging hooks
+    "news": news_prompt,                  # factual, citations, balanced
+    "tutorial": tutorial_prompt,          # step-by-step, code examples
+}
+
+script = await call_claude(pipelines[category].format(topic=user_topic))</pre>
+</div>
+
+<h3>Why Not One Prompt?</h3>
+<p>A single prompt that handles all topic types must juggle competing requirements: be educational <em>and</em> entertaining <em>and</em> factual <em>and</em> step-by-step. Each specialized pipeline can be optimized and evaluated independently for its specific use case.</p>
+
+<h3>Routing vs Other Patterns</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>Pattern</th><th>Structure</th><th>Key question</th></tr></thead>
+<tbody>
+<tr><td><strong>Parallelization</strong></td><td>Fan out &#x2192; aggregate</td><td>Are subtasks independent?</td></tr>
+<tr><td><strong>Chaining</strong></td><td>Step &#x2192; step &#x2192; step</td><td>Does each step depend on the previous?</td></tr>
+<tr><td><strong>Routing</strong></td><td>Classify &#x2192; branch</td><td>Does the input type change how you process it?</td></tr>
+</tbody>
+</table></div>
+
+<div class="insight">
+<div class="insight-label">Routing is a multiplier for the other patterns</div>
+<div class="insight-text">Each branch after the routing step can itself be a chain, a parallelization, or even an agent. Routing decides which strategy to use; the other patterns execute it. A video pipeline might route educational topics to a chaining workflow and entertainment topics to a parallelization workflow.</div>
+</div>
+
+<div class="callout callout-matters">
+<div class="callout-icon">&#x1F4A1;</div>
+<div class="callout-content">
+<div class="callout-label">Why This Matters</div>
+<div class="callout-text">Routing is the pattern to reach for when a single system must handle diverse input types that need fundamentally different treatment. The classifier is cheap (one short Claude call), but it unlocks the ability to maintain separate, specialized pipelines that each do one thing well instead of one generic pipeline that does everything poorly.</div>
+</div>
+</div>
+</div>`
+  },
+
+  m10l5: {
+    module: 10, title: 'Agents and Tools',
+    tag: 'Module 10 · Lesson 5', tagClass: 'tag-m10',
+    subtitle: 'Give agents abstract, composable tools instead of specialized ones. A small set of flexible tools enables more creative problem-solving than a large set of narrow ones.',
+    content: `
+<div class="content-body">
+<h3>When Agents Beat Workflows</h3>
+<p>Workflows require you to know the steps in advance. Agents are for when you don&#x27;t &#x2014; give them tools and a goal, and they figure out the plan dynamically.</p>
+
+<h3>The Tool Abstraction Principle</h3>
+<p>Provide generic, abstract tools rather than hyper-specialized ones. The agent combines them creatively to solve diverse problems.</p>
+
+<div class="code-block">
+<div class="code-header"><span class="code-lang">tool design comparison</span></div>
+<pre># Specialized tools (worse for agents)
+refactor_tool
+install_dependencies
+run_linter
+deploy_to_staging
+
+# Abstract tools (better for agents)
+bash          &#x2014; run any shell command
+web_fetch     &#x2014; retrieve any URL
+file_write    &#x2014; create or modify any file
+file_read     &#x2014; read any file</pre>
+</div>
+
+<p>Claude Code uses the abstract set. With just <code>bash</code>, <code>web_fetch</code>, and <code>file_write</code>, it can refactor code, install dependencies, run linters, <em>and</em> deploy &#x2014; plus things the developer never anticipated.</p>
+
+<h3>Tool Combination in Practice</h3>
+<p>The same three tools from Module 5 (<code>get_current_datetime</code>, <code>add_duration</code>, <code>set_reminder</code>) can solve a variety of time-related tasks through different combinations:</p>
+
+<div class="table-wrap"><table>
+<thead><tr><th>User request</th><th>Tools used</th></tr></thead>
+<tbody>
+<tr><td>&#x201C;What time is it?&#x201D;</td><td>get_current_datetime</td></tr>
+<tr><td>&#x201C;What day is 90 days from now?&#x201D;</td><td>get_current_datetime &#x2192; add_duration</td></tr>
+<tr><td>&#x201C;Remind me in 2 hours&#x201D;</td><td>get_current_datetime &#x2192; add_duration &#x2192; set_reminder</td></tr>
+<tr><td>&#x201C;Remind me next Tuesday at 3pm&#x201D;</td><td>get_current_datetime &#x2192; set_reminder</td></tr>
+</tbody>
+</table></div>
+
+<p>The developer didn&#x27;t hardcode these paths. The agent figured out which tools to combine based on the request.</p>
+
+<h3>Agent Behavior</h3>
+<p>Agents can request additional information when the query is ambiguous, combine tools in unexpected ways, and work best with a small set of flexible tools. The key design choice: can each tool be useful in combinations the developer didn&#x27;t anticipate?</p>
+
+<div class="callout callout-matters">
+<div class="callout-icon">&#x1F4A1;</div>
+<div class="callout-content">
+<div class="callout-label">Why This Matters</div>
+<div class="callout-text">The tool abstraction principle is why Claude Code works with just a handful of tools. Abstract tools compose; specialized tools don&#x27;t. If you build an agent with 20 narrow tools, you get 20 fixed capabilities. If you build it with 4 abstract tools, you get an open-ended number of capabilities based on how those tools combine. Design for composition, not enumeration.</div>
+</div>
+</div>
+</div>`
+  },
+
+  m10l6: {
+    module: 10, title: 'Environment Inspection',
+    tag: 'Module 10 · Lesson 6', tagClass: 'tag-m10',
+    subtitle: 'After every action, agents need to observe what changed. Tool results alone aren&#x27;t enough &#x2014; agents must inspect the environment to gauge progress and catch errors.',
+    content: `
+<div class="content-body">
+<h3>The Problem</h3>
+<p>When an agent calls a tool, the tool result tells it what the tool returned. But it doesn&#x27;t tell the agent what the <em>environment</em> looks like now. A button click might have opened a modal, navigated to a new page, or triggered an error &#x2014; the agent can&#x27;t predict which one.</p>
+
+<h3>The Pattern: Act, Then Observe</h3>
+<div class="flow">
+  <div class="flow-step">Take action</div><div class="flow-arrow">&#x2192;</div>
+  <div class="flow-step">Inspect environment</div><div class="flow-arrow">&#x2192;</div>
+  <div class="flow-step">Decide next step</div><div class="flow-arrow">&#x2192;</div>
+  <div class="flow-step">Repeat</div>
+</div>
+
+<h3>Examples Across Agent Types</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>Agent type</th><th>Action</th><th>Inspection method</th></tr></thead>
+<tbody>
+<tr><td><strong>Computer Use</strong></td><td>Click a button</td><td>Take screenshot to see what changed</td></tr>
+<tr><td><strong>Computer Use</strong></td><td>Type in a form</td><td>Screenshot to verify text appeared correctly</td></tr>
+<tr><td><strong>Code editing</strong></td><td>Modify a file</td><td>Read file contents before and after</td></tr>
+<tr><td><strong>Video creation</strong></td><td>Generate captions</td><td>Run Whisper CPP to verify dialogue placement</td></tr>
+<tr><td><strong>Video creation</strong></td><td>Render video</td><td>Extract screenshots with FFmpeg to inspect visuals</td></tr>
+</tbody>
+</table></div>
+
+<h3>Computer Use: Screenshot After Every Action</h3>
+<p>Computer Use takes a screenshot after every single action (typing, clicking, scrolling). This is because Claude cannot predict the exact result of interacting with a UI. A click on &#x201C;Submit&#x201D; might show a success message, a validation error, or a loading spinner &#x2014; the screenshot tells Claude which one actually happened.</p>
+
+<h3>Code Editing: Read Before You Write</h3>
+<p>Before modifying a file, agents must read its current contents to understand the existing state. This prevents overwriting changes, ensures the edit target exists, and gives the agent context for making correct modifications.</p>
+
+<div class="callout callout-matters">
+<div class="callout-icon">&#x1F4A1;</div>
+<div class="callout-content">
+<div class="callout-label">Why This Matters</div>
+<div class="callout-text">Environment inspection is what separates a working agent from a blind one. Without it, agents execute actions and hope for the best. With it, they can detect errors, adapt to unexpected states, and verify that each step actually achieved its goal before moving to the next. Every robust agent &#x2014; Computer Use, Claude Code, custom builds &#x2014; inspects after acting.</div>
+</div>
+</div>
+</div>`
+  },
+
+  m10l7: {
+    module: 10, title: 'Workflows vs Agents',
+    tag: 'Module 10 · Review', tagClass: 'tag-m10',
+    subtitle: 'The complete decision framework: four workflow patterns, one agent pattern, and a clear recommendation for when to use each.',
+    content: `
+<div class="content-body">
+<h3>The Complete Pattern Catalog</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>Pattern</th><th>Shape</th><th>Use when</th></tr></thead>
+<tbody>
+<tr><td><strong>Parallelization</strong></td><td>Fan out &#x2192; aggregate</td><td>Subtasks are independent</td></tr>
+<tr><td><strong>Chaining</strong></td><td>Step &#x2192; step &#x2192; step</td><td>Each step depends on the previous</td></tr>
+<tr><td><strong>Routing</strong></td><td>Classify &#x2192; branch</td><td>Input type changes how you process it</td></tr>
+<tr><td><strong>Evaluator-optimizer</strong></td><td>Produce &#x2192; evaluate &#x2192; loop</td><td>Output quality needs iterative refinement</td></tr>
+<tr><td><strong>Agent</strong></td><td>Goal + tools &#x2192; dynamic plan</td><td>Steps are unknown in advance</td></tr>
+</tbody>
+</table></div>
+
+<h3>The Recommendation</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>Dimension</th><th>Workflows</th><th>Agents</th></tr></thead>
+<tbody>
+<tr><td>Steps</td><td>Predetermined</td><td>Dynamically planned</td></tr>
+<tr><td>Testing</td><td>Easy &#x2014; known execution path</td><td>Hard &#x2014; unpredictable path</td></tr>
+<tr><td>Success rate</td><td>Higher</td><td>Lower</td></tr>
+<tr><td>Flexibility</td><td>Fixed</td><td>Open-ended</td></tr>
+<tr><td>Tool design</td><td>Task-specific prompts</td><td>Abstract, composable tools</td></tr>
+<tr><td>Inspection</td><td>Check between steps</td><td>Check after every action</td></tr>
+</tbody>
+</table></div>
+
+<p><strong>Prioritize workflows.</strong> Use agents only when flexibility is truly required. Users want products that work 100% of the time over impressive agents that fail unpredictably.</p>
+
+<h3>Decision Flowchart</h3>
+<div class="code-block">
+<div class="code-header"><span class="code-lang">decision tree</span></div>
+<pre>Do you know the exact steps?
+  YES &#x2192; Are the steps independent?
+            YES &#x2192; Parallelization
+            NO  &#x2192; Does input type change processing?
+                      YES &#x2192; Routing (then chain/parallelize within branches)
+                      NO  &#x2192; Chaining
+  NO  &#x2192; Can you define a quality check?
+            YES &#x2192; Evaluator-optimizer loop
+            NO  &#x2192; Agent with abstract tools + environment inspection</pre>
+</div>
+
+<h3>How The Course Connects</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>This module&#x27;s concept</th><th>Built on</th></tr></thead>
+<tbody>
+<tr><td>All workflow patterns</td><td>Multi-call orchestration (Module 2 conversation loop)</td></tr>
+<tr><td>Agent tool use</td><td>Tool schemas + run_conversation loop (Module 5)</td></tr>
+<tr><td>Abstract tool design</td><td>Tool functions + chaining (Module 5)</td></tr>
+<tr><td>Environment inspection</td><td>Computer Use screenshots (Module 9)</td></tr>
+<tr><td>MCP as tool provider</td><td>MCP client/server architecture (Module 8)</td></tr>
+</tbody>
+</table></div>
+
+<div class="callout callout-matters">
+<div class="callout-icon">&#x1F4A1;</div>
+<div class="callout-content">
+<div class="callout-label">The Course in One Sentence</div>
+<div class="callout-text">Everything in this course builds toward one capability: making multiple Claude calls work together reliably. The API (Module 2) gives you the call. Tool use (Module 5) gives Claude actions. MCP (Module 8) scales those actions. Workflows and agents (this module) orchestrate them into systems that solve real problems. Reliability first, innovation second.</div>
+</div>
+</div>
+</div>`
+  },
+
 };
 
 // ── LESSON ORDER ──
@@ -6007,7 +6495,8 @@ const lessonOrder = [
   'm6l1','m6l2','m6l3','m6l4','m6l5','m6l6','m6l7',
   'm7l1','m7l2','m7l3','m7l4','m7l5','m7l6',
   'm8l1','m8l2','m8l3','m8l4','m8l5','m8l6','m8l7','m8l8','m8l9','m8l10','m8l11',
-  'm9l1','m9l2','m9l3','m9l4'
+  'm9l1','m9l2','m9l3','m9l4',
+  'm10l1','m10l2','m10l3','m10l4','m10l5','m10l6','m10l7'
 ];
 
 const totalLessons = lessonOrder.length;
